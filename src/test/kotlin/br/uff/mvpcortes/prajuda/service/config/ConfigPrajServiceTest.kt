@@ -28,10 +28,8 @@ class ConfigPrajServiceTest (
      * Exclude  jest dependency
      */
     @TestConfiguration
-    @SpringBootApplication(exclude = arrayOf(ElasticsearchJestAutoConfiguration::class))
-    class MyConfiguration{
-
-    }
+    @SpringBootApplication(exclude = [(ElasticsearchJestAutoConfiguration::class)])
+    class MyConfiguration
 
     @Test
     fun ` the context is initied `(){
@@ -103,14 +101,15 @@ class ConfigPrajServiceTest (
 
             @Test
             fun ` the file is equal to previous file `() {
-                assertThat(harvestDir2).isEqualTo(harvestDir);
+                assertThat(harvestDir2).isEqualTo(harvestDir)
             }
         }
     }
 
     @Nested
     inner class ` the expected directory is a file ` {
-        val previousFile = File(workDirectoryProvider.workDirectory(), idHarvester);
+        val previousFile = File(workDirectoryProvider.workDirectory(), idHarvester)
+
         init{
             previousFile.createNewFile()
             previousFile.writeText("xuxu")
@@ -121,7 +120,7 @@ class ConfigPrajServiceTest (
             val exception = assertThrows<IllegalStateException> {
                 configService.getWorkDirectoryForHarvester(idHarvester)
             }
-            assertThat(exception).hasMessage("Cannot create workdir for ${idHarvester}")
+            assertThat(exception).hasMessage("Cannot create workdir for $idHarvester")
         }
     }
 }

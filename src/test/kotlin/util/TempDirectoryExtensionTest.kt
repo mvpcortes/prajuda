@@ -19,18 +19,18 @@ import kotlin.reflect.KClass
 @DisplayName("When a TempDirectory")
 internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
-    val rootDirectory: Path = Files.createTempDirectory("test_temp_directory_extension" + UUID.randomUUID().toString().replace("-", "") );
+    val rootDirectory: Path = Files.createTempDirectory("test_temp_directory_extension" + UUID.randomUUID().toString().replace("-", "") )
 
     @BeforeEach
     fun init(){
         //to delete if a test fail or we forgot delete it
-        rootDirectory.toFile().deleteOnExit();
+        rootDirectory.toFile().deleteOnExit()
     }
 
     @AfterEach
     fun after(){
         if(rootDirectory.toFile().exists())
-            this.recursiveDelete(rootDirectory);
+            this.recursiveDelete(rootDirectory)
     }
 
     @Nested
@@ -57,7 +57,7 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
         @Test
         fun ` then directory returned is the same of stored directory`(){
-            assertThat(directoryCreated).isEqualTo(tempDirectoryExtension.tempDirectory);
+            assertThat(directoryCreated).isEqualTo(tempDirectoryExtension.tempDirectory)
         }
     }
 
@@ -76,12 +76,12 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
     @Nested
     inner class ` will be deleted with a file `{
-        val fileChild = File(rootDirectory.toFile(), "file_child");
+        val fileChild = File(rootDirectory.toFile(), "file_child")
 
         @BeforeEach
         fun init(){
             fileChild.createNewFile()
-            fileChild.writeText("xuxu beleza");
+            fileChild.writeText("xuxu beleza")
         }
 
         @Test
@@ -98,7 +98,7 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
         @Nested
         inner class ` and a directory with files`{
             val dirChild = File(rootDirectory.toFile(), "dir")
-            val fileCC   = File(dirChild, "ccFile");
+            val fileCC   = File(dirChild, "ccFile")
 
             @BeforeEach
             fun init(){
@@ -155,9 +155,9 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
         @Nested
         inner class ` does not have a parameter with annotation @TempDirectory `{
-            val parameterContext = mock<ParameterContext>() {
+            val parameterContext = mock<ParameterContext> {
                 on { isAnnotated(TempDirectory::class.java) } doReturn false
-                on { getParameter() } doReturn getParameter(Map::class)
+                on { parameter } doReturn getParameter(Map::class)
             }
 
             @Test
@@ -175,9 +175,9 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
             @Nested
             inner class ` and type non File ` {
-                val parameterContext = mock<ParameterContext>() {
+                val parameterContext = mock<ParameterContext> {
                     on { isAnnotated(TempDirectory::class.java) } doReturn true
-                    on { getParameter() } doReturn getParameter(Map::class)
+                    on { parameter } doReturn getParameter(Map::class)
                 }
 
                 @AfterEach
@@ -187,8 +187,8 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
                 @Test
                 fun `then will fail because type of argument is not file`(){
-                    val exception  = assertThrows(AssertionError::class.java,
-                            { tempDirectoryExtension.resolveParameter(parameterContext, extensionContext)})
+                    val exception  = assertThrows(AssertionError::class.java
+                    ) { tempDirectoryExtension.resolveParameter(parameterContext, extensionContext)}
 
                     assertThat(exception).hasMessage("The TempDirectory should be a File")
                 }
@@ -197,9 +197,9 @@ internal class TempDirectoryExtensionTest: TempDirectoryExtension(mock()) {
 
             @Nested
             inner class ` and type File ` {
-                val parameterContext = mock<ParameterContext>() {
+                val parameterContext = mock<ParameterContext> {
                     on { isAnnotated(TempDirectory::class.java) } doReturn true
-                    on { getParameter() }.doReturn( getParameter(File::class))
+                    on { parameter }.doReturn( getParameter(File::class))
                 }
 
                 @AfterEach

@@ -7,4 +7,4 @@ data class RepositoryInfo(val uri:String="",
                           val lastModified: LocalDateTime = LocalDateTime.MIN,
                           val lastTag:String?=null,
                           val username:String="",
-                          val password:String=""){}
+                          val password:String="")

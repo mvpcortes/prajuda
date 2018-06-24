@@ -66,7 +66,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
     }
 
     private fun commitTag(gitRepo: Git, tagName:String) {
-        gitRepo.commit().setMessage("by mvpcortes: ${tagName}").call()
+        gitRepo.commit().setMessage("by mvpcortes: $tagName").call()
         gitRepo.tag().setName(tagName).call()
     }
 
@@ -74,12 +74,12 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
         File(dir, f).delete()
     }
 
-    private fun moveFile(fSource: String, fDest: String):Unit {
+    private fun moveFile(fSource: String, fDest: String) {
         File(dir, fDest).parentFile.takeIf { !it.exists() }?.takeIf { it.mkdirs() }
         Files.move(File(dir, fSource), File(dir, fDest))
     }
 
-    private fun createFile(s: String, text: String):Unit {
+    private fun createFile(s: String, text: String) {
         val f = File(dir, s).absoluteFile
         f.parentFile.takeIf { !it.exists() }?.takeIf { it.mkdirs() }
         f.takeIf{!it.exists()}?.takeIf{it.createNewFile()}
@@ -89,7 +89,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
     fun changeMasterTo(tag:String):GitTestRepository{
         Git.open(dir).use{
-            it.checkout().setName("refs/tags/"+tag).call()
+            it.checkout().setName("refs/tags/$tag").call()
             it.branchCreate().setForce(true).setName("master").call()
         }
         return this

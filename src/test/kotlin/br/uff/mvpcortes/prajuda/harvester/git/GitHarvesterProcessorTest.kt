@@ -2,8 +2,8 @@ package br.uff.mvpcortes.prajuda.harvester.git
 
 import br.uff.mvpcortes.prajuda.GitTestRepository
 import br.uff.mvpcortes.prajuda.harvester.HarvesterProcessor
+import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
-import br.uff.mvpcortes.prajuda.modelService.PrajService
 import br.uff.mvpcortes.prajuda.service.config.ConfigService
 import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderTestImpl
 import com.nhaarman.mockito_kotlin.mock
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When a GitHarvesterProcessor ")
-internal class GitHarvesterProcessorTest(){
+internal class GitHarvesterProcessorTest {
 
     val workDirectoryProvider= WorkDirectoryProviderTestImpl()
 
@@ -57,7 +57,7 @@ internal class GitHarvesterProcessorTest(){
         fun `with one file then harvest only this file`(){
             gitTestRepository.changeMasterTo("1")
 
-            harvester.harvestComplete(service!!, harvestedList.consumer())
+            harvester.harvestComplete(service, harvestedList.consumer())
 
             assertThat(harvestedList).hasSize(1)
             val havested = harvestedList[0]

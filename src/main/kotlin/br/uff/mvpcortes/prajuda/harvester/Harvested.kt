@@ -6,4 +6,4 @@ typealias HarvestedConsumer = (Harvested)->Unit
 
 class Harvested(val op: HarvesterProcessor.HarvestedOp,
                 val doc: PrajDocument = PrajDocument()
-){}
+)

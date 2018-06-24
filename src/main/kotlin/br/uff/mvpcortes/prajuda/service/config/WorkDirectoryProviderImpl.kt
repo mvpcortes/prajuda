@@ -15,8 +15,8 @@ class WorkDirectoryProviderImpl(
 ): WorkDirectoryProvider {
 
     companion object {
-        val STR_AJUDA_DIR:String = "prajuda"
-        val STR_DOT_AJUDA_DIR = ".${STR_AJUDA_DIR}"
+        const val STR_AJUDA_DIR:String = "prajuda"
+        val STR_DOT_AJUDA_DIR = ".$STR_AJUDA_DIR"
     }
 
     private val logger:Logger = LoggerFactory.getLogger(WorkDirectoryProviderImpl::class.java)
@@ -26,29 +26,29 @@ class WorkDirectoryProviderImpl(
         return getWorkDirInRootDirectory()
                 ?:getWorkDirInProperties()
                 ?:getWorkDirInHomeDir()
-                ?:throw IllegalStateException("Cannot found a valid directory to workdir");
+                ?:throw IllegalStateException("Cannot found a valid directory to workdir")
     }
 
     fun getWorkDirInHomeDir(): File? {
-        try{
-            return homeDir
+        return try{
+            homeDir
                     .takeIf { existsDirectory(it) }
                     ?.let    {File(it, STR_DOT_AJUDA_DIR)}
                     ?.takeIf { existsDirectoryOrCreate(it) }
         }catch(e:Exception){
-            return null;
+            null
         }
     }
 
     //
     fun getWorkDirInProperties(): File? {
-        try {
-            return strWorkDirProperties
+        return try {
+            strWorkDirProperties
                     ?.takeIf { !it.isBlank() }
                     ?.let { File(it) }
                     ?.takeIf { existsDirectoryOrCreate(it) }
         } catch (e: Exception) {
-            return null
+            null
         }
     }
 
@@ -64,6 +64,6 @@ class WorkDirectoryProviderImpl(
 
     protected fun existsDirectoryOrCreate(it: File) = existsDirectory(it) || it.mkdir()
 
-    protected fun existsDirectory(it: File) = it.exists() && it.isDirectory()
+    protected fun existsDirectory(it: File) = it.exists() && it.isDirectory
 
 }

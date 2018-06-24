@@ -12,7 +12,7 @@ class ConfigService(private val workDirectoryProvider: WorkDirectoryProvider){
 
     fun getWorkDirectoryForHarvester(idHarvester:String) =
             File(workDirectoryProvider.workDirectory(), idHarvester)
-                    .takeIf { (it.exists() && it.isDirectory()) || it.mkdir()}
-                    ?:throw IllegalStateException("Cannot create workdir for ${idHarvester}")
+                    .takeIf { (it.exists() && it.isDirectory) || it.mkdir()}
+                    ?:throw IllegalStateException("Cannot create workdir for $idHarvester")
 
 }

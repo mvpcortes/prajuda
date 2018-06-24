@@ -117,7 +117,7 @@ class WorkDirectoryProviderImplTest{
 
         assertThat(file).isNotNull()
         assertThat(file).isDirectory()
-        assertThat(file).isEqualTo(propDir);
+        assertThat(file).isEqualTo(propDir)
     }
 
     @Test
@@ -133,7 +133,7 @@ class WorkDirectoryProviderImplTest{
 
         assertThat(file).isNotNull()
         assertThat(file).isDirectory()
-        assertThat(file).isEqualTo(propDir);
+        assertThat(file).isEqualTo(propDir)
     }
 
     @Test
@@ -176,15 +176,15 @@ class WorkDirectoryProviderImplTest{
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = homeDir)
 
-        val file = workDirectoryProviderImpl.getWorkDirInHomeDir()
+        val file:File? = workDirectoryProviderImpl.getWorkDirInHomeDir()
 
 
         assertThat(file).isNotNull()
-        assertThat(file).isDirectory()
-        assertThat(file).isEqualTo(prajudaDir)
-        assertThat(file).isEqualTo(prajudaDir);
+        assertThat(file!!).isDirectory()
+        assertThat(file!!).isEqualTo(prajudaDir)
+        assertThat(file!!).isEqualTo(prajudaDir)
         assertThat(file!!.name).isEqualTo(STR_DOT_AJUDA_DIR)
-        assertThat(file!!.parentFile).isEqualTo(homeDir);
+        assertThat(file!!.parentFile).isEqualTo(homeDir)
     }
 
     @Test
@@ -193,7 +193,7 @@ class WorkDirectoryProviderImplTest{
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = File(rootDir, "/xuxu"), strWorkDirProperties = null)
 
-        val workDir:File? = workDirectoryProviderImpl.workDirectory();
+        val workDir:File? = workDirectoryProviderImpl.workDirectory()
 
         assertThat(workDir).isNotNull()
 
@@ -204,12 +204,12 @@ class WorkDirectoryProviderImplTest{
     @Test
     fun ` does not have a root directory valid but has a valid_properties directory then use it`(@TempDirectory rootDir:File){
 
-        val propDir = File(rootDir, "prop_dir");
+        val propDir = File(rootDir, "prop_dir")
         propDir.mkdir()
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = File(rootDir, "/xuxu"), strWorkDirProperties = propDir.absolutePath)
 
-        val workDir:File? = workDirectoryProviderImpl.workDirectory();
+        val workDir:File? = workDirectoryProviderImpl.workDirectory()
 
         assertThat(workDir).isNotNull()
 
@@ -220,12 +220,12 @@ class WorkDirectoryProviderImplTest{
     @Test
     fun ` does not have a root directory valid but has a home dir directory then use it`(@TempDirectory rootDir:File){
 
-        val homeDir = File(rootDir, "home_dir");
+        val homeDir = File(rootDir, "home_dir")
         homeDir.mkdir()
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = homeDir, strWorkDirProperties = null)
 
-        val workDir:File? = workDirectoryProviderImpl.workDirectory();
+        val workDir:File? = workDirectoryProviderImpl.workDirectory()
 
         assertThat(workDir).isNotNull()
 
@@ -239,8 +239,8 @@ class WorkDirectoryProviderImplTest{
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = File(rootDir,"xuxu"), strWorkDirProperties = null)
 
-        val exception = Assertions.assertThrows(IllegalStateException::class.java,
-                {  workDirectoryProviderImpl.workDirectory() })
+        val exception = Assertions.assertThrows(IllegalStateException::class.java
+        ) {  workDirectoryProviderImpl.workDirectory() }
 
         assertThat(exception).hasMessage("Cannot found a valid directory to workdir")
     }

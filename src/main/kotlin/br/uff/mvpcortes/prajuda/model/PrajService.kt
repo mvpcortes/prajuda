@@ -1,6 +1,5 @@
-package br.uff.mvpcortes.prajuda.modelService
+package br.uff.mvpcortes.prajuda.model
 
-import br.uff.mvpcortes.prajuda.model.RepositoryInfo
 import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderImpl.Companion.STR_AJUDA_DIR
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.Document
@@ -13,6 +12,6 @@ data class PrajService(
         val harvesterTypeId:String="",
         val repositoryInfo: RepositoryInfo = RepositoryInfo(),
         val  documentDir:String = STR_AJUDA_DIR
-){}
+)
 
 

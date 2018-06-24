@@ -7,7 +7,7 @@ class HarvestedConsumerList: ArrayList<Harvested>(10) {
 
     fun consumer():HarvestedConsumer = this::addU
 
-    fun addU(h:Harvested):Unit{
+    fun addU(h:Harvested){
         this.add(h)
     }
 }

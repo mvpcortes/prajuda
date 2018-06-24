@@ -9,7 +9,7 @@ import java.util.*
 
 
 /**
- * @see https://dev.to/vga/migration-from-junit-4-to-junit-5-19d6
+ * @see <a href="https://dev.to/vga/migration-from-junit-4-to-junit-5-19d6">https://dev.to/vga/migration-from-junit-4-to-junit-5-19d6</a>
  */
 open class TempDirectoryExtension(
         val root:Path = Files.createTempDirectory("junit_temp_directory_" + randomStr() ))
@@ -32,7 +32,7 @@ open class TempDirectoryExtension(
     }
 
     override fun afterEach(extensionContext: ExtensionContext) {
-        tempDirectory.let{this::recursiveDelete}
+        tempDirectory?.let{ rs->this.recursiveDelete(rs.toPath())}
         tempDirectory=null
     }
 
@@ -44,7 +44,7 @@ open class TempDirectoryExtension(
     protected fun recursiveDelete(pathToBeDeleted: Path) {
         Files.walk(pathToBeDeleted)
                 .sorted(Comparator.reverseOrder())
-                .forEach() { it.toFile().delete() }
+                .forEach { it.toFile().delete() }
     }
 
     override fun supportsParameter(parameterContext: ParameterContext?, p1: ExtensionContext?): Boolean {
@@ -54,7 +54,7 @@ open class TempDirectoryExtension(
     override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any? {
         this.tempDirectory=null
         return if(parameterContext.isAnnotated(TempDirectory::class.java)) {
-            assert(File::class.java == parameterContext.parameter.type, { "The TempDirectory should be a File" } )
+            assert(File::class.java == parameterContext.parameter.type) { "The TempDirectory should be a File" }
             createFolder()
         }else {  null }
     }

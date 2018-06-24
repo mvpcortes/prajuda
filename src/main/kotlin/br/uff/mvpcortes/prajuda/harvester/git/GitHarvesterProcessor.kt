@@ -6,7 +6,7 @@ import br.uff.mvpcortes.prajuda.harvester.HarvesterProcessor
 import br.uff.mvpcortes.prajuda.harvester.exception.InvalidRepositoryFormatException
 import br.uff.mvpcortes.prajuda.loggerFor
 import br.uff.mvpcortes.prajuda.model.PrajDocument
-import br.uff.mvpcortes.prajuda.modelService.PrajService
+import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.service.config.ConfigService
 import br.uff.mvpcortes.prajuda.util.tryDeleteRecursively
 import org.eclipse.jgit.api.Git
@@ -14,11 +14,10 @@ import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.Repository
-import java.io.File
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevWalk
-import org.omg.CORBA.Object
 import org.slf4j.Logger
+import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 
@@ -34,7 +33,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     override fun harvestComplete(service: PrajService, blockDeal:HarvestedConsumer) {
         val dirBase = configService.getWorkDirectoryForHarvester("git_harvester")
-        val dirService = File(dirBase, service.name);
+        val dirService = File(dirBase, service.name)
 
         dirService.tryDeleteRecursively()
         dirService.mkdir()
@@ -49,7 +48,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
             logger.info("checkouting tag ${refTag.second}(${refTag.first})")
             //checkout tag
-            Git(repository).checkout().setName(refTag.second).call();
+            Git(repository).checkout().setName(refTag.second).call()
             val dirPrajuda = File(dirService, service.documentDir)
             if(!dirPrajuda.exists() || !dirPrajuda.isDirectory) {
                 throw InvalidRepositoryFormatException("Repository ${service.repositoryInfo.uri} does not have directory '${service.documentDir}'")
@@ -80,14 +79,13 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
                 tag = tagName,
                 path = it.relativeTo(dirPrajuda).toString(),
                 serviceId = service.id,
-                serviceName = service.name,
-                tagDate = tagDate
+                serviceName = service.name
         )
     }
 
 
     /**
-     * @see peel magic = https://stackoverflow.com/a/27173024/8313595
+     * @see Repository.peel magic = https://stackoverflow.com/a/27173024/8313595
      */
     private fun getSafePeeledObjectId(repository:Repository, ref:Ref):ObjectId=  repository.peel(ref)
             ?.peeledObjectId
@@ -101,9 +99,9 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
                 .asSequence()
                 .associate { Pair(getSafePeeledObjectId(repository, it), it.name.replace("refs/tags/", "")) }
 
-        logger.info("tags:{}", tags);
+        logger.info("tags:{}", tags)
 
-        val refBranch: Ref = repository.exactRef("refs/heads/${branchName}")
+        val refBranch: Ref = repository.exactRef("refs/heads/$branchName")
 
         logger.info("branch: {}", refBranch.objectId)
 
@@ -113,7 +111,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
             revWalk.asSequence()
                     .map { logger.info("xuxu {} - {}",it, it.toObjectId()); it}
-                    .map { element -> Pair(element, tags.get(element))}
+                    .map { element -> Pair(element, tags[element])}
                     .filter{pair->pair.second !== null}
                     .map{pair->Pair(pair.first, pair.second!!)}
                     .firstOrNull()

@@ -1,6 +1,6 @@
 package br.uff.mvpcortes.prajuda.harvester
 
-import br.uff.mvpcortes.prajuda.modelService.PrajService
+import br.uff.mvpcortes.prajuda.model.PrajService
 
 interface HarvesterProcessor {
 
