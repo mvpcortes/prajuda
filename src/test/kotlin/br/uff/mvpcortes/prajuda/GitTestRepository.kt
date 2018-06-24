@@ -47,7 +47,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
             createFile("prajuda/src/code.md", STR_CODE_MD)
             createFile("prajuda/main.md", "xuxu xaxa")
-            gitRepo.add().addFilepattern("prajuda/**").call()
+            gitRepo.add().addFilepattern("prajuda").call()
             commitTag(gitRepo, "2")
 
             //create a file and move other
@@ -55,7 +55,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
             createFile("prajuda/src/pc.md", "class pc test content")
             moveFile("prajuda/main.md", "prajuda/org/main.md")
             gitRepo.rm().addFilepattern("prajuda/main.md").call()
-            gitRepo.add().addFilepattern("prajuda/**").call()
+            gitRepo.add().addFilepattern("prajuda").call()
             commitTag(gitRepo, "3")
 
             //remove a file

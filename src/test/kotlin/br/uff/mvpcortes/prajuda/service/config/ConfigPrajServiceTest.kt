@@ -32,13 +32,13 @@ class ConfigPrajServiceTest (
     class MyConfiguration
 
     @Test
-    fun ` the context is initied `(){
+    fun `the context is initied `(){
 
     }
 
 
     @Nested
-    inner class ` get a havest directory ` {
+    inner class `get a havest directory `{
 
         val harvestDir: File = configService.getWorkDirectoryForHarvester(idHarvester)
 
@@ -74,7 +74,7 @@ class ConfigPrajServiceTest (
 
 
         @Nested
-        inner class ` and get again the harvest directory ` {
+        inner class `and get again the harvest directory `{
 
             val harvestDir2: File = configService.getWorkDirectoryForHarvester(idHarvester)
 
@@ -100,14 +100,14 @@ class ConfigPrajServiceTest (
             }
 
             @Test
-            fun ` the file is equal to previous file `() {
+            fun `the file is equal to previous file `() {
                 assertThat(harvestDir2).isEqualTo(harvestDir)
             }
         }
     }
 
     @Nested
-    inner class ` the expected directory is a file ` {
+    inner class `the expected directory is a file `{
         val previousFile = File(workDirectoryProvider.workDirectory(), idHarvester)
 
         init{
@@ -116,7 +116,7 @@ class ConfigPrajServiceTest (
         }
 
         @Test
-        fun ` try create directory it will fail `(){
+        fun `try create directory it will fail `(){
             val exception = assertThrows<IllegalStateException> {
                 configService.getWorkDirectoryForHarvester(idHarvester)
             }

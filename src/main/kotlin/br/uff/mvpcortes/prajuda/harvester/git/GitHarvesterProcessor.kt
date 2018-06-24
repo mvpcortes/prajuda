@@ -57,18 +57,12 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
             dirPrajuda.walkTopDown()
                     .asSequence()
                     .filter{it.isFile}
-                    .map{ logInfo(it) }
                     .map{ createPrajDocument(dirPrajuda, it, refTag.second, refTag.first, service) }
                     .map { Harvested(HarvesterProcessor.HarvestedOp.UPDATED, it) }
                     .forEach(blockDeal)
 
             }
         }
-
-    private fun logInfo(it: File): File {
-        logger.info("harvesting ${it.name}")
-        return it
-    }
 
     private fun createPrajDocument(dirPrajuda:File, it: File, tagName:String, revCommit:RevCommit, service: PrajService): PrajDocument {
         val tagDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(revCommit.commitTime.toLong()),
@@ -94,23 +88,21 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     private fun findLastTag(repository:Repository, branchName:String):Pair<RevCommit, String>? {
 
-        logger.info("{}", repository.directory)
         val tags = Git(repository).tagList().call()
                 .asSequence()
                 .associate { Pair(getSafePeeledObjectId(repository, it), it.name.replace("refs/tags/", "")) }
 
-        logger.info("tags:{}", tags)
+        logger.debug("tags:{}", tags)
 
-        val refBranch: Ref = repository.exactRef("refs/heads/$branchName")
+        val refBranch: Ref = repository.exactRef("refs/heads/$branchName")!!
 
-        logger.info("branch: {}", refBranch.objectId)
+        logger.debug("branch: {}", refBranch.objectId)
 
         return RevWalk(repository).use { revWalk ->
             val revCommit = revWalk.parseCommit(refBranch.objectId)
             revWalk.markStart(revCommit)
 
             revWalk.asSequence()
-                    .map { logger.info("xuxu {} - {}",it, it.toObjectId()); it}
                     .map { element -> Pair(element, tags[element])}
                     .filter{pair->pair.second !== null}
                     .map{pair->Pair(pair.first, pair.second!!)}

@@ -16,7 +16,7 @@ import java.io.File
 class WorkDirectoryProviderImplTest{
 
     @Test
-    fun ` and the root directory exists then return it`(@TempDirectory rootDir:File){
+    fun `and the root directory exists then return it`(@TempDirectory rootDir:File){
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir)
 
         val rootDir = workDirectoryProviderImpl.getRootDir()
@@ -25,7 +25,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the root directory is not a directory then return null`(@TempDirectory rootDir:File){
+    fun `and the root directory is not a directory then return null`(@TempDirectory rootDir:File){
         val file = File(rootDir, "xuxu")
         file.createNewFile()
         assertThat(file).isFile()
@@ -38,7 +38,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the root directory not exists then return null`(@TempDirectory rootDir:File){
+    fun `and the root directory not exists then return null`(@TempDirectory rootDir:File){
         val file = File(rootDir, "xuxu")
         assertThat(file).doesNotExist()
 
@@ -49,7 +49,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the root directory has the prajuda dir then return prajuda dir`(@TempDirectory rootDir:File) {
+    fun `and the root directory has the prajuda dir then return prajuda dir`(@TempDirectory rootDir:File) {
 
         val prajudaDir = File(rootDir, STR_AJUDA_DIR)
         prajudaDir.mkdir()
@@ -63,7 +63,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the root directory does not exists then return null`(@TempDirectory rootDir:File) {
+    fun `and the root directory does not exists then return null`(@TempDirectory rootDir:File) {
 
         val prajudaDir = File(rootDir, STR_AJUDA_DIR)
         assertThat(prajudaDir).doesNotExist()
@@ -76,7 +76,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the root directory does not have the prajuda dir then return new prajuda dir`(@TempDirectory rootDir:File) {
+    fun `and the root directory does not have the prajuda dir then return new prajuda dir`(@TempDirectory rootDir:File) {
 
         val prajudaDir = File(rootDir, STR_AJUDA_DIR)
         assertThat(prajudaDir).doesNotExist()
@@ -91,7 +91,7 @@ class WorkDirectoryProviderImplTest{
 
 
     @Test
-    fun ` and the root directory exists but prajuda is not a directory then return null`(@TempDirectory rootDir:File) {
+    fun `and the root directory exists but prajuda is not a directory then return null`(@TempDirectory rootDir:File) {
 
         val prajudaDir = File(rootDir, STR_AJUDA_DIR)
         prajudaDir.createNewFile()
@@ -105,7 +105,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the properties define a there is directory then return properties' directory`(@TempDirectory rootDir:File) {
+    fun `and the properties define a there is directory then return properties' directory`(@TempDirectory rootDir:File) {
 
         val propDir = File(rootDir, "prop_dir")
         propDir.mkdir()
@@ -121,7 +121,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the properties define a there is not path then create directory`(@TempDirectory rootDir:File) {
+    fun `and the properties define a there is not path then create directory`(@TempDirectory rootDir:File) {
 
         val propDir = File(rootDir, "prop_dir")
         assertThat(propDir).doesNotExist()
@@ -137,7 +137,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the properties define a there is file then return null`(@TempDirectory rootDir:File) {
+    fun `and the properties define a there is file then return null`(@TempDirectory rootDir:File) {
 
         val propFile = File(rootDir, "prop_dir")
         propFile.createNewFile()
@@ -153,7 +153,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the home_dir exists then create prajuda dir`(@TempDirectory rootDir:File) {
+    fun `and the home_dir exists then create prajuda dir`(@TempDirectory rootDir:File) {
 
         val homeDir = createHomeDir(rootDir)
 
@@ -169,7 +169,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` and the home_dir exists and prajuda already exists then get prajuda dir`(@TempDirectory rootDir:File) {
+    fun `and the home_dir exists and prajuda already exists then get prajuda dir`(@TempDirectory rootDir:File) {
 
         val homeDir = createHomeDir(rootDir)
         val prajudaDir = createPrajudaDirInHome(homeDir)
@@ -181,14 +181,14 @@ class WorkDirectoryProviderImplTest{
 
         assertThat(file).isNotNull()
         assertThat(file!!).isDirectory()
-        assertThat(file!!).isEqualTo(prajudaDir)
-        assertThat(file!!).isEqualTo(prajudaDir)
-        assertThat(file!!.name).isEqualTo(STR_DOT_AJUDA_DIR)
-        assertThat(file!!.parentFile).isEqualTo(homeDir)
+        assertThat(file).isEqualTo(prajudaDir)
+        assertThat(file).isEqualTo(prajudaDir)
+        assertThat(file.name).isEqualTo(STR_DOT_AJUDA_DIR)
+        assertThat(file.parentFile).isEqualTo(homeDir)
     }
 
     @Test
-    fun ` has a root directory valid then use it`(@TempDirectory rootDir:File){
+    fun `has a root directory valid then use it`(@TempDirectory rootDir:File){
         val prajudaDir = createPrajudaDir(rootDir)
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = File(rootDir, "/xuxu"), strWorkDirProperties = null)
@@ -202,7 +202,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` does not have a root directory valid but has a valid_properties directory then use it`(@TempDirectory rootDir:File){
+    fun `does not have a root directory valid but has a valid_properties directory then use it`(@TempDirectory rootDir:File){
 
         val propDir = File(rootDir, "prop_dir")
         propDir.mkdir()
@@ -218,7 +218,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` does not have a root directory valid but has a home dir directory then use it`(@TempDirectory rootDir:File){
+    fun `does not have a root directory valid but has a home dir directory then use it`(@TempDirectory rootDir:File){
 
         val homeDir = File(rootDir, "home_dir")
         homeDir.mkdir()
@@ -234,7 +234,7 @@ class WorkDirectoryProviderImplTest{
     }
 
     @Test
-    fun ` does not have a valid directory then throw exception`(@TempDirectory rootDir:File){
+    fun `does not have a valid directory then throw exception`(@TempDirectory rootDir:File){
 
 
         val workDirectoryProviderImpl = WorkDirectoryProviderImpl(rootDir=rootDir, homeDir = File(rootDir,"xuxu"), strWorkDirProperties = null)

@@ -23,7 +23,7 @@ class ConfigServiceTesteOld {
     lateinit var workDirectoryProvider: WorkDirectoryProvider
 
 
-    inner class ` get a havest directory `{
+    inner class `get a havest directory `{
 
         val harvestDir: File = configService.getWorkDirectoryForHarvester("harvester_id")
 
