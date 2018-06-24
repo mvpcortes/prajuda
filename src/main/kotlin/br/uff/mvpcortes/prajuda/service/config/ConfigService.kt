@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service
 import java.io.File
 
 /**
- * Service to get commons values and operations.
+ * PrajService to get commons values and operations.
  *
  */
 @Service
-class ConfigService(val workDirectoryProvider: WorkDirectoryProvider){
+class ConfigService(private val workDirectoryProvider: WorkDirectoryProvider){
 
     fun getWorkDirectoryForHarvester(idHarvester:String) =
             File(workDirectoryProvider.workDirectory(), idHarvester)

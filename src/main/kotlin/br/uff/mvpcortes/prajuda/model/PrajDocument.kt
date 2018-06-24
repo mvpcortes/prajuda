@@ -19,6 +19,10 @@ class PrajDocument (
                      */
                     var serviceId:String?=null,
                     /**
+                     * We save the serviceName to avoid make a foreign key that. It is redundant and we know it.
+                     */
+                    var serviceName:String?="",
+                    /**
                      * The instant that this page was harvest
                      */
                     var harvestDate:LocalDateTime=LocalDateTime.now(),

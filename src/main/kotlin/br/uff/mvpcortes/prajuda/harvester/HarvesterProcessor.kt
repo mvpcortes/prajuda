@@ -1,7 +1,6 @@
 package br.uff.mvpcortes.prajuda.harvester
 
-import br.uff.mvpcortes.prajuda.model.PrajDocument
-import reactor.core.publisher.Flux
+import br.uff.mvpcortes.prajuda.modelService.PrajService
 
 interface HarvesterProcessor {
 
@@ -11,20 +10,9 @@ interface HarvesterProcessor {
         NO_OP()
     }
 
-//    enum class HarvesterMode{
-//        DIFF,/*Only havest the diff documents*/
-//        COMPLETE,/*havest all documents*/
-//        COMPLETE_REBUILD/*havest all documents rebuild the cached/local repository data*/
-//    }
 
-    class Harvested(val op:HarvestedOp, val doc:PrajDocument=PrajDocument()){}
+    fun harvest(service: PrajService, blockDeal:HarvestedConsumer)
 
-    fun harvest(): Flux<PrajDocument>
-
-    fun harvest(blockDeal:(Harvested)->Unit)
-
-    fun harvestComplete(blockDeal:(Harvested)->Unit)
-
-    fun getIdHarvester():String
+    fun harvestComplete(service: PrajService, blockDeal:HarvestedConsumer)
 
 }

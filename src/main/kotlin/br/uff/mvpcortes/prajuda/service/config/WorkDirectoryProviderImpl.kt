@@ -8,7 +8,7 @@ import java.io.File
 
 @Service
 class WorkDirectoryProviderImpl(
-        @Value("\${prajuda.work-dir}:")
+        @Value("\${prajuda.work-dir:#{null}}")
         private val strWorkDirProperties:String? = null,
         private val rootDir:File=File("/"),
         private val homeDir:File=File(System.getProperty("user.home"))
