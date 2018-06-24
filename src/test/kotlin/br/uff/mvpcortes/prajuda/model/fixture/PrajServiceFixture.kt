@@ -7,4 +7,6 @@ object PrajServiceFixture {
 
     fun withRepository(uri:String)= PrajService(name="teste", repositoryInfo = RepositoryInfo(uri=uri), id= "xxx.xxx.xxx.xxx")
 
+    fun withRepositoryAndTag(uri: String, tag:String)= PrajService(name="teste", repositoryInfo = RepositoryInfo(uri=uri, lastTag=tag), id= "xxx.xxx.xxx.xxx")
+
 }

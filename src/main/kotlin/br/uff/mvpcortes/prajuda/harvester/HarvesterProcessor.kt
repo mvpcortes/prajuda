@@ -7,7 +7,7 @@ interface HarvesterProcessor {
     enum class HarvestedOp{
         UPDATED(),
         DELETED(),
-        NO_OP()
+        NO_OP();
     }
 
 

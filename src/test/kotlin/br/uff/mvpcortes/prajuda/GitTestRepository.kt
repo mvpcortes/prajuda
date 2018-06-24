@@ -37,19 +37,21 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
     fun createRepository(){
         Git.init().setDirectory(dir).call().use { gitRepo ->
 
+            //### FIRST COMMIT ###//
             //make first commit
             createFile("prajuda/main.md", STR_MAIN_MD)
             //val pomFile = File(dir, "pom.xml")
             gitRepo.add().addFilepattern("prajuda/main.md").call()
-
             commitTag(gitRepo, "1")
-            //make directory and file
 
+            //### SECOND COMMIT ###//
+            //make directory and file
             createFile("prajuda/src/code.md", STR_CODE_MD)
             createFile("prajuda/main.md", "xuxu xaxa")
             gitRepo.add().addFilepattern("prajuda").call()
             commitTag(gitRepo, "2")
 
+            //### THIRD COMMIT ###//
             //create a file and move other
             createFile("prajuda/src/user.md", "class user test content")
             createFile("prajuda/src/pc.md", "class pc test content")
@@ -58,6 +60,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
             gitRepo.add().addFilepattern("prajuda").call()
             commitTag(gitRepo, "3")
 
+            //### FOURTH COMMIT ###//
             //remove a file
             deleteFile("prajuda/src/pc.md")
             gitRepo.rm().addFilepattern("prajuda/src/pc.md").call()
@@ -86,6 +89,14 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
         f.writeText(text)
     }
 
+
+    fun deleteTags():GitTestRepository{
+        val listTag = Git.open(dir).tagList().call()
+
+        Git.open(dir).tagDelete().setTags(*listTag.map{it.name}.toTypedArray()).call()
+
+        return this
+    }
 
     fun changeMasterTo(tag:String):GitTestRepository{
         Git.open(dir).use{
