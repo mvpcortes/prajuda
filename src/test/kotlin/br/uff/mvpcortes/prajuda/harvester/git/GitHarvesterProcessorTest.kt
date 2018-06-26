@@ -1,7 +1,7 @@
 package br.uff.mvpcortes.prajuda.harvester.git
 
 import br.uff.mvpcortes.prajuda.GitTestRepository
-import br.uff.mvpcortes.prajuda.harvester.HarvesterProcessor
+import br.uff.mvpcortes.prajuda.harvester.HarvestedOp
 import br.uff.mvpcortes.prajuda.harvester.exception.InvalidRepositoryFormatException
 import br.uff.mvpcortes.prajuda.harvester.exception.NonClonedRepositoryException
 import br.uff.mvpcortes.prajuda.model.PrajService
@@ -95,13 +95,13 @@ internal class GitHarvesterProcessorTest {
                 assertThat(harvestedList).hasSize(1)
                 val havested = harvestedList[0]
 
-                assertThat(havested.op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(havested.doc.id).isEqualTo(null)
-                assertThat(havested.doc.path).isEqualTo("main.md")
-                assertThat(havested.doc.tag).isEqualTo("1")
-                assertThat(havested.doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(havested.doc.serviceName).isEqualTo("teste")
-                assertThat(havested.doc.content).containsSubsequence(
+                assertThat(havested.op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(havested.sdoc.id).isEqualTo(null)
+                assertThat(havested.sdoc.path).isEqualTo("main.md")
+                assertThat(havested.sdoc.tag).isEqualTo("1")
+                assertThat(havested.sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(havested.sdoc.serviceName).isEqualTo("teste")
+                assertThat(havested.sdoc.content).containsSubsequence(
                         "# Micat pectore decipis aliquisque bracchia quoque mando",
                         "## Per tantum",
                         "*Lorem* markdownum falsi, te plura Aeolidae volucrem dextrae herbis inmanem"
@@ -116,21 +116,21 @@ internal class GitHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(2)
 
-                assertThat(harvestedList[0].op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(harvestedList[0].doc.id).isEqualTo(null)
-                assertThat(harvestedList[0].doc.path).isEqualTo("main.md")
-                assertThat(harvestedList[0].doc.tag).isEqualTo("2")
-                assertThat(harvestedList[0].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[0].doc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[0].doc.content).isEqualTo("xuxu xaxa")
+                assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(harvestedList[0].doc!!.id).isEqualTo(null)
+                assertThat(harvestedList[0].doc!!.path).isEqualTo("main.md")
+                assertThat(harvestedList[0].doc!!.tag).isEqualTo("2")
+                assertThat(harvestedList[0].doc!!.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[0].doc!!.serviceName).isEqualTo("teste")
+                assertThat(harvestedList[0].doc!!.content).isEqualTo("xuxu xaxa")
 
-                assertThat(harvestedList[1].op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(harvestedList[1].doc.id).isEqualTo(null)
-                assertThat(harvestedList[1].doc.path).isEqualTo("src/code.md")
-                assertThat(harvestedList[1].doc.tag).isEqualTo("2")
-                assertThat(harvestedList[1].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[1].doc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[1].doc.content).isEqualTo(gitTestRepository.STR_CODE_MD)
+                assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(harvestedList[1].doc!!.id).isEqualTo(null)
+                assertThat(harvestedList[1].doc!!.path).isEqualTo("src/code.md")
+                assertThat(harvestedList[1].doc!!.tag).isEqualTo("2")
+                assertThat(harvestedList[1].doc!!.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[1].doc!!.serviceName).isEqualTo("teste")
+                assertThat(harvestedList[1].doc!!.content).isEqualTo(gitTestRepository.STR_CODE_MD)
             }
 
             @Test
@@ -141,7 +141,7 @@ internal class GitHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(4)
 
-                val harvested = harvestedList.filter { it.doc.path == "org/main.md" }.map { it.doc }.single()
+                val harvested = harvestedList.filter { it.doc!!.path == "org/main.md" }.map { it.doc!! }.single()
 
                 assertThat(harvested.id).isEqualTo(null)
                 assertThat(harvested.path).isEqualTo("org/main.md")//moved
@@ -160,29 +160,29 @@ internal class GitHarvesterProcessorTest {
                 assertThat(harvestedList).hasSize(3)
 
 
-                assertThat(harvestedList[0].op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(harvestedList[0].doc.id).isEqualTo(null)
-                assertThat(harvestedList[0].doc.path).isEqualTo("org/main.md")
-                assertThat(harvestedList[0].doc.tag).isEqualTo("4")
-                assertThat(harvestedList[0].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[0].doc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[0].doc.content).isEqualTo("xuxu xaxa")
+                assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(harvestedList[0].sdoc.id).isEqualTo(null)
+                assertThat(harvestedList[0].sdoc.path).isEqualTo("org/main.md")
+                assertThat(harvestedList[0].sdoc.tag).isEqualTo("4")
+                assertThat(harvestedList[0].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[0].sdoc.serviceName).isEqualTo("teste")
+                assertThat(harvestedList[0].sdoc.content).isEqualTo("xuxu xaxa")
 
-                assertThat(harvestedList[1].op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(harvestedList[1].doc.id).isEqualTo(null)
-                assertThat(harvestedList[1].doc.path).isEqualTo("src/user.md")
-                assertThat(harvestedList[1].doc.tag).isEqualTo("4")
-                assertThat(harvestedList[1].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[1].doc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[1].doc.content).isEqualTo("class user test content")
+                assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(harvestedList[1].sdoc.id).isEqualTo(null)
+                assertThat(harvestedList[1].sdoc.path).isEqualTo("src/user.md")
+                assertThat(harvestedList[1].sdoc.tag).isEqualTo("4")
+                assertThat(harvestedList[1].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[1].sdoc.serviceName).isEqualTo("teste")
+                assertThat(harvestedList[1].sdoc.content).isEqualTo("class user test content")
 
-                assertThat(harvestedList[2].op).isEqualTo(HarvesterProcessor.HarvestedOp.UPDATED)
-                assertThat(harvestedList[2].doc.id).isEqualTo(null)
-                assertThat(harvestedList[2].doc.path).isEqualTo("src/code.md")
-                assertThat(harvestedList[2].doc.tag).isEqualTo("4")
-                assertThat(harvestedList[2].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[2].doc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[2].doc.content).isEqualTo(gitTestRepository.STR_CODE_MD)
+                assertThat(harvestedList[2].op).isEqualTo(HarvestedOp.UPDATED)
+                assertThat(harvestedList[2].sdoc.id).isEqualTo(null)
+                assertThat(harvestedList[2].sdoc.path).isEqualTo("src/code.md")
+                assertThat(harvestedList[2].sdoc.tag).isEqualTo("4")
+                assertThat(harvestedList[2].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[2].sdoc.serviceName).isEqualTo("teste")
+                assertThat(harvestedList[2].sdoc.content).isEqualTo(gitTestRepository.STR_CODE_MD)
             }
         }
 
@@ -211,6 +211,24 @@ internal class GitHarvesterProcessorTest {
                 harvester.harvest(service, harvestedList.consumer())
 
                 assertThat(harvestedList).isEmpty()
+            }
+
+            @Test
+            fun ` in tag 1 and remote repository commited tag 2 then get two updates`(){
+                gitTestRepository.changeMasterTo("1")
+                harvester.harvestComplete(service, harvestedList.consumer())
+                service = PrajServiceFixture.withRepositoryAndTag(gitTestRepository.getUri(), "1")                //change tag of service
+                harvestedList.clear()
+
+                gitTestRepository.changeMasterTo("2")
+
+                harvester.harvest(service, harvestedList.consumer())
+
+                assertThat(harvestedList).hasSize(2)
+
+                assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
+
+                assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
             }
         }
 

@@ -2,6 +2,7 @@ package br.uff.mvpcortes.prajuda.harvester.git
 
 import br.uff.mvpcortes.prajuda.harvester.Harvested
 import br.uff.mvpcortes.prajuda.harvester.HarvestedConsumer
+import br.uff.mvpcortes.prajuda.harvester.HarvestedOp
 import br.uff.mvpcortes.prajuda.harvester.HarvesterProcessor
 import br.uff.mvpcortes.prajuda.harvester.exception.InvalidRepositoryFormatException
 import br.uff.mvpcortes.prajuda.harvester.exception.NonClonedRepositoryException
@@ -12,9 +13,6 @@ import br.uff.mvpcortes.prajuda.service.config.ConfigService
 import br.uff.mvpcortes.prajuda.util.tryDeleteRecursively
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.internal.storage.file.FileRepository
-import org.eclipse.jgit.lib.ObjectId
-import org.eclipse.jgit.lib.Ref
-import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevWalk
 import org.slf4j.Logger
@@ -24,6 +22,8 @@ import java.time.LocalDateTime
 import java.io.IOException
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import org.eclipse.jgit.diff.DiffEntry
+import org.eclipse.jgit.lib.*
+import org.eclipse.jgit.revwalk.RevTree
 
 
 @org.springframework.stereotype.Service
@@ -52,61 +52,102 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
         }
 
         FileRepository(File(dirService, ".git")).use { repository ->
+
+            //pulling repository
+            logger.debug("pulling cache (local repository)")
+            Git(repository).checkout().setName(service.repositoryInfo.branch).call()
+            Git(repository).pull().call()
+
             val actualTagName = checkoutTag(repository, service).name
 
             //@see https://gist.github.com/steos/805992
-            val actualTag = resolveTree(repository, actualTagName)
+            val actualRefCommit = resolveCommit(repository, actualTagName)?: throw IllegalStateException("Cannot found actual tag '${actualTagName}'")
+            val actualTag = actualRefCommit.tree
 
             val previousTagName = service.repositoryInfo.lastTag!!
 
-            val previousTag = resolveTree(repository, previousTagName)
-                        ?: throw IllegalStateException("Cannot found previous tag '${previousTagName}'")
+            val previousRefCommit = resolveCommit(repository, previousTagName)?: throw IllegalStateException("Cannot found previous tag '${previousTagName}'")
+            val previousTag = previousRefCommit.tree
 
 
-
-            //https://github.com/centic9/jgit-cookbook/blob/master/src/main/java/org/dstadler/jgit/porcelain/ShowChangedFilesBetweenCommits.java
-            //to 'object ... is not a tree'->https://paul.wellnerbou.de/2015/06/18/getting-commits-between-annotated-tags-with-jgit/
-            val prajudaDir = getSafePrajudaDir(dirService, service)
+           val prajudaDir = getSafePrajudaDir(dirService, service)
 
             repository.newObjectReader().use{objectReader->
-                val oldTreeIter = CanonicalTreeParser()
-                oldTreeIter.reset(objectReader,previousTag)
-                val newTreeIter = CanonicalTreeParser()
-                newTreeIter.reset(objectReader, actualTag)
+                val oldTreeIter =createCanonicalTreeParser(objectReader,  previousTag)
+                val newTreeIter =createCanonicalTreeParser(objectReader,  actualTag)
 
                 Git(repository).use { git ->
-                   getDiff(git, newTreeIter, oldTreeIter)
-                        .asSequence()
-                        .map { toPrajDocumentDiff(repository, actualTagName, service, it, prajudaDir)}
-                        .forEach { blockDeal(it) }
+                    getDiff(git, newTreeIter, oldTreeIter)
+                            .asSequence()
+                            .flatMap { toPrajDocumentDiff(actualRefCommit, actualTagName, service, it, prajudaDir).asSequence()}
+                            .forEach { blockDeal(it) }
                 }
-
             }
         }
     }
 
-    private fun resolveTree(repository: FileRepository, actualTagName: String) =
-            repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))?.tree
+    private fun createCanonicalTreeParser(or: ObjectReader, revTree: RevTree):CanonicalTreeParser{
+        val oldTreeIter = CanonicalTreeParser()
+        oldTreeIter.reset(or,revTree)
+        return oldTreeIter
 
-    private fun getDiff(git: Git, newTreeIter: CanonicalTreeParser, oldTreeIter: CanonicalTreeParser): List<DiffEntry> {
-        return git.diff()
+    }
+
+    private fun resolveCommit(repository:FileRepository, actualTagName: String)=repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))
+
+//    private fun resolveTree(repository: FileRepository, actualTagName: String) =
+//            repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))?.tree
+
+    private fun getDiff(git: Git, newTreeIter: CanonicalTreeParser, oldTreeIter: CanonicalTreeParser)= git.diff()
                 .setNewTree(newTreeIter)
                 .setOldTree(oldTreeIter)
                 .call()
+
+    private fun toPrajDocumentDiff(revCommit:RevCommit, tagName:String, service:PrajService, entry: DiffEntry, dirPrajuda:File):
+            Array<Harvested> =
+            when(entry.changeType){
+            /** Add/modifying/copy a new file to the project  */
+                DiffEntry.ChangeType.ADD, DiffEntry.ChangeType.MODIFY,DiffEntry.ChangeType.COPY -> {
+                    checkPath(entry.newPath, service, { createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service) })
+                }
+
+            /** Delete an existing file from the project  */
+                DiffEntry.ChangeType.DELETE->
+                    checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry))})
+            /** Rename an existing file to a new location  */
+            //make a delete and a update
+                DiffEntry.ChangeType.RENAME->
+                        checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry))})
+                        .plus(
+                            checkPath(entry.newPath, service, {createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service)})
+                        )
+                else -> emptyArray()
+            }
+
+    private fun checkPath(path: String, service:PrajService,function: () -> Harvested) =
+    if(path.startsWith(service.documentDir)){
+        arrayOf(function())
+    }else{
+        emptyArray()
     }
 
-    private fun toPrajDocumentDiff(repository:Repository, tagName:String, service:PrajService, entry: DiffEntry, dirPrajuda:File):
-            Harvested {
-        val op : HarvesterProcessor.HarvestedOp = toOp(entry.changeType)
-        return when (op) {
-            HarvesterProcessor.HarvestedOp.NO_OP -> Harvested(op, PrajDocument())
-            HarvesterProcessor.HarvestedOp.DELETED -> Harvested(op, createDeletedPrajDocument(service, entry))
-            HarvesterProcessor.HarvestedOp.UPDATED -> {
-                val documentFile=File(dirPrajuda, entry.newPath)
-                return Harvested(op,
-                        createPrajDocument(dirPrajuda, documentFile, tagName, repository.parseCommit(entry.newId.toObjectId()), service)
-                )
-            }
+
+    private fun createUpdatedHarvested(revCommit:RevCommit, dirPrajuda: File, entry: DiffEntry, tagName: String,  service: PrajService): Harvested {
+        return Harvested(HarvestedOp.UPDATED,
+                createPrajDocument(dirPrajuda,
+                        File(dirPrajuda.parent, entry.newPath),
+                        tagName,
+                       revCommit,
+                        service))
+    }
+
+    /**
+     * @see https://stackoverflow.com/a/39984612/8313595
+     * @see https://www.codeaffine.com/2016/06/16/jgit-diff/
+     */
+    private fun toRevCommit(repository: Repository, id:AnyObjectId): RevCommit {
+        RevWalk(repository).use {
+            return it.lookupCommit(id)
         }
     }
 
@@ -119,41 +160,6 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
                     serviceName = service.name
             )
 
-
-
-    private fun toOp(changeType: DiffEntry.ChangeType)=
-            when(changeType){
-            /** Add a new file to the project  */
-                DiffEntry.ChangeType.ADD -> HarvesterProcessor.HarvestedOp.UPDATED
-
-            /** Modify an existing file in the project (content and/or mode)  */
-                DiffEntry.ChangeType.MODIFY->HarvesterProcessor.HarvestedOp.UPDATED
-
-            /** Delete an existing file from the project  */
-                DiffEntry.ChangeType.DELETE->HarvesterProcessor.HarvestedOp.DELETED
-
-            /** Rename an existing file to a new location  */
-                DiffEntry.ChangeType.RENAME->HarvesterProcessor.HarvestedOp.UPDATED
-
-            /** Copy an existing file to a new location, keeping the original  */
-                DiffEntry.ChangeType.COPY->HarvesterProcessor.HarvestedOp.UPDATED
-
-                else ->{
-                    logger.warn("Cannot found op for $changeType. no_op selected")
-                    HarvesterProcessor.HarvestedOp.NO_OP
-                }
-            }
-
-//    private fun findPreviousTag(repository: FileRepository, previousTagName: String?)=
-
-
-//       Git(repository).tagList().call()
-//                .asSequence()
-//                .filter{it.name == "refs/tags/$previousTagName"}
-//                .map{Pair(getSafePeeledObjectId(repository, it), it.name.replace("refs/tags/", ""))}
-//               .single()
-
-    private fun getJGitTags(repository:Repository) = Git(repository).tagList().call().asSequence()
 
 
     /**
@@ -187,7 +193,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
                     .asSequence()
                     .filter{it.isFile}
                     .map{ createPrajDocument(dirPrajuda, it, revTag.name, revTag.ref, service) }
-                    .map { Harvested(HarvesterProcessor.HarvestedOp.UPDATED, it) }
+                    .map { Harvested(HarvestedOp.UPDATED, it) }
                     .forEach(blockDeal)
 
         }
@@ -240,7 +246,9 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     private fun findLastTag(repository:Repository, branchName:String):MyRefTag? {
 
-        val tags =getJGitTags(repository)
+        val tags =Git(repository)
+                .tagList().call()
+                .asSequence()
                 .associate { Pair(getSafePeeledObjectId(repository, it), it.name.replace("refs/tags/", "")) }
 
         logger.debug("tags:{}", tags)
