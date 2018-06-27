@@ -12,6 +12,8 @@ import com.github.vanroy.springboot.autoconfigure.data.jest.ElasticsearchJestAut
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.context.TestConfiguration
 
@@ -49,15 +51,15 @@ internal class GitHarvesterProcessorTest {
 
 
     @Nested
-    inner class `references a git repository`{
-        var gitTestRepository: GitTestRepository=GitTestRepository()
+    inner class `references a git repository` {
+        var gitTestRepository: GitTestRepository = GitTestRepository()
 
         val harvestedList = HarvestedConsumerList()
 
         var service = PrajService()
 
         @BeforeEach
-        fun init(){
+        fun init() {
             gitTestRepository.close()
             harvestedList.clear()
             gitTestRepository = GitTestRepository()
@@ -66,13 +68,58 @@ internal class GitHarvesterProcessorTest {
         }
 
         @AfterEach
-        fun drop(){
+        fun drop() {
             configService.deleteWorkDIrectoryForHarvester(GitHarvesterProcessor.STR_GIT_HARVESTER_ID)//delete workdir of harvester
             gitTestRepository.close()
         }
 
+        private fun `in a tag X and remote repository commited tag Y`(x:Int, y:Int) {
+            gitTestRepository.changeMasterTo(x.toString())
+            harvester.harvestComplete(service, harvestedList.consumer())
+
+            service = PrajServiceFixture.withRepositoryAndTag(gitTestRepository.getUri(), x.toString())                //change tag of service
+            harvestedList.clear()
+
+            gitTestRepository.changeMasterTo(y.toString())
+
+            harvester.harvest(service, harvestedList.consumer())
+        }
+
+        private fun assertHarvestedDeleted(id: Int, path: String) {
+            assertThat(harvestedList[id].op).isEqualTo(HarvestedOp.DELETED)
+            assertThat(harvestedList[id].doc.id).isNull()
+            assertThat(harvestedList[id].doc.content).isBlank()
+            assertThat(harvestedList[id].doc.path).isEqualTo(path)
+            assertThat(harvestedList[id].doc.tag).isEmpty()
+            assertThat(harvestedList[id].doc.serviceId).isEqualTo(PrajServiceFixture.DEFAULT_ID)
+            assertThat(harvestedList[id].doc.serviceName).isNull()//we do not need a name here
+        }
+
+        private fun assertHarvestedUpdated(id: Int, path: String, content: String, tag: String) {
+            assertThat(harvestedList[id].op).isEqualTo(HarvestedOp.UPDATED)
+            assertThat(harvestedList[id].doc.id).isNull()
+            assertThat(harvestedList[id].doc.content).isEqualTo(content)
+            assertThat(harvestedList[id].doc.path).isEqualTo(path)
+            assertThat(harvestedList[id].doc.tag).isEqualTo(tag)
+            assertThat(harvestedList[id].doc.serviceId).isEqualTo(PrajServiceFixture.DEFAULT_ID)
+            assertThat(harvestedList[id].doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+        }
+
         @Nested
         inner class `run harvesterComplete` {
+
+            @Test
+            fun `on a repository without document directory then fail`(){
+                gitTestRepository.deletePrajudaDirAndCommitTag("xuxu")
+
+                val exception = assertThrows<InvalidRepositoryFormatException>()
+                { harvester.harvestComplete(service, harvestedList.consumer()) }
+
+                assertThat(exception.message).containsSubsequence(
+                        "Repository",
+                         "does not have directory 'prajuda'")
+            }
+
             @Test
             fun `doesnt have tags then fail `() {
                 gitTestRepository.deleteTags()
@@ -96,12 +143,12 @@ internal class GitHarvesterProcessorTest {
                 val havested = harvestedList[0]
 
                 assertThat(havested.op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(havested.sdoc.id).isEqualTo(null)
-                assertThat(havested.sdoc.path).isEqualTo("main.md")
-                assertThat(havested.sdoc.tag).isEqualTo("1")
-                assertThat(havested.sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(havested.sdoc.serviceName).isEqualTo("teste")
-                assertThat(havested.sdoc.content).containsSubsequence(
+                assertThat(havested.doc.id).isEqualTo(null)
+                assertThat(havested.doc.path).isEqualTo("main.md")
+                assertThat(havested.doc.tag).isEqualTo("1")
+                assertThat(havested.doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(havested.doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(havested.doc.content).containsSubsequence(
                         "# Micat pectore decipis aliquisque bracchia quoque mando",
                         "## Per tantum",
                         "*Lorem* markdownum falsi, te plura Aeolidae volucrem dextrae herbis inmanem"
@@ -114,23 +161,25 @@ internal class GitHarvesterProcessorTest {
 
                 harvester.harvestComplete(service, harvestedList.consumer())
 
+                harvestedList.sort()
+
                 assertThat(harvestedList).hasSize(2)
 
                 assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(harvestedList[0].doc!!.id).isEqualTo(null)
-                assertThat(harvestedList[0].doc!!.path).isEqualTo("main.md")
-                assertThat(harvestedList[0].doc!!.tag).isEqualTo("2")
-                assertThat(harvestedList[0].doc!!.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[0].doc!!.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[0].doc!!.content).isEqualTo("xuxu xaxa")
+                assertThat(harvestedList[0].doc.id).isEqualTo(null)
+                assertThat(harvestedList[0].doc.path).isEqualTo("main.md")
+                assertThat(harvestedList[0].doc.tag).isEqualTo("2")
+                assertThat(harvestedList[0].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[0].doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(harvestedList[0].doc.content).isEqualTo("xuxu xaxa")
 
                 assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(harvestedList[1].doc!!.id).isEqualTo(null)
-                assertThat(harvestedList[1].doc!!.path).isEqualTo("src/code.md")
-                assertThat(harvestedList[1].doc!!.tag).isEqualTo("2")
-                assertThat(harvestedList[1].doc!!.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[1].doc!!.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[1].doc!!.content).isEqualTo(gitTestRepository.STR_CODE_MD)
+                assertThat(harvestedList[1].doc.id).isEqualTo(null)
+                assertThat(harvestedList[1].doc.path).isEqualTo("src/code.md")
+                assertThat(harvestedList[1].doc.tag).isEqualTo("2")
+                assertThat(harvestedList[1].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
+                assertThat(harvestedList[1].doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(harvestedList[1].doc.content).isEqualTo(GitTestRepository.STR_CODE_MD)
             }
 
             @Test
@@ -138,6 +187,8 @@ internal class GitHarvesterProcessorTest {
                 gitTestRepository.changeMasterTo("3")
 
                 harvester.harvestComplete(service, harvestedList.consumer())
+
+                harvestedList.sort()
 
                 assertThat(harvestedList).hasSize(4)
 
@@ -147,7 +198,7 @@ internal class GitHarvesterProcessorTest {
                 assertThat(harvested.path).isEqualTo("org/main.md")//moved
                 assertThat(harvested.tag).isEqualTo("3")
                 assertThat(harvested.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvested.serviceName).isEqualTo("teste")
+                assertThat(harvested.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
                 assertThat(harvested.content).isEqualTo("xuxu xaxa")
             }
 
@@ -157,56 +208,55 @@ internal class GitHarvesterProcessorTest {
 
                 harvester.harvestComplete(service, harvestedList.consumer())
 
+                harvestedList.sort()
+
                 assertThat(harvestedList).hasSize(3)
 
 
-                assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(harvestedList[0].sdoc.id).isEqualTo(null)
-                assertThat(harvestedList[0].sdoc.path).isEqualTo("org/main.md")
-                assertThat(harvestedList[0].sdoc.tag).isEqualTo("4")
-                assertThat(harvestedList[0].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[0].sdoc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[0].sdoc.content).isEqualTo("xuxu xaxa")
-
-                assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(harvestedList[1].sdoc.id).isEqualTo(null)
-                assertThat(harvestedList[1].sdoc.path).isEqualTo("src/user.md")
-                assertThat(harvestedList[1].sdoc.tag).isEqualTo("4")
-                assertThat(harvestedList[1].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[1].sdoc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[1].sdoc.content).isEqualTo("class user test content")
-
-                assertThat(harvestedList[2].op).isEqualTo(HarvestedOp.UPDATED)
-                assertThat(harvestedList[2].sdoc.id).isEqualTo(null)
-                assertThat(harvestedList[2].sdoc.path).isEqualTo("src/code.md")
-                assertThat(harvestedList[2].sdoc.tag).isEqualTo("4")
-                assertThat(harvestedList[2].sdoc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
-                assertThat(harvestedList[2].sdoc.serviceName).isEqualTo("teste")
-                assertThat(harvestedList[2].sdoc.content).isEqualTo(gitTestRepository.STR_CODE_MD)
+                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
+                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
+                assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
             }
         }
 
         @Nested
-        inner class `run simple harvester` {
+        inner class `run simple (diff) harvester` {
 
             @Test
-            fun `without cached(cloned) directory will run a complete harvester`(){
+            fun `on a repository without document directory then fail`(){
+                harvester.harvestComplete(service, harvestedList.consumer())
+                harvestedList.clear()
+
+                gitTestRepository.deletePrajudaDirAndCommitTag("xuxu")
+
+                val exception = assertThrows<InvalidRepositoryFormatException>()
+                { harvester.harvest(service, harvestedList.consumer()) }
+
+                assertThat(exception.message).containsSubsequence(
+                        "Repository",
+                        "does not have directory 'prajuda'")
+            }
+
+
+            @Test
+            fun `without cached(cloned) directory will run a complete harvester`() {
                 val exception = assertThrows<NonClonedRepositoryException> {
                     harvester.harvest(service, harvestedList.consumer())
                 }
 
-                assertThat(exception.service.name).isEqualTo("teste")
-                assertThat(exception.dir.absolutePath).containsSubsequence("teste")
+                assertThat(exception.service.name).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(exception.dir.absolutePath).containsSubsequence(PrajServiceFixture.DEFAULT_NAME)
             }
 
-            @Test
-            fun `in same tag then non operation`(){
-                gitTestRepository.changeMasterTo("4")
+            @ParameterizedTest(name = "run #{index} with tag [{0}]")
+            @ValueSource(ints = intArrayOf(1, 2, 3, 4))
+            fun in_same_tag_then_non_operation(argument: Int) {
+                gitTestRepository.changeMasterTo(argument.toString())
                 harvester.harvestComplete(service, harvestedList.consumer())
                 harvestedList.clear()
 
-                //change tag of service
-                service = PrajServiceFixture.withRepositoryAndTag(gitTestRepository.getUri(), "4")
+                //change argument of service
+                service = PrajServiceFixture.withRepositoryAndTag(gitTestRepository.getUri(), argument.toString())
 
                 harvester.harvest(service, harvestedList.consumer())
 
@@ -214,21 +264,79 @@ internal class GitHarvesterProcessorTest {
             }
 
             @Test
-            fun ` in tag 1 and remote repository commited tag 2 then get two updates`(){
-                gitTestRepository.changeMasterTo("1")
-                harvester.harvestComplete(service, harvestedList.consumer())
-                service = PrajServiceFixture.withRepositoryAndTag(gitTestRepository.getUri(), "1")                //change tag of service
-                harvestedList.clear()
+            fun `in empty repository and remote repository commited tag 1 then get one updates`() {
+                `in a tag X and remote repository commited tag Y`(0, 1)
 
-                gitTestRepository.changeMasterTo("2")
+                harvestedList.sort()
 
-                harvester.harvest(service, harvestedList.consumer())
+                assertThat(harvestedList).hasSize(1)
+
+                assertHarvestedUpdated(0, "main.md", GitTestRepository.STR_MAIN_MD, "1")
+            }
+
+            @Test
+            fun `in tag 1 and remote repository commited tag 2 then get two updates`() {
+                `in a tag X and remote repository commited tag Y`(1, 2)
+
+                harvestedList.sort()
 
                 assertThat(harvestedList).hasSize(2)
 
-                assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
+                assertHarvestedUpdated(0, "main.md", "xuxu xaxa", "2")
+                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "2")
+            }
 
-                assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
+            @Test
+            fun `in tag 2 and remote repository commited tag 3 then get tree updates and one delete`() {
+                `in a tag X and remote repository commited tag Y`(2, 3)
+
+                harvestedList.sort()
+
+                assertThat(harvestedList).hasSize(4)
+
+                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "3")
+                assertHarvestedUpdated(1, "src/pc.md", "class pc test content", "3")
+                assertHarvestedUpdated(2, "src/user.md", "class user test content", "3")
+                assertHarvestedDeleted(3, "main.md")
+            }
+
+            @Test
+            fun `in tag 3 and remote repository commited tag 4 then get one delete`() {
+                `in a tag X and remote repository commited tag Y`(3, 4)
+
+                harvestedList.sort()
+
+                assertThat(harvestedList).hasSize(1)
+
+                assertHarvestedDeleted(0, "src/pc.md")
+            }
+
+            @Test
+            fun `in tag 2 and remote repository commited tag 4 then get two updates and one delete`() {
+                `in a tag X and remote repository commited tag Y`(2, 4)
+
+                harvestedList.sort()
+
+                assertThat(harvestedList).hasSize(3)
+
+
+                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
+                assertHarvestedUpdated(1, "src/user.md", "class user test content", "4")
+                assertHarvestedDeleted(2, "main.md")
+            }
+
+            @Test
+            fun `in tag 1 and remote repository commited tag 4 then get tree updates and one delete`() {
+                `in a tag X and remote repository commited tag Y`(1, 4)
+
+                harvestedList.sort()
+
+                assertThat(harvestedList).hasSize(4)
+
+                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
+                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
+                assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
+                assertHarvestedDeleted(3, "main.md")
             }
         }
 

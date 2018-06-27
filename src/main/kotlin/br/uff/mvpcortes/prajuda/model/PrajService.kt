@@ -12,6 +12,9 @@ data class PrajService(
         val harvesterTypeId:String="",
         val repositoryInfo: RepositoryInfo = RepositoryInfo(),
         val  documentDir:String = STR_AJUDA_DIR
-)
+){
+
+    fun removeDocumentDir(str:String)=str.removePrefix(documentDir+"/")
+}
 
 

@@ -30,26 +30,19 @@ class WorkDirectoryProviderImpl(
     }
 
     fun getWorkDirInHomeDir(): File? {
-        return try{
-            homeDir
+           return homeDir
                     .takeIf { existsDirectory(it) }
                     ?.let    {File(it, STR_DOT_AJUDA_DIR)}
                     ?.takeIf { existsDirectoryOrCreate(it) }
-        }catch(e:Exception){
-            null
-        }
+
     }
 
     //
     fun getWorkDirInProperties(): File? {
-        return try {
-            strWorkDirProperties
+        return  strWorkDirProperties
                     ?.takeIf { !it.isBlank() }
                     ?.let { File(it) }
                     ?.takeIf { existsDirectoryOrCreate(it) }
-        } catch (e: Exception) {
-            null
-        }
     }
 
     //

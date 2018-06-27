@@ -5,8 +5,11 @@ import br.uff.mvpcortes.prajuda.model.RepositoryInfo
 
 object PrajServiceFixture {
 
-    fun withRepository(uri:String)= PrajService(name="teste", repositoryInfo = RepositoryInfo(uri=uri), id= "xxx.xxx.xxx.xxx")
+    val DEFAULT_ID = "xxx.xxx.xxx.xxx"
+    val DEFAULT_NAME = "test"
 
-    fun withRepositoryAndTag(uri: String, tag:String)= PrajService(name="teste", repositoryInfo = RepositoryInfo(uri=uri, lastTag=tag), id= "xxx.xxx.xxx.xxx")
+    fun withRepository(uri:String)= PrajService(name=DEFAULT_NAME, repositoryInfo = RepositoryInfo(uri=uri), id=DEFAULT_ID)
+
+    fun withRepositoryAndTag(uri: String, tag:String)= PrajService(name=DEFAULT_NAME, repositoryInfo = RepositoryInfo(uri=uri, lastTag=tag), id= DEFAULT_ID)
 
 }

@@ -14,6 +14,8 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
     val logger = loggerFor(GitTestRepository::class)
 
+    companion object {
+
     val STR_CODE_MD =
             """
             [Dicentem turres](http://nomine.com/prior): ille.
@@ -31,11 +33,17 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
             *Lorem* markdownum falsi, te plura Aeolidae volucrem dextrae herbis inmanem
             """.trimIndent()
 
-
-
+    }
 
     fun createRepository(){
         Git.init().setDirectory(dir).call().use { gitRepo ->
+
+            //### ZERO COMMIT ###//
+            //make zero commit
+            //this is a commit with zero files
+            createFile("prajuda/.gitkeep", "")
+            gitRepo.add().addFilepattern("prajuda/.gitkeep").call()//this file should be ignored by harvester
+            commitTag(gitRepo, "0")
 
             //### FIRST COMMIT ###//
             //make first commit
@@ -107,6 +115,15 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
     }
 
     fun getUri():String = dir.toURI().toString()
+
+    fun deletePrajudaDirAndCommitTag(tag:String){
+        val file = File(dir, "prajuda");
+        file.tryDeleteRecursively()
+        Git.open(dir).use {
+            it.rm().addFilepattern("prajuda").call()
+            commitTag(it, tag)
+        }
+    }
 
     override fun close() {
         try{dir.tryDeleteRecursively()}catch(e:Exception){logger.error("fail to delete directory", e)}

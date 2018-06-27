@@ -10,4 +10,7 @@ class HarvestedConsumerList: ArrayList<Harvested>(10) {
     fun addU(h:Harvested){
         this.add(h)
     }
+
+    fun sort()= this.sortWith (compareBy({it.op}, {it.doc?.path}) )
+
 }

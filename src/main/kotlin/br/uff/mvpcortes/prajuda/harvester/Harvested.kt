@@ -5,11 +5,7 @@ import br.uff.mvpcortes.prajuda.model.PrajDocument
 typealias HarvestedConsumer = (Harvested)->Unit
 
 class Harvested(val op: HarvestedOp,
-                val doc: PrajDocument? = null
+                val doc: PrajDocument
 ){
-    /**
-     * cast the document for a not-null value (with !! operator)
-     */
-    val sdoc:PrajDocument
-        get() = doc!!
+    override  fun toString()= "$op-${doc.path}"
 }

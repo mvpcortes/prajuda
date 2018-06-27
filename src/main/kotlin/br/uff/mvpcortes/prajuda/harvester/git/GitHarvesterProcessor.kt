@@ -113,11 +113,11 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
             /** Delete an existing file from the project  */
                 DiffEntry.ChangeType.DELETE->
-                    checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry))})
+                    checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(dirPrajuda, service, entry))})
             /** Rename an existing file to a new location  */
             //make a delete and a update
                 DiffEntry.ChangeType.RENAME->
-                        checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry))})
+                        checkPath(entry.oldPath, service, {Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(dirPrajuda, service, entry))})
                         .plus(
                             checkPath(entry.newPath, service, {createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service)})
                         )
@@ -125,7 +125,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
             }
 
     private fun checkPath(path: String, service:PrajService,function: () -> Harvested) =
-    if(path.startsWith(service.documentDir)){
+    if(path.startsWith(service.documentDir) && acceptPath(path)){
         arrayOf(function())
     }else{
         emptyArray()
@@ -135,9 +135,9 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
     private fun createUpdatedHarvested(revCommit:RevCommit, dirPrajuda: File, entry: DiffEntry, tagName: String,  service: PrajService): Harvested {
         return Harvested(HarvestedOp.UPDATED,
                 createPrajDocument(dirPrajuda,
-                        File(dirPrajuda.parent, entry.newPath),
+                        service.removeDocumentDir(entry.newPath),
                         tagName,
-                       revCommit,
+                        revCommit,
                         service))
     }
 
@@ -151,13 +151,13 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
         }
     }
 
-    private fun createDeletedPrajDocument(service:PrajService, entry: DiffEntry)=
+    private fun createDeletedPrajDocument(prajudaFile:File, service:PrajService, entry: DiffEntry)=
             PrajDocument(
                     content = "",
                     tag = "",
-                    path = entry.oldPath,//it.relativeTo(dirPrajuda).toString(),
+                    path = File(service.removeDocumentDir(entry.oldPath)).toString(),
                     serviceId = service.id,
-                    serviceName = service.name
+                    serviceName = null
             )
 
 
@@ -192,6 +192,8 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
             dirPrajuda.walkTopDown()
                     .asSequence()
                     .filter{it.isFile}
+                    .map{it.relativeTo(dirPrajuda).toString()}
+                    .filter{acceptPath(it)}
                     .map{ createPrajDocument(dirPrajuda, it, revTag.name, revTag.ref, service) }
                     .map { Harvested(HarvestedOp.UPDATED, it) }
                     .forEach(blockDeal)
@@ -202,7 +204,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
     private fun getSafePrajudaDir(dirService: File, service: PrajService): File {
         val dirPrajuda = File(dirService, service.documentDir)
         if (!dirPrajuda.exists() || !dirPrajuda.isDirectory) {
-            throw InvalidRepositoryFormatException("Repository ${service.repositoryInfo.uri} does not have directory '${service.documentDir}'")
+            throw InvalidRepositoryFormatException("Repository '${service.repositoryInfo.uri}' does not have directory '${service.documentDir}'")
         }
         return dirPrajuda
     }
@@ -218,14 +220,14 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
     private fun getWorkDirectory(service: PrajService): File = File(configService.getWorkDirectoryForHarvester(STR_GIT_HARVESTER_ID), service.name)
 
 
-    private fun createPrajDocument(dirPrajuda:File, documentFile: File, tagName:String, revCommit:RevCommit, service: PrajService): PrajDocument {
+    private fun createPrajDocument(dirPrajuda:File, nameFile:String, tagName:String, revCommit:RevCommit, service: PrajService): PrajDocument {
         val tagDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(revCommit.commitTime.toLong()),
                 revCommit.authorIdent.timeZone.toZoneId())
 
         return PrajDocument(
-                content = documentFile.readText(),
+                content = File(dirPrajuda, nameFile).readText(),
                 tag = tagName,
-                path = documentFile.relativeTo(dirPrajuda).toString(),
+                path = nameFile,
                 serviceId = service.id,
                 serviceName = service.name
         )
