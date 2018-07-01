@@ -48,8 +48,12 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
             //### FIRST COMMIT ###//
             //make first commit
             createFile("prajuda/main.md", STR_MAIN_MD)
+            //file out of prajuda directory
+            createFile("root.md", "empty")
+
             //val pomFile = File(dir, "pom.xml")
             gitRepo.add().addFilepattern("prajuda/main.md").call()
+            gitRepo.add().addFilepattern("root.md").call()
             commitTag(gitRepo, "1")
 
             //### SECOND COMMIT ###//
@@ -70,8 +74,11 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
             //### FOURTH COMMIT ###//
             //remove a file
+            createFile("/other_path/other_file.md", "other_content")
+            createFile("/other_path/other_file.txt", "other_content.txt")
             deleteFile("prajuda/src/pc.md")
             gitRepo.rm().addFilepattern("prajuda/src/pc.md").call()
+            gitRepo.add().addFilepattern("other_path").call()
             commitTag(gitRepo, "4")
         }
     }
