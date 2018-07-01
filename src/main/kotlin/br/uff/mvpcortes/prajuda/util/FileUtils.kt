@@ -12,11 +12,6 @@ fun File.tryDeleteRecursively() =  when {
     else -> false
 }
 
-fun File.setDeleteOnExit():File{
-    this.deleteOnExit()
-    return this
-}
-
 object FileUtils{
     fun createTempDirectory(name:String):File = createTempDirectoryPath(name).toFile()
 

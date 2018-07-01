@@ -164,7 +164,7 @@ class WorkDirectoryProviderImplTest{
 
         assertThat(file).isNotNull()
         assertThat(file).isDirectory()
-        assertThat(file!!.name).isEqualTo(STR_DOT_AJUDA_DIR)
+        assertThat(file!!.name).isEqualTo(WorkDirectoryProviderImpl.STR_DOT_AJUDA_DIR)
         assertThat(file.parentFile).isEqualTo(homeDir)
     }
 
@@ -183,7 +183,7 @@ class WorkDirectoryProviderImplTest{
         assertThat(file!!).isDirectory()
         assertThat(file).isEqualTo(prajudaDir)
         assertThat(file).isEqualTo(prajudaDir)
-        assertThat(file.name).isEqualTo(STR_DOT_AJUDA_DIR)
+        assertThat(file.name).isEqualTo(WorkDirectoryProviderImpl.STR_DOT_AJUDA_DIR)
         assertThat(file.parentFile).isEqualTo(homeDir)
     }
 

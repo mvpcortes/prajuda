@@ -128,7 +128,6 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
         emptyArray()
     }
 
-
     private fun createUpdatedHarvested(revCommit:RevCommit, dirPrajuda: File, entry: DiffEntry, tagName: String,  service: PrajService): Harvested {
         return Harvested(HarvestedOp.UPDATED,
                 createPrajDocument(dirPrajuda,
