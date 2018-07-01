@@ -117,7 +117,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
     fun getUri():String = dir.toURI().toString()
 
     fun deletePrajudaDirAndCommitTag(tag:String){
-        val file = File(dir, "prajuda");
+        val file = File(dir, "prajuda")
         file.tryDeleteRecursively()
         Git.open(dir).use {
             it.rm().addFilepattern("prajuda").call()

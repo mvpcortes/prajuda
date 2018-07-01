@@ -16,7 +16,7 @@ class WorkDirectoryProviderImpl(
 
     companion object {
         const val STR_AJUDA_DIR:String = "prajuda"
-        val STR_DOT_AJUDA_DIR = ".$STR_AJUDA_DIR"
+        const val STR_DOT_AJUDA_DIR = ".$STR_AJUDA_DIR"
     }
 
     private val logger:Logger = LoggerFactory.getLogger(WorkDirectoryProviderImpl::class.java)

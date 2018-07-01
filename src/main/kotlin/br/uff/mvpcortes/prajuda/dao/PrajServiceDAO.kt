@@ -1,6 +1,5 @@
 package br.uff.mvpcortes.prajuda.dao
 
-import br.uff.mvpcortes.prajuda.model.PrajDocument
 import br.uff.mvpcortes.prajuda.model.PrajService
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 

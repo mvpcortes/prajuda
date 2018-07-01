@@ -23,7 +23,7 @@ class HarvestedConsumerList: ArrayList<Harvested>(10) {
         this.add(h)
     }
 
-    fun sort()= this.sortWith (compareBy({it.op}, {it.doc?.path}) )
+    fun sort()= this.sortWith (compareBy({it.op}, {it.doc.path}) )
 
 
 

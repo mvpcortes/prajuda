@@ -21,7 +21,7 @@ internal class HarvestGitContext{
 
     private val configService = ConfigService(workDirectoryProvider)
 
-    protected val harvester = GitHarvesterProcessor(configService)
+    private val harvester = GitHarvesterProcessor(configService)
 
     private val gitTestRepository: GitTestRepository = GitTestRepository()
 
@@ -29,9 +29,9 @@ internal class HarvestGitContext{
 
     private var service = PrajServiceFixture.withRepository(gitTestRepository.getUri())
 
-    val runComplete=RunComplete();
+    val runComplete=RunComplete()
 
-    val runDiff=RunDiff();
+    val runDiff=RunDiff()
 
     fun getHarvesterConsumerComplete():(service:PrajService, (Harvested)->Unit)->Unit= harvester::harvestComplete
 
@@ -53,7 +53,7 @@ internal class HarvestGitContext{
 
     fun dropContext(){
         gitTestRepository.close()
-        configService.deleteWorkDIrectoryForHarvester(GitHarvesterProcessor.STR_GIT_HARVESTER_ID)//delete workdir of harvester
+        configService.deleteWorkDirectoryForHarvester(GitHarvesterProcessor.STR_GIT_HARVESTER_ID)//delete workdir of harvester
     }
 
     fun setXAtRemotAndYAtLocal(x:Int, y:Int, harvesterFunc:(service:PrajService, (Harvested)->Unit)->Unit) {
@@ -169,7 +169,7 @@ internal class HarvestGitContext{
 
             assertThat(harvestedList).hasSize(4)
 
-            val harvested = harvestedList.filter { it.doc!!.path == "org/main.md" }.map { it.doc!! }.single()
+            val harvested = harvestedList.filter { it.doc.path == "org/main.md" }.map { it.doc }.single()
 
             assertThat(harvested.id).isEqualTo(null)
             assertThat(harvested.path).isEqualTo("org/main.md")//moved
@@ -224,7 +224,7 @@ internal class HarvestGitContext{
         }
 
         @ParameterizedTest(name = "run #{index} with tag [{0}]")
-        @ValueSource(ints = intArrayOf(1, 2, 3, 4))
+        @ValueSource(ints = [1, 2, 3, 4])
         fun in_same_tag_then_non_operation(argument: Int, harvesterFunc:(service:PrajService, (Harvested)->Unit)->Unit) {
             gitTestRepository.changeMasterTo(argument.toString())
             harvester.harvestComplete(service, harvestedList.consumer())

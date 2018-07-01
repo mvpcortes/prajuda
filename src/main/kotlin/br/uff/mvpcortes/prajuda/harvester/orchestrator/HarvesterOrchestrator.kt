@@ -25,13 +25,13 @@ class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
     /**
      * Number of harvesters should be do at same time
      */
-    private val HARVESTER_WINDOW_COUNT = 10
+    private final val HARVESTER_WINDOW_COUNT = 10
 
 
     fun harvesterComplete(){
         prajServiceDAO.findIds()
                 .chunked(HARVESTER_WINDOW_COUNT)
-                .forEachIndexed(){i, subListService->
+                .forEachIndexed { i, subListService->
                     logger.info("INIT COMPLETE BLOCK {}/{}", i, HARVESTER_WINDOW_COUNT)
                     val fluxes = subListService.asSequence().map{idsToFluxComplete(it)}
                     harvester(fluxes)
@@ -42,7 +42,7 @@ class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
     fun harvesterDiff(){
         prajServiceDAO.findIds()
                 .chunked(HARVESTER_WINDOW_COUNT)
-                .forEachIndexed(){i, subListService->
+                .forEachIndexed { i, subListService->
                     logger.info("INIT DIFF BLOCK {}/{}", i, HARVESTER_WINDOW_COUNT)
                     val fluxes = subListService.asSequence().map{idsToFluxDiff(it)}
                     harvester(fluxes)

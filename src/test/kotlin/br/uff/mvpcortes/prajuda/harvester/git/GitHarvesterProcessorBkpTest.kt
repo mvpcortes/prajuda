@@ -69,7 +69,7 @@ internal class GitHarvesterProcessorBkpTest {
 
         @AfterEach
         fun drop() {
-            configService.deleteWorkDIrectoryForHarvester(GitHarvesterProcessor.STR_GIT_HARVESTER_ID)//delete workdir of harvester
+            configService.deleteWorkDirectoryForHarvester(GitHarvesterProcessor.STR_GIT_HARVESTER_ID)//delete workdir of harvester
             gitTestRepository.close()
         }
 
@@ -192,7 +192,7 @@ internal class GitHarvesterProcessorBkpTest {
 
                 assertThat(harvestedList).hasSize(4)
 
-                val harvested = harvestedList.filter { it.doc!!.path == "org/main.md" }.map { it.doc!! }.single()
+                val harvested = harvestedList.filter { it.doc.path == "org/main.md" }.map { it.doc }.single()
 
                 assertThat(harvested.id).isEqualTo(null)
                 assertThat(harvested.path).isEqualTo("org/main.md")//moved
@@ -248,7 +248,7 @@ internal class GitHarvesterProcessorBkpTest {
             }
 
             @ParameterizedTest(name = "run #{index} with tag [{0}]")
-            @ValueSource(ints = intArrayOf(1, 2, 3, 4))
+            @ValueSource(ints = [1, 2, 3, 4])
             fun in_same_tag_then_non_operation(argument: Int) {
                 gitTestRepository.changeMasterTo(argument.toString())
                 harvester.harvestComplete(service, harvestedList.consumer())

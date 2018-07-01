@@ -41,10 +41,10 @@ class HarvesterOrchestratorTest{
 
     fun addPrajService(name:String){
         val prajService = PrajServiceFixture.withName(name)
-        mapPrajServiceUsed.put(name, prajService)
+        mapPrajServiceUsed[name] = prajService
         doAnswer{
             (it.arguments[0] as String?)
-                    ?.let{itName-> mapPrajServiceUsed.get(itName)}
+                    ?.let{itName-> mapPrajServiceUsed[itName] }
                     ?.let{itPA->Optional.of(itPA)}
         }.whenever(prajServiceDAO).findById(any())
 
@@ -62,7 +62,7 @@ class HarvesterOrchestratorTest{
 
     private fun createFlux(it: InvocationOnMock, vararg operations:HarvestedOp): Flux<Harvested> {
         val arg = it.arguments[0] as PrajService
-        val operations2 = operations.mapIndexed(){i, element-> HarvestedFixture.create(element, arg.name, i)}
+        val operations2 = operations.mapIndexed { i, element-> HarvestedFixture.create(element, arg.name, i)}
         return Flux.just(*operations2.toTypedArray())
     }
 
@@ -78,10 +78,10 @@ class HarvesterOrchestratorTest{
             addPrajService(serviceId)
         }
 
-        fun getPrajService()=mapPrajServiceUsed.get(serviceId)!!
+        fun getPrajService()= mapPrajServiceUsed[serviceId]!!
 
         @Nested
-        inner class `empty` {
+        inner class empty {
 
 
             @Test
@@ -220,7 +220,7 @@ class HarvesterOrchestratorTest{
 
             fun createRandomHarvestedOperations(): Array<HarvestedOp> {
                 val randomQtd = 20 + Random().nextInt(30)
-                return (0..randomQtd - 1).map { HarvestedOp.random() }.toTypedArray()
+                return (0 until randomQtd).map { HarvestedOp.random() }.toTypedArray()
             }
 
             @BeforeEach
@@ -232,7 +232,7 @@ class HarvesterOrchestratorTest{
             private fun createAnswer(): FluxHarvesterProcessor = doAnswer {
                 val prajService = it.arguments[0] as PrajService
                 val harvesteds = harvestedOperations
-                        .mapIndexed() { i, a -> HarvestedFixture.create(a, prajService.name, i) }
+                        .mapIndexed { i, a -> HarvestedFixture.create(a, prajService.name, i) }
                 Flux.just(*harvesteds.toTypedArray())
             }.whenever(harvesterProcessor)
 
@@ -261,9 +261,9 @@ class HarvesterOrchestratorTest{
             createAnswerForHarvesterProcessorUpdate().harvestFlux(any())
         }
 
-        val STR_N_SERVICE_ID = "test_%02d"
+        private val STR_N_SERVICE_ID = "test_%02d"
 
-        fun getPrajService(serviceId:Int)=mapPrajServiceUsed.get(STR_N_SERVICE_ID.format(serviceId))!!
+        fun getPrajService(serviceId:Int)= mapPrajServiceUsed[STR_N_SERVICE_ID.format(serviceId)]!!
 
         @Nested
         inner class `with one harvested-update`{
@@ -280,7 +280,7 @@ class HarvesterOrchestratorTest{
             }
 
             @ParameterizedTest(name = "run #{index} with tag [{arguments}]")
-            @ValueSource(ints = intArrayOf(2, 10, 15, 23, 44))
+            @ValueSource(ints = [2, 10, 15, 23, 44])
             fun `and run complete harvester then consumer one element and call fluxHarvesterProcessor complete n times`(serviceQtd:Int){
                 createPrajServices(serviceQtd)
 
@@ -299,7 +299,7 @@ class HarvesterOrchestratorTest{
             }
 
             @ParameterizedTest(name = "run #{index} with tag [{arguments}]")
-            @ValueSource(ints = intArrayOf(2, 10, 15, 23, 44))
+            @ValueSource(ints = [2, 10, 15, 23, 44])
             fun `and run diff harvester then consumer one element and call fluxHarvesterProcessor diff n times`(serviceQtd:Int){
                 createPrajServices(serviceQtd)
 

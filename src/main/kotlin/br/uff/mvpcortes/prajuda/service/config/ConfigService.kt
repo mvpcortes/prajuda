@@ -16,7 +16,7 @@ class ConfigService(private val workDirectoryProvider: WorkDirectoryProvider){
                     .takeIf { (it.exists() && it.isDirectory) || it.mkdir()}
                     ?:throw IllegalStateException("Cannot create workdir for $idHarvester")
 
-    fun deleteWorkDIrectoryForHarvester(idHarvester: String)=
+    fun deleteWorkDirectoryForHarvester(idHarvester: String)=
         File(workDirectoryProvider.workDirectory(), idHarvester).tryDeleteRecursively()
 
 }

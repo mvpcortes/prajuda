@@ -32,7 +32,7 @@ class ConfigPrajServiceTest (
     class MyConfiguration
 
     @Test
-    fun `the context is initied `(){
+    fun `the context is initialized `(){
 
     }
 

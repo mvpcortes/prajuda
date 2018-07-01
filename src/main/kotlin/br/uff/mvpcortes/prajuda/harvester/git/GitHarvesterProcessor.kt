@@ -27,7 +27,7 @@ import org.eclipse.jgit.revwalk.RevTree
 class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcessor {
 
     companion object {
-        val STR_GIT_HARVESTER_ID = "git_harvester"
+        const val STR_GIT_HARVESTER_ID = "git_harvester"
     }
 
     private val logger: Logger = loggerFor(GitHarvesterProcessor::class)
@@ -58,12 +58,12 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
             val actualTagName = checkoutTag(repository, service).name
 
             //@see https://gist.github.com/steos/805992
-            val actualRefCommit = resolveCommit(repository, actualTagName)?: throw IllegalStateException("Cannot found actual tag '${actualTagName}'")
+            val actualRefCommit = resolveCommit(repository, actualTagName)?: throw IllegalStateException("Cannot found actual tag '$actualTagName'")
             val actualTag = actualRefCommit.tree
 
-            val previousTagName = service.repositoryInfo.lastTag!!
+            val previousTagName = service.repositoryInfo.lastTag
 
-            val previousRefCommit = resolveCommit(repository, previousTagName)?: throw IllegalStateException("Cannot found previous tag '${previousTagName}'")
+            val previousRefCommit = resolveCommit(repository, previousTagName)?: throw IllegalStateException("Cannot found previous tag '$previousTagName'")
             val previousTag = previousRefCommit.tree
 
 
@@ -90,7 +90,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     }
 
-    private fun resolveCommit(repository:FileRepository, actualTagName: String)=repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))
+    private fun resolveCommit(repository:FileRepository, actualTagName: String)=repository.parseCommit(repository.resolve("refs/tags/$actualTagName"))
 
 //    private fun resolveTree(repository: FileRepository, actualTagName: String) =
 //            repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))?.tree
@@ -139,8 +139,8 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
     }
 
     /**
-     * @see https://stackoverflow.com/a/39984612/8313595
-     * @see https://www.codeaffine.com/2016/06/16/jgit-diff/
+     * @see [https://stackoverflow.com/a/39984612/8313595]
+     * @see [https://www.codeaffine.com/2016/06/16/jgit-diff]
      */
     private fun toRevCommit(repository: Repository, id:AnyObjectId): RevCommit {
         RevWalk(repository).use {
@@ -160,11 +160,11 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
 
     /**
-     * @see https://stackoverflow.com/a/12729335/8313595
+     * @see [https://stackoverflow.com/a/12729335/8313595]
      */
     private fun repositoryExists(dirService: File): Boolean {
         return try {
-            FileRepository(File(dirService, ".git")).use{it.getObjectDatabase().exists()}
+            FileRepository(File(dirService, ".git")).use{it.objectDatabase.exists()}
         } catch (e: IOException) {
             logger.warn("check repo exists fail: {}", e.message, e)
             false

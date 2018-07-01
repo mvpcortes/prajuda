@@ -54,7 +54,7 @@ class HarvesterOrchestratorIntegrGitTest{
 
         @BeforeEach
         fun init(){
-            doReturn(listOf<String>(prajService.id!!) ).whenever(prajServiceDAO).findIds()
+            doReturn(listOf(prajService.id!!) ).whenever(prajServiceDAO).findIds()
             doReturn(Optional.of(prajService)).whenever(prajServiceDAO).findById(prajService.id!!)
         }
         @BeforeAll
