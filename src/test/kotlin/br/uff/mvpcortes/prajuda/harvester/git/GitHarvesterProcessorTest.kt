@@ -208,14 +208,7 @@ internal class GitHarvesterProcessorTest {
 
                 harvester.harvestComplete(service, harvestedList.consumer())
 
-                harvestedList.sort()
-
-                assertThat(harvestedList).hasSize(3)
-
-
-                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
-                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
-                assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
+                harvestedList.assertFourthCommit()
             }
         }
 
@@ -314,15 +307,7 @@ internal class GitHarvesterProcessorTest {
             @Test
             fun `in tag 2 and remote repository commited tag 4 then get two updates and one delete`() {
                 `in a tag X and remote repository commited tag Y`(2, 4)
-
-                harvestedList.sort()
-
-                assertThat(harvestedList).hasSize(3)
-
-
-                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
-                assertHarvestedUpdated(1, "src/user.md", "class user test content", "4")
-                assertHarvestedDeleted(2, "main.md")
+                harvestedList.assertDiffSecondToFouthCommit()
             }
 
             @Test

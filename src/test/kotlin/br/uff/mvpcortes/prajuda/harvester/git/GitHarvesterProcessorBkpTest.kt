@@ -212,7 +212,6 @@ internal class GitHarvesterProcessorBkpTest {
 
                 assertThat(harvestedList).hasSize(3)
 
-
                 assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
                 assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
                 assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
