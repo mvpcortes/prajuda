@@ -1,9 +1,6 @@
 package br.uff.mvpcortes.prajuda.harvester.git
 
-import br.uff.mvpcortes.prajuda.harvester.Harvested
-import br.uff.mvpcortes.prajuda.harvester.HarvestedConsumer
-import br.uff.mvpcortes.prajuda.harvester.HarvestedOp
-import br.uff.mvpcortes.prajuda.harvester.HarvesterProcessor
+import br.uff.mvpcortes.prajuda.harvester.*
 import br.uff.mvpcortes.prajuda.harvester.exception.InvalidRepositoryFormatException
 import br.uff.mvpcortes.prajuda.harvester.exception.NonClonedRepositoryException
 import br.uff.mvpcortes.prajuda.loggerFor
@@ -37,7 +34,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     private class MyRefTag(val name:String, val ref:RevCommit)
 
-    override fun harvest(service: PrajService, blockDeal: HarvestedConsumer) {
+    override fun harvest(service: PrajService, blockDeal: (Harvested)->Unit) {
 
         val dirService = getWorkDirectory(service)
 
@@ -174,7 +171,7 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
         }
     }
 
-    override fun harvestComplete(service: PrajService, blockDeal:HarvestedConsumer) {
+    override fun harvestComplete(service: PrajService, blockDeal: (Harvested)->Unit) {
         val dirService = getWorkDirectory(service)
 
         dirService.tryDeleteRecursively()

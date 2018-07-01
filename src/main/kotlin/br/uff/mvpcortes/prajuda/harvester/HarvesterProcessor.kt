@@ -4,9 +4,9 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 
 interface HarvesterProcessor {
 
-    fun harvest(service: PrajService, blockDeal:HarvestedConsumer)
+    fun harvest(service: PrajService, blockDeal: (Harvested)->Unit)
 
-    fun harvestComplete(service: PrajService, blockDeal:HarvestedConsumer)
+    fun harvestComplete(service: PrajService, blockDeal: (Harvested)->Unit)
 
     /**
      * Verify if the path is one of the markdown types

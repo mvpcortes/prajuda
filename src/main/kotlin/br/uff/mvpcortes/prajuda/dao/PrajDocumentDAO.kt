@@ -5,5 +5,9 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 interface PrajDocumentDAO : ElasticsearchRepository<PrajDocument, String> {
 
-    fun findByPath(oldPath: String):PrajDocument?
+//    fun findByPath(oldPath: String):PrajDocument?
+
+    fun updateTag(serviceId: String, tag: String) {
+
+    }
 }

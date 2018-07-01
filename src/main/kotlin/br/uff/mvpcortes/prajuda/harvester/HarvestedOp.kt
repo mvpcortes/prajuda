@@ -1,7 +1,13 @@
 package br.uff.mvpcortes.prajuda.harvester
 
-enum class HarvestedOp{
-    UPDATED(),
-    DELETED(),
-    NO_OP();
+import java.util.*
+
+enum class HarvestedOp(val code:String){
+    UPDATED("U"),
+    DELETED("D"),
+    NO_OP("_");
+
+    companion object {
+        fun random() = HarvestedOp.values()[Random().nextInt(HarvestedOp.values().size)]
+    }
 }

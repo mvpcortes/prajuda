@@ -10,11 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource
 class HarvesterProcessorTest{
 
     object sut:HarvesterProcessor{
-        override fun harvestComplete(service: PrajService, blockDeal: HarvestedConsumer) {
+        override fun harvestComplete(service: PrajService, blockDeal: (Harvested)->Unit) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun harvest(service: PrajService, blockDeal: HarvestedConsumer) {
+        override fun harvest(service: PrajService, blockDeal: (Harvested)->Unit) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
@@ -33,6 +33,7 @@ class HarvesterProcessorTest{
             ".md, false",
             "diary.txt, true"
     ))
+
     fun `verify path is markdown`(path:String, result:Boolean){
         assertThat(sut.acceptPath(path)).isEqualTo(result);
     }
