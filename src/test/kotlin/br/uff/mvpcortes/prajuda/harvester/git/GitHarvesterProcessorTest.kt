@@ -8,7 +8,6 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
 import br.uff.mvpcortes.prajuda.service.config.ConfigService
 import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderTestImpl
-import com.github.vanroy.springboot.autoconfigure.data.jest.ElasticsearchJestAutoConfiguration
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -25,7 +24,7 @@ internal class GitHarvesterProcessorTest {
      * Exclude  jest dependency
      */
     @TestConfiguration
-    @SpringBootApplication(exclude = [(ElasticsearchJestAutoConfiguration::class)])
+    @SpringBootApplication()
     class MyConfiguration
 
     @Test

@@ -92,9 +92,6 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
 
     private fun resolveCommit(repository:FileRepository, actualTagName: String)=repository.parseCommit(repository.resolve("refs/tags/$actualTagName"))
 
-//    private fun resolveTree(repository: FileRepository, actualTagName: String) =
-//            repository.parseCommit(repository.resolve("refs/tags/${actualTagName}"))?.tree
-
     private fun getDiff(git: Git, newTreeIter: CanonicalTreeParser, oldTreeIter: CanonicalTreeParser)= git.diff()
                 .setNewTree(newTreeIter)
                 .setOldTree(oldTreeIter)
@@ -135,16 +132,6 @@ class GitHarvesterProcessor(val configService: ConfigService): HarvesterProcesso
                         tagName,
                         revCommit,
                         service))
-    }
-
-    /**
-     * @see [https://stackoverflow.com/a/39984612/8313595]
-     * @see [https://www.codeaffine.com/2016/06/16/jgit-diff]
-     */
-    private fun toRevCommit(repository: Repository, id:AnyObjectId): RevCommit {
-        RevWalk(repository).use {
-            return it.lookupCommit(id)
-        }
     }
 
     private fun createDeletedPrajDocument(prajudaFile:File, service:PrajService, entry: DiffEntry)=

@@ -1,21 +1,17 @@
 package br.uff.mvpcortes.prajuda.service.config
 
 import br.uff.mvpcortes.prajuda.util.tryDeleteRecursively
-import com.github.vanroy.springboot.autoconfigure.data.jest.ElasticsearchJestAutoConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.io.File
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest()
-@ComponentScan(basePackageClasses = [ConfigService::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When a ConfigService ")
 class ConfigPrajServiceTest (
@@ -24,12 +20,13 @@ class ConfigPrajServiceTest (
 ){
 
     val idHarvester = "id_harvester"
+
     /**
      * Exclude  jest dependency
      */
-    @TestConfiguration
-    @SpringBootApplication(exclude = [(ElasticsearchJestAutoConfiguration::class)])
-    class MyConfiguration
+//    @TestConfiguration
+//    @SpringBootApplication()
+//    class MyConfiguration
 
     @Test
     fun `the context is initialized `(){

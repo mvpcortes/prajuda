@@ -14,6 +14,7 @@ class WorkDirectoryProviderImpl(
         private val homeDir:File=File(System.getProperty("user.home"))
 ): WorkDirectoryProvider {
 
+    //TODO Move this companion object to WorkDirectoryProvider
     companion object {
         const val STR_AJUDA_DIR:String = "prajuda"
         const val STR_DOT_AJUDA_DIR = "."+STR_AJUDA_DIR
