@@ -1,17 +1,19 @@
 package br.uff.mvpcortes.prajuda.dao
 
+import br.uff.mvpcortes.prajuda.dao.interfaces.IExistsDAO
+import br.uff.mvpcortes.prajuda.dao.interfaces.IGetDAO
 import br.uff.mvpcortes.prajuda.model.PrajConfig
 
-interface PrajConfigDAO{
+interface PrajConfigDAO: IGetDAO<PrajConfig>, IExistsDAO {
 
     companion object {
         const val DEFAULT_ID = "0"
     }
 
-    fun get():PrajConfig
+    fun get(): PrajConfig
+
 
     fun initConfigIfNotExists()
 
-    fun exists(defaultId: String): Boolean
     fun deleteConfig()
 }

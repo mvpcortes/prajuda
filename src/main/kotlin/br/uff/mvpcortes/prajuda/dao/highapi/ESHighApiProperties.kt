@@ -10,7 +10,7 @@ class ESHighApiProperties (
 
 ){
 
-    lateinit var highapi:Map<String, Host>
+    var highapi:Map<String, Host> = mutableMapOf()
 
     class Host {
         var host: String? = null
@@ -19,5 +19,12 @@ class ESHighApiProperties (
 
     }
 
-    fun listHosts()=highapi?.entries.asSequence().sortedBy { it.key }.map{it.value}.toList()
+    fun listHosts()=highapi.entries.asSequence()
+            .sortedBy { it.key }
+            .map{ it.value }
+            .toList()
+            .let {
+                if(!it.isEmpty()) it
+                else throw IllegalStateException("Prajuda need at least one ES host to init")
+            }
 }

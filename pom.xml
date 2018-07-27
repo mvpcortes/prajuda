@@ -134,7 +134,7 @@
 			<version>1.6.0</version>
 			<scope>test</scope>
 		</dependency>
-        <!-- the Elastichsearch high-api need it :/-->
+        <!-- the Elastichsearch high-controller need it :/-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>

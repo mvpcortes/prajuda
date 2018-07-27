@@ -1,7 +1,7 @@
 package br.uff.mvpcortes.prajuda.dao.highapi
 
 import br.uff.mvpcortes.prajuda.dao.PrajConfigDAO
-import br.uff.mvpcortes.prajuda.dao.highapi.template.HighApiTemplateImplDAO
+import br.uff.mvpcortes.prajuda.dao.highapi.template.HighApiImplDAO
 import br.uff.mvpcortes.prajuda.model.PrajConfig
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Repository
@@ -11,7 +11,7 @@ class PrajConfigHighApiDAO(clientManager:ClientManager,
                            objectMapper: ObjectMapper
 
 ):PrajConfigDAO,
-        HighApiTemplateImplDAO<PrajConfig>(PrajConfig::class,"prajuda.admin", "config", clientManager, objectMapper) {
+        HighApiImplDAO<PrajConfig>(PrajConfig::class,"prajuda.admin", "config", clientManager, objectMapper) {
 
 
     override fun get(): PrajConfig = super.get(PrajConfigDAO.DEFAULT_ID)

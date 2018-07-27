@@ -2,11 +2,10 @@ package br.uff.mvpcortes.prajuda.dao.highapi
 
 import br.uff.mvpcortes.prajuda.dao.PrajConfigDAO
 import br.uff.mvpcortes.prajuda.service.config.ConfigService
+import br.uff.mvpcortes.prajuda.service.config.InitESService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,10 +15,46 @@ import util.ElasticSearchServerExtension
 
 @ExtendWith(*[ElasticSearchServerExtension::class, SpringExtension::class])
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("When a ESHighApiProperties on spring-boot")
+@DisplayName("With ElasticSearch DB")
 @SpringBootTest()
-internal class ESHighApiPropertiesTest(@Autowired val prajConfigDAO: PrajConfigDAO, @Autowired  val esHighApiProperties: ESHighApiProperties, @Autowired prajConfigService: ConfigService){
+internal class ElasticSearchIntegrationTest(
+        @Autowired val initESService: InitESService,
+        @Autowired  val esHighApiProperties: ESHighApiProperties){
 
+
+    @BeforeAll
+    fun init(){
+        initESService.initElasticSearch()
+    }
+
+    @ExtendWith(*[ElasticSearchServerExtension::class, SpringExtension::class])
+    @SpringBootTest()
+    @Nested
+    inner class `when the prajuda config`(){
+
+        @Autowired lateinit var prajConfigDAO: PrajConfigDAO
+
+
+        @Test
+        fun `then has the thefault id`() {
+            val config = prajConfigDAO.get()
+
+            assertThat(config.id).isNotNull()
+            assertThat(config.id).isEqualTo(PrajConfigDAO.DEFAULT_ID)
+        }
+
+
+        @Test
+        fun ` and call initConfig then will work and save config`(){
+            prajConfigDAO.deleteConfig()
+            prajConfigDAO.initConfigIfNotExists()
+
+            //
+            val config = prajConfigDAO.get()
+            assertThat(config.id).isEqualTo(PrajConfigDAO.DEFAULT_ID)
+            assertThat(config.name).isEqualTo("prajuda")
+        }
+    }
 
     @Test
     fun `then port is equal to elasticSearchServer`(ee: EmbeddedElastic){
@@ -38,14 +73,4 @@ internal class ESHighApiPropertiesTest(@Autowired val prajConfigDAO: PrajConfigD
         assertThat(esHighApiProperties.listHosts()[0].port).isEqualTo(9320)
     }
 
-    @Test
-    fun `and initConfig then will work and save config`(){
-        prajConfigDAO.deleteConfig()
-        prajConfigDAO.initConfigIfNotExists()
-
-        //
-        val config = prajConfigDAO.get()
-        assertThat(config.id).isEqualTo(PrajConfigDAO.DEFAULT_ID)
-        assertThat(config.name).isEqualTo("prajuda")
-    }
 }

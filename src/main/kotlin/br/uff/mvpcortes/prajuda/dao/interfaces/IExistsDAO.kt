@@ -1,6 +1,6 @@
-package br.uff.mvpcortes.prajuda.dao.highapi.template
+package br.uff.mvpcortes.prajuda.dao.interfaces
 
-interface ExistsTemplateDAO {
+interface IExistsDAO {
 
     fun exists(id: String): Boolean
 
