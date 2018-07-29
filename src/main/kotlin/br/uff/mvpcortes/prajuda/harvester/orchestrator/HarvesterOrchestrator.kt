@@ -50,13 +50,15 @@ class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
                 }
     }
 
-    private fun idsToFluxComplete(ids: String)= prajServiceDAO.findById(ids)
-            .map{fluxHarvesterProcessor.harvestCompleteFlux(it)}
-            .orElseGet{Flux.empty()}!!
+    private fun idsToFluxComplete(ids: String)= prajServiceDAO
+            .findByIdNullable(ids)
+            ?.let{fluxHarvesterProcessor.harvestCompleteFlux(it)}
+            ?:Flux.empty()!!
 
-    private fun idsToFluxDiff(ids: String)= prajServiceDAO.findById(ids)
-            .map{fluxHarvesterProcessor.harvestFlux(it)}
-            .orElseGet{Flux.empty()}!!
+    private fun idsToFluxDiff(ids: String)= prajServiceDAO
+            .findByIdNullable(ids)
+            ?.let{fluxHarvesterProcessor.harvestFlux(it)}
+            ?:Flux.empty()!!
 
     /**
      * Harvester documents from a collections of flux.

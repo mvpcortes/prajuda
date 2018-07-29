@@ -1,13 +1,10 @@
 package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.PrajDocument
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
+interface PrajDocumentDAO {
 
-interface PrajDocumentDAO : ElasticsearchRepository<PrajDocument, String> {
+    fun updateTag(serviceId: String, tag: String): Int
+    fun delete(doc: PrajDocument): Int
+    fun save(doc: PrajDocument):PrajDocument
 
-//    fun findByPath(oldPath: String):PrajDocument?
-
-    fun updateTag(serviceId: String, tag: String) {
-
-    }
 }

@@ -45,8 +45,7 @@ class HarvesterOrchestratorTest{
         doAnswer{
             (it.arguments[0] as String?)
                     ?.let{itName-> mapPrajServiceUsed[itName] }
-                    ?.let{itPA->Optional.of(itPA)}
-        }.whenever(prajServiceDAO).findById(any())
+        }.whenever(prajServiceDAO).findByIdNullable(any())
 
     }
     @AfterEach
@@ -284,7 +283,10 @@ class HarvesterOrchestratorTest{
             fun `and run complete harvester then consumer one element and call fluxHarvesterProcessor complete n times`(serviceQtd:Int){
                 createPrajServices(serviceQtd)
 
-                prajServiceDAO.findIds().map{prajServiceDAO.findById(it)}.map{it.orElse(PrajService())}.map{it.name}
+//                prajServiceDAO.findIds()
+//                        .map{prajServiceDAO.findById(it)}
+//                        .map{it?:PrajService()}
+//                        .map{it.name}
 
                 harvesterOrchestrator.harvesterComplete()
 
@@ -303,7 +305,10 @@ class HarvesterOrchestratorTest{
             fun `and run diff harvester then consumer one element and call fluxHarvesterProcessor diff n times`(serviceQtd:Int){
                 createPrajServices(serviceQtd)
 
-                prajServiceDAO.findIds().map{prajServiceDAO.findById(it)}.map{it.orElse(PrajService())}.map{it.name}
+//                prajServiceDAO.findIds()
+//                        .map{prajServiceDAO.findById(it)}
+//                        .map{it?:PrajService()}
+//                        .map{it.name}
 
                 harvesterOrchestrator.harvesterDiff()
 

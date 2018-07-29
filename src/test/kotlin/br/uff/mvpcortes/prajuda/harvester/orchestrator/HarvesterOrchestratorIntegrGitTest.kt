@@ -55,8 +55,9 @@ class HarvesterOrchestratorIntegrGitTest{
         @BeforeEach
         fun init(){
             doReturn(listOf(prajService.id!!) ).whenever(prajServiceDAO).findIds()
-            doReturn(Optional.of(prajService)).whenever(prajServiceDAO).findById(prajService.id!!)
+            doReturn(prajService).whenever(prajServiceDAO).findByIdNullable(prajService.id!!)
         }
+
         @BeforeAll
         fun initAll(){
             gitTestRepository.createRepository()
@@ -83,7 +84,7 @@ class HarvesterOrchestratorIntegrGitTest{
             consumer.clear()
 
             gitTestRepository.changeMasterTo("4")
-            doReturn(Optional.of(prajService)).whenever(prajServiceDAO).findById(prajService.id!!)//force update prajService
+            doReturn(prajService).whenever(prajServiceDAO).findByIdNullable(prajService.id!!)//force update prajService
             orchestrator.harvesterDiff()
 
             consumer.assertDiffSecondToFouthCommit()

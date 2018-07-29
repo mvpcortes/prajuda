@@ -8,7 +8,6 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
 import br.uff.mvpcortes.prajuda.service.config.ConfigService
 import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderTestImpl
-import com.github.vanroy.springboot.autoconfigure.data.jest.ElasticsearchJestAutoConfiguration
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -21,12 +20,11 @@ import org.springframework.boot.test.context.TestConfiguration
 @DisplayName("When a GitHarvesterProcessor ")
 internal class GitHarvesterProcessorBkpTest {
 
-    /**
-     * Exclude  jest dependency
-     */
-    @TestConfiguration
-    @SpringBootApplication(exclude = [(ElasticsearchJestAutoConfiguration::class)])
-    class MyConfiguration
+//    /**
+//     * Exclude  jest dependency
+//     */
+//    @TestConfiguration
+//    class MyConfiguration
 
     @Test
     fun `the context is initied `(){

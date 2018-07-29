@@ -1,11 +1,7 @@
 package br.uff.mvpcortes.prajuda.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.Document
-
-@Document(indexName ="prajuda.data", type="document")
 class PrajDocument (
-        @Id val id: String? = null,
+        var id: String? = null,
         var content: String = "",
         var tag: String = "",
         /**

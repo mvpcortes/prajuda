@@ -2,10 +2,10 @@ package br.uff.mvpcortes.prajuda
 
 import br.uff.mvpcortes.prajuda.util.FileUtils
 import br.uff.mvpcortes.prajuda.util.tryDeleteRecursively
-import com.google.common.io.Files
 import org.eclipse.jgit.api.Git
 
 import java.io.File
+import java.nio.file.Files
 
 /**
  * This class will create repositories to be used by tests
@@ -94,7 +94,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
     private fun moveFile(fSource: String, fDest: String) {
         File(dir, fDest).parentFile.takeIf { !it.exists() }?.takeIf { it.mkdirs() }
-        Files.move(File(dir, fSource), File(dir, fDest))
+        Files.move(File(dir, fSource).toPath(), File(dir, fDest).toPath());
     }
 
     private fun createFile(s: String, text: String) {

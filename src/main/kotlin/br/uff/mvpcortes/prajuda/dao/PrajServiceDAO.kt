@@ -1,9 +1,9 @@
 package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.PrajService
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
-interface PrajServiceDAO: ElasticsearchRepository<PrajService, String> {
 
+interface PrajServiceDAO {
     fun findIds(): List<String>
+    fun findByIdNullable(ids: String): PrajService?
 }
