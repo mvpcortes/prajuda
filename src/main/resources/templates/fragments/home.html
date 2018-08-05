@@ -1,0 +1,104 @@
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../static/css/bulma.css" th:href="@{css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/css/prajuda.css" th:href="@{css/prajuda.css}">
+</head>
+<body>
+
+<section th:fragment="layout_main_content">
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Prajuda Catalog
+                </h1>
+                <h2 class="subtitle">
+                    catalog description
+                </h2>
+            </div>
+        </div>
+    </section>
+    <div class="container is-centered is-gap-2">
+        <div class="columns is-multiline">
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>Service Xuxu</p>
+                    </div>
+                    <div class="message-body">
+                        This Service is a simple http server.
+                    </div>
+                </article>
+            </div>
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>My Cute Service</p>
+                    </div>
+                    <div class="message-body">
+                        A very cute service!
+                    </div>
+                </article>
+            </div>
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>Heavy service</p>
+                    </div>
+                    <div class="message-body">
+                        This service is have a lot of users.
+                    </div>
+                </article>
+            </div>
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>Other service</p>
+                    </div>
+                    <div class="message-body">
+                        other service
+                    </div>
+                </article>
+            </div>
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>I have a dream service</p>
+                    </div>
+                    <div class="message-body">
+                        o.0
+                    </div>
+                </article>
+            </div>
+            <div class="column is-narrow is-4">
+                <article class="message is-primary">
+                    <div class="message-header">
+                        <p>Service of services</p>
+                    </div>
+                    <div class="message-body">
+                        A service that server others services
+                    </div>
+                </article>
+            </div>
+            <div class="column is-12">
+                <div class="columns is-pulled-right">
+                    <div class="column">
+                        <a href="services.html" th:href="@{services.html}">More services</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--<footer>-->
+<!--<p layout:fragment="layout-foot">This is some footer content-->
+<!--that you can change</p>-->
+<!--</footer>-->
+</body>
+
+<script type="text/javascript" src="../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
+<script type="text/javascript" src="../static/js/menu.js"   th:src="@{js/menu.js}"></script>
+</html>

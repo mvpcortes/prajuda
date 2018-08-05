@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html     xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../static/css/bulma.css" th:href="@{css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/css/prajuda.css" th:href="@{css/prajuda.css}">
+</head>
+<body>
+<nav th:fragment="pagination(pagination)" class="pagination is-centered" role="navigation" aria-label="pagination">
+    <a class="pagination-previous" th:disabled="${not pagination.prev.enable}">Prev</a>
+    <ul class="pagination-list">
+        <li th:if="${pagination.prev.page} != null"><a class="pagination-link" th:attr="aria-label='Goto page ' + ${pagination.prev.page.number}" aria-label="Goto page 1" th:text="${pagination.prev.page.number}">1</a></li>
+        <li><span class="pagination-ellipsis" th:if="${pagination.prev.hasEllipsis}">&hellip;</span></li>
+        <li th:each="page : ${pagination.pages}">
+            <a class="pagination-link" th:classappend="${page.current}?'is-current':''"
+               th:attr="aria-label='Goto page ' + ${page.number}"
+               aria-label="Goto page 45" th:text="${page.number}">45</a>
+        </li>
+        <li th:if="false"><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
+        <li th:if="false"><a class="pagination-link" aria-label="Goto page 47">47</a></li>
+        <li><span class="pagination-ellipsis" th:if="${pagination.next.hasEllipsis}">&hellip;</span></li>
+        <li th:if="${pagination.next.page} != null"><a class="pagination-link" th:attr="aria-label='Goto page ' + ${pagination.next.page.number}" aria-label="Goto page 98" th:text="${pagination.next.page.number}">98</a></li>
+    </ul>
+    <a class="pagination-next" th:disabled="${not pagination.next.enable}">Next</a>
+</nav>
+</body>
+</html>

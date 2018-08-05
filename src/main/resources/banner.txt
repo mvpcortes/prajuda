@@ -1,0 +1,7 @@
+${AnsiColor.WHITE}+========================+
+${AnsiColor.WHITE}| ${AnsiColor.GREEN}.__               .    ${AnsiColor.BRIGHT_WHITE}|
+${AnsiColor.WHITE}| ${AnsiColor.GREEN}[__)._. _.  ${AnsiColor.BRIGHT_WHITE}*${AnsiColor.GREEN}. . _| _. ${AnsiColor.BRIGHT_WHITE}|
+${AnsiColor.WHITE}| ${AnsiColor.GREEN}|   [  (_]  |(_|(_](_] ${AnsiColor.BRIGHT_WHITE}|
+${AnsiColor.WHITE}| ${AnsiColor.GREEN}          ._|          ${AnsiColor.BRIGHT_WHITE}|
+${AnsiColor.WHITE}+========================+
+${AnsiColor.WHITE}${application.name} (${application.version}) On Spring Boot${spring-boot.formatted-version}

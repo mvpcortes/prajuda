@@ -1,0 +1,38 @@
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../static/css/bulma.css" th:href="@{css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/css/prajuda.css" th:href="@{css/prajuda.css}">
+</head>
+<body>
+
+<section th:fragment="layout_main_content">
+    <h1>Services</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="service: ${services}">
+                <td>Service X</td>
+                <td>Description of Service X</td>
+                <td>10</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<!--<footer>-->
+<!--<p layout:fragment="layout-foot">This is some footer content-->
+<!--that you can change</p>-->
+<!--</footer>-->
+</body>
+
+<script type="text/javascript" src="../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
+<script type="text/javascript" src="../static/js/menu.js"   th:src="@{js/menu.js}"></script>
+</html>
