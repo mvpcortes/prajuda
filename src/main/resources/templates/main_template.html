@@ -3,11 +3,11 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8">
-    <link rel="shortcut icon" type="image/x-icon" href="../static/images/logo/prajuda_icon.ico" th:href="@{images/prajuda_icon.ico}">
+    <link rel="shortcut icon" type="image/x-icon" href="../static/images/logo/prajuda_icon.ico" th:href="@{/images/prajuda_icon.ico}">
     <meta name="keywords" content="prajuda" th:content="#{keywords}">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../static/css/bulma.css" th:href="@{css/bulma.css}">
-    <link rel="stylesheet" type="text/css" href="../static/css/prajuda.css" th:href="@{css/prajuda.css}">
+    <link rel="stylesheet" type="text/css" href="../static/css/bulma.css" th:href="@{/css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../static/css/prajuda.css" th:href="@{/css/prajuda.css}">
 
     <title th:text="'XUXU -> ' + ${layout_title}">Prajuda - Path</title>
 </head>
@@ -16,7 +16,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="" th:href="@{/}">
-                <img id="prajuda_logo" th:src="@{images/logo/prajuda_min.png}" src="../static/images/logo/prajuda_min.png"
+                <img id="prajuda_logo" th:src="@{/images/logo/prajuda_min.png}" src="../static/images/logo/prajuda_min.png"
                      alt="Prajuda logo">
                 <p>Prajuda</p>
             </a>
@@ -28,18 +28,18 @@
         </div>
         <div class="navbar-menu" id="navMenuMore">
             <div class="navbar-start">
-                <a class="navbar-item" href="home.html" th:href="@{home.html}">
+                <a class="navbar-item" href="home.html" th:href="@{/home.html}">
                     <!--<span class="icon has-text-primary">-->
                     <!--&lt;!&ndash;<img src="../static/images/"&ndash;&gt;-->
                     <!--</span>-->
                     <span>Home</span>
                 </a>
 
-                <a class="navbar-item" href="services.html" th:href="@{services.html}">
+                <a class="navbar-item" href="services.html" th:href="@{/services/index.html}">
                     <span>Services</span>
                 </a>
 
-                <a class="navbar-item" href="contact.html" th:href="@{contact.html}">
+                <a class="navbar-item" href="contact.html" th:href="@{/contact.html}">
                     <span>Contact</span>
                 </a>
             </div>
@@ -256,7 +256,7 @@
 </footer>
 </body>
 
-<script type="text/javascript" src="../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
-<script type="text/javascript" src="../static/js/menu.js"   th:src="@{js/menu.js}"></script>
+<script type="text/javascript" src="../static/js/jquery.js" th:src="@{/js/jquery.js}"></script>
+<script type="text/javascript" src="../static/js/menu.js"   th:src="@{/js/menu.js}"></script>
 <div th:replace="~{ ${layout_page} :: layout_script_js} ?: _"></div>
 </html>

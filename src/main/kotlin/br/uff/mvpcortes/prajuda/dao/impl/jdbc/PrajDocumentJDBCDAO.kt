@@ -33,7 +33,7 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
     @Transactional
     override fun save(doc: PrajDocument):PrajDocument{
         val parameters = BeanPropertySqlParameterSource(doc)
-        if(doc.id != null) {
+        if(doc.id == null) {
             doc.id = simpleJdbcInsert.executeAndReturnKey(parameters).toString()
         }else{
             namedParameterJdbcTemplate.update(

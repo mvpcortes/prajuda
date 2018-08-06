@@ -1,13 +1,19 @@
 package br.uff.mvpcortes.prajuda.controller.helper.pagination
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties
+import kotlin.math.max
+import kotlin.math.min
 
-class Page(val number:Int, val current:Boolean = false)
 
-class Side(var page:Page?, val enable:Boolean = false)
+class Page(val number:Int=1, val current:Boolean = false)
+
+class Side(var page:Page?, val enable:Boolean = false, val number:Int=1){
+    fun hasEllipsis():Boolean = page != null
+}
 
 class Pagination(val prev:Side, val next:Side, val pages:List<Page>){
 
-    constructor(qtd:Int, current:Int): this(createPrev(qtd, current), createNext(qtd, current), createPages(qtd, current))
+    constructor(qtd:Int, current:Int): this(createPrev(qtd, current), createNext(qtd, current),  createPages(qtd, current))
     constructor(prev:Side, next:Side, vararg pages:Page): this(prev, next, pages.toList())
 
 
@@ -43,10 +49,10 @@ class Pagination(val prev:Side, val next:Side, val pages:List<Page>){
                     if(current in (qtd-(WINDOW_SIZE/2)..qtd)){
                         qtd
                     }else {
-                        if(current <= WINDOW_SIZE-1){
+                        if(current <= (WINDOW_SIZE/2)){
                             WINDOW_SIZE-1
                         }else {
-                            (current + (WINDOW_SIZE / 2) - 1 + if ((current - WINDOW_SIZE / 2) < 0) {
+                            (current + (WINDOW_SIZE / 2) -1 + if ((current - WINDOW_SIZE / 2) < 0) {
                                 ((WINDOW_SIZE / 2) - current + 1)
                             } else {
                                 0
@@ -65,7 +71,9 @@ class Pagination(val prev:Side, val next:Side, val pages:List<Page>){
                         if(current >= qtd-(WINDOW_SIZE/2)){
                             qtd-(WINDOW_SIZE-2)
                         } else {
-                            (current - ((WINDOW_SIZE / 2))) + if(current >= WINDOW_SIZE){1}else{0} - if ((qtd - (current + (WINDOW_SIZE / 2))) < 0) {
+
+//                            current >= WINDOW_SIZE
+                            (current - ((WINDOW_SIZE / 2))) + if(current >= (WINDOW_SIZE/2)+2){1}else{0} - if ((qtd - (current + (WINDOW_SIZE / 2))) < 0) {
                                 ((current + (WINDOW_SIZE / 2)) - qtd - 1)
                             } else {
                                 0
@@ -76,18 +84,19 @@ class Pagination(val prev:Side, val next:Side, val pages:List<Page>){
 
         private fun createPrev(qtd: Int, current: Int)=
                 if(qtd <= WINDOW_SIZE){
-                    Side(null, current > 1)
+                    Side(null, current > 1, max(1, current-1))
                 }else{
-                    Side(if(iniWindow(qtd, current) == 1) {null} else {Page(1, current==1)}, current > 1)
+                    Side(if(iniWindow(qtd, current) == 1) {null} else {Page(1, current==1)}, current > 1, max(1,current-1))
                 }
 
         private fun createNext(qtd: Int, current: Int)=
                 if(qtd <= WINDOW_SIZE){
-                    Side(null, current < qtd)
+                    Side(null, current < qtd, min(qtd, current+1))
                 }else{
-                    Side(if(endWindow(qtd, current) == qtd) {null} else {Page(qtd, current==qtd)}, current < qtd)
+                    Side(if(endWindow(qtd, current) == qtd) {null} else {Page(qtd, current==qtd)}, current < qtd, min(current+1, qtd))
                 }
     }
 
     fun isEmpty()= pages.isEmpty()
+
 }

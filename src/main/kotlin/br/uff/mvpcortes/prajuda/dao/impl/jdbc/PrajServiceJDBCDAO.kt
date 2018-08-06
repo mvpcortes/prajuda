@@ -5,6 +5,8 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.RepositoryInfo
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
@@ -24,14 +26,17 @@ class PrajServiceJDBCDAO (val jdbcTemplate:JdbcTemplate): PrajServiceDAO {
         }
 
         private fun mapRowRepositoryInfo(rs: ResultSet, rowNum: Int)= RepositoryInfo(
-                    rs.getString(4),
-                    rs.getString(5),
-                    rs.getTimestamp(6).toLocalDateTime(),
-                    rs.getString(7),
-                    rs.getString(8),
-                    rs.getString(9))
-
+                rs.getString(4),
+                rs.getString(5),
+                rs.getTimestamp(6).toLocalDateTime(),
+                rs.getString(7),
+                rs.getString(8),
+                rs.getString(9))
     }
+
+    val simpleJdbcInsert = SimpleJdbcInsert(jdbcTemplate)
+            .withTableName("praj_service")
+            .usingGeneratedKeyColumns("id")
 
     override fun findIds()= jdbcTemplate.queryForList("SELECT id FROM praj_service", String::class.java)
 
@@ -53,7 +58,40 @@ class PrajServiceJDBCDAO (val jdbcTemplate:JdbcTemplate): PrajServiceDAO {
                 """.trimIndent(),
                 PrajServiceRowMapper,
                 arrayOf(ids)
-                )
+        )
+    }
+
+    override fun save(prajService: PrajService): PrajService {
+        if (prajService.id == null ) {
+            prajService.id = simpleJdbcInsert.executeAndReturnKey(BeanPropertySqlParameterSource(prajService)).toString()
+        } else {
+            jdbcTemplate.update(
+                    """
+                    UPDATE praj_service SET
+                        name=?,
+                        url=?,
+                        harvester_type_id=?,
+                        repo_info_uri=?,
+                        repo_info_branch=?,
+                        repo_info_username=?,
+                        repo_info_password=?,
+                        document_dir=?
+                    WHERE
+                        id=?
+
+                """.trimIndent(),
+                    prajService.name,
+                    prajService.url,
+                    prajService.harvesterTypeId,
+                    prajService.repositoryInfo.uri,
+                    prajService.repositoryInfo.branch,
+                    prajService.repositoryInfo.username,
+                    prajService.repositoryInfo.password,
+                    prajService.documentDir,
+                    prajService.id
+            )
+        }
+        return prajService
     }
 
 }

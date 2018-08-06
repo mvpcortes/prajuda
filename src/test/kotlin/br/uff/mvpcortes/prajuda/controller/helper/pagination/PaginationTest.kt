@@ -45,7 +45,7 @@ class PaginationTest {
 
         @Test
         fun `then has valid there is prev page`(){
-            assertThat(actual.prev.page).isEqualTo(expected.prev.page)
+            assertThat(actual.prev.page!=null).isEqualTo(expected.prev.page!=null)
         }
 
         @Test
@@ -74,7 +74,7 @@ class PaginationTest {
 
         @Test
         fun `then has valid there is next page`(){
-            assertThat(actual.next.page).isEqualTo(expected.next.page)
+            assertThat(actual.next.page != null).isEqualTo(expected.next.page != null)
         }
 
         @Test
@@ -279,6 +279,27 @@ class PaginationTest {
     )
 
     @Nested
+    inner class `with twenty pages and sixth is current`:AbstractPaginationTest(
+            Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
+                    createPages(3, 9, 6)),
+            Pagination(20, 6)
+    )
+
+    @Nested
+    inner class `with twenty pages and seventh is current`:AbstractPaginationTest(
+            Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
+                    createPages(4, 10, 7)),
+            Pagination(20, 7)
+    )
+
+    @Nested
+    inner class `with twenty pages and eighth is current`:AbstractPaginationTest(
+            Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
+                    createPages(5, 11, 8)),
+            Pagination(20, 8)
+    )
+
+    @Nested
     inner class `with twenty pages and nineth is current`:AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(6, 12, 9)),
@@ -357,7 +378,7 @@ class PaginationTest {
     )
 
     @Nested
-    inner class `with twenty pages and twethteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and twethty is current`:AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, false),
                     createPages(13, 20, 20)),
             Pagination(20, 20)

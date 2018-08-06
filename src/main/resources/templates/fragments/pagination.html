@@ -8,22 +8,40 @@
     <link rel="stylesheet" type="text/css" href="../../static/css/prajuda.css" th:href="@{css/prajuda.css}">
 </head>
 <body>
-<nav th:fragment="pagination(pagination)" class="pagination is-centered" role="navigation" aria-label="pagination">
-    <a class="pagination-previous" th:disabled="${not pagination.prev.enable}">Prev</a>
+<nav th:fragment="pagination(pagination, url_item, pageSize)" class="  is-small pagination is-centered" role="navigation" aria-label="pagination">
+    <a class="pagination-previous" th:disabled="${not pagination.prev.enable}"
+       th:href="@{/{url_item}(url_item=${url_item}, page=${pagination.prev.number}, pageSize=${pageSize})}">Prev</a>
     <ul class="pagination-list">
-        <li th:if="${pagination.prev.page} != null"><a class="pagination-link" th:attr="aria-label='Goto page ' + ${pagination.prev.page.number}" aria-label="Goto page 1" th:text="${pagination.prev.page.number}">1</a></li>
-        <li><span class="pagination-ellipsis" th:if="${pagination.prev.hasEllipsis}">&hellip;</span></li>
+        <li th:if="${pagination.prev.page} != null">
+            <a class="pagination-link"
+               th:attr="aria-label='Goto page ' + ${pagination.prev.page.number}"
+               aria-label="Goto page 1"
+               th:href="@{/{url_item}(url_item=${url_item}, page=${pagination.prev.page.number}, pageSize=${pageSize})}"
+               th:text="${pagination.prev.page.number}">1</a>
+        </li>
+        <li><span class="pagination-ellipsis" th:if="${pagination.prev.hasEllipsis()}">&hellip;</span></li>
         <li th:each="page : ${pagination.pages}">
             <a class="pagination-link" th:classappend="${page.current}?'is-current':''"
                th:attr="aria-label='Goto page ' + ${page.number}"
-               aria-label="Goto page 45" th:text="${page.number}">45</a>
+               aria-label="Goto page 45"
+               th:text="${page.number}"
+               th:href="@{/{url_item}(url_item=${url_item}, page=${page.number}, pageSize=${pageSize})}"
+            >45</a>
         </li>
         <li th:if="false"><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
         <li th:if="false"><a class="pagination-link" aria-label="Goto page 47">47</a></li>
-        <li><span class="pagination-ellipsis" th:if="${pagination.next.hasEllipsis}">&hellip;</span></li>
-        <li th:if="${pagination.next.page} != null"><a class="pagination-link" th:attr="aria-label='Goto page ' + ${pagination.next.page.number}" aria-label="Goto page 98" th:text="${pagination.next.page.number}">98</a></li>
+        <li><span class="pagination-ellipsis" th:if="${pagination.next.hasEllipsis()}">&hellip;</span></li>
+        <li th:if="${pagination.next.page} != null">
+            <a class="pagination-link"
+               th:attr="aria-label='Goto page ' + ${pagination.next.page.number}"
+               aria-label="Goto page 98"
+               th:text="${pagination.next.page.number}"
+               th:href="@{/{url_item}(url_item=${url_item}, page=${pagination.next.page.number}, pageSize=${pageSize})}">98</a>
+        </li>
+
     </ul>
-    <a class="pagination-next" th:disabled="${not pagination.next.enable}">Next</a>
+    <a class="pagination-next" th:disabled="${not pagination.next.enable}"
+       th:href="@{/{url_item}(url_item=${url_item}, page=${pagination.next.number}, pageSize=${pageSize})}">Next</a>
 </nav>
 </body>
 </html>

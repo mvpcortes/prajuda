@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When a GitHarvesterProcessor ")
-internal class GitHarvesterProcessorTest {
+internal class GitDefineHarvesterProcessorTest {
 
 //    /**
 //     * Exclude  jest dependency

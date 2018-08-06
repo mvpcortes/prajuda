@@ -1,0 +1,73 @@
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../../static/css/bulma.css" th:href="@{css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../../../static/css/prajuda.css" th:href="@{css/prajuda.css}">
+</head>
+<body>
+
+<section th:fragment="layout_main_content">
+    <h1 class="title">Add Service</h1>
+    <form id="form_service" th:action="@{/service}" th:object="${service}"  method="post" class="container">
+        <input type="hidden" id="service_id" th:field="*{id}" value="">
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label for="name" class="label">Name</label>
+            </div>
+            <div class="field-body">
+                <div class="control">
+                    <input id="name" class="input" th:field="*{name}" type="text" placeholder="name of service">
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="url" class="label">Url</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <input id="url" class="input" th:field="*{url}" th:action="@{service}" type="text" placeholder="Service's url">
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="harvesterType" class="label">Harvester Type</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <div class="select">
+                        <select id="harvesterType" th:field="*{harvesterTypeId}" name="harvesterType">
+                            <option th:each="ht: ${harvesterTypes}" value="${ht.id}" th:text="${ht.name}">Git (Classic)</option>
+                            <option th:if="false" value="2"         >Git (Gitlab)</option>
+                            <option th:if="false" value="3"         >Git (Github)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="documentDir" class="label">Docs' dir</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <input id="documentDir" class="input" th:field="*{documentDir}" type="text" placeholder="ex. 'prajuda'">
+                </div>
+            </div>
+        </div>
+        <div class="field is-grouped is-grouped-centered">
+            <div class="control">
+                <input type="submit" class="button is-primary" value="Save">
+            </div>
+            <div class="control">
+                <input type="button" class="button is-light" value="Cancel">
+            </div>
+        </div>
+    </form>
+</section>
+<!--<footer>-->
+<!--<p layout:fragment="layout-foot">This is some footer content-->
+<!--that you can change</p>-->
+<!--</footer>-->
+</body>
+
+<script type="text/javascript" src="../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
+<script type="text/javascript" src="../static/js/menu.js"   th:src="@{js/menu.js}"></script>
+</html>

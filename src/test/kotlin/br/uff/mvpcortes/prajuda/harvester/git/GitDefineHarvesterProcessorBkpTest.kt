@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.TestConfiguration
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When a GitHarvesterProcessor ")
-internal class GitHarvesterProcessorBkpTest {
+internal class GitDefineHarvesterProcessorBkpTest {
 
 //    /**
 //     * Exclude  jest dependency
