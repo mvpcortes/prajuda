@@ -7,17 +7,18 @@ import javax.sql.DataSource
  */
 interface SqlDialectHelper {
 
-    fun createIndexSnippet():String
+    fun createIndexSnippet():String?
 
     companion object {
-        fun createHelper(dataSource: DataSource): SqlDialectHelper {
+        fun createHelper(dataSource: DataSource): SqlDialectHelper? {
 
             val dbName = dataSource.connection.use { it.metaData.databaseProductName }.toUpperCase().trim()
 
             return when (dbName) {
                 "HSQL DATABASE ENGINE"  -> HSqlDialectHelper()
+                "H2"    -> H2DialectHelper()
                 "MYSQL" -> MySqlDialectHelper()
-                else    -> throw IllegalStateException("Cannot create dialectHelper for #{dbName}")
+                else    -> throw IllegalStateException("Cannot create dialectHelper for $dbName")
             }
         }
     }

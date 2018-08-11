@@ -13,3 +13,11 @@ CREATE TABLE praj_service (
     PRIMARY KEY (id)
 );
 
+
+INSERT INTO praj_service (name, url, harvester_type_id,
+repo_info_uri, repo_info_branch, repo_info_last_modified, repo_info_last_tag, repo_info_username, repo_info_password,
+ document_dir)
+ VALUES('XUXU', 'hshshshsh', '1',
+ '1', '2', '2017-01-01', '4', '5', '6',
+ '/storage');
+
