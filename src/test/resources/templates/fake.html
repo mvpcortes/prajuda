@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8">
+    <title>fake</title>
+</head>
+<body th:object="${fake}">
+    <label id="label_fieldId"       for="fieldId"></label>
+    <p th:text="*{id}"              id ="fieldId"></p>
+
+    <label id="label_fieldString"   for="fieldString"></label>
+    <p th:text="*{fieldString}"     id ="fieldString"></p>
+
+    <label id="label_fieldNumber"   for="fieldNumber"></label>
+    <p th:text="*{fieldNumber}"     id ="fieldNumber"></p>
+
+    <label id="label_fieldDate"     for="fieldDate"></label>
+<p th:text="*{fieldDate}"           id ="fieldDate"></p>
+</body>
+
+<script type="text/javascript" src="../static/js/jquery.js" th:src="@{/js/jquery.js}"></script>
+<div th:replace="~{ ${layout_page} :: layout_script_js} ?: _"></div>
+</html>

@@ -47,7 +47,6 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
             @RequestParam(name="service", required = false) prajService:PrajService?,
             model:Model):String{
 
-
         return TemplateHelper(model)
                 .withAttr("service", prajService?:PrajService.empty())
                 .withAttrNotNull(TemplateRedirect.STR_ERROR_ATTR, messageError)
@@ -55,18 +54,7 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
                 .apply()
     }
 
-    @PostMapping(value=[""])
-    fun save(@Valid prajService:PrajService, bindingResult: BindingResult, model:Model):String{
-        if(bindingResult.hasErrors()){
-            //https://stackoverflow.com/a/10049138/8313595
-            return TemplateRedirect("service/new.html").withError(bindingResult)
-                    .addParam("prajService", prajService)
-                    .apply()
-        }
 
-        prajService.takeIf{it.id?.isBlank()==true}?.let{it.id=null}
-        return prajServiceService.save(prajService).let{"redirect:/service/${it.id}.html"}
-    }
 
     private fun getQtdServices(): Int {
         return listServices.size

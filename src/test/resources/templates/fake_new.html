@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title >fake</title>
+</head>
+<body>
+    <form class="ajax-form" id="frm_default" method="post" th:action="@{/fake}" th:attr="data-redirect=@{/fake/${id}.html}" th:object="${fake}">
+        <input type="hidden"    id="frm_default_field_id"       th:field="*{id}"            name="id"><br/>
+        <span id="xptoId" class="ajax-form-error" data-error-for="id"></span>
+        <input type="text"      id="frm_default_field_string"   th:field="*{fieldString}"   name="fieldString"><br/>
+        <span id="xptoString" class="ajax-form-error" data-error-for="fieldString"></span>
+        <input type="number"    id="frm_default_field_number"   th:field="*{fieldNumber}"   name="fieldNumber"><br/>
+        <span id="xptoNumber" class="ajax-form-error" data-error-for="fieldNumber"></span>
+        <input type="text"      id="frm_default_field_date"     th:field="*{fieldDate}"     name="fieldDate"><br/>
+        <span id="xptoDate" class="ajax-form-error" data-error-for="fieldDate"></span>
+        <input type="submit"    id="frm_default_submit">
+    </form>
+</body>
+
+<script type="text/javascript" src="../static/js/jquery.js"         th:src="@{/js/jquery.js}"></script>
+<script type="text/javascript" src="../static/js/form.js"           th:src="@{/js/form.js}"  ></script>
+</html>

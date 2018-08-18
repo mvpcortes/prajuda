@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 
-class TemplateHelper(val model:Model){
+class TemplateHelper(private val model:Model, private val template:String="main_template"){
 
     var errorAttr:String?=null
 
     companion object {
         val mapper=ObjectMapper()
     }
-    var template:String = "main_template"
 
     fun withPage(page:String):TemplateHelper{
         model.addAttribute("layout_page", page)

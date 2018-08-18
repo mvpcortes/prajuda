@@ -5,3 +5,25 @@
 main{
     padding: 1em 1em 1em 1em;
 }
+
+/**modal loading*/
+.rotating-image {
+    -webkit-animation: rotating-image-spin  2s infinite linear;
+       -moz-animation: rotating-image-spin  2s infinite linear;
+            animation: rotating-image-spin  2s infinite linear;
+}
+
+.box.is-center{
+    text-align:center!important;
+    overflow: hidden!important
+}
+
+@-moz-keyframes         rotating-image-spin { from {   -moz-transform: rotate(0deg)} to  {     -moz-transform: rotate(359deg); } }
+@-webkit-keyframes      rotating-image-spin { from {-webkit-transform: rotate(0deg)} to  {  -webkit-transform: rotate(359deg); } }
+@keyframes              rotating-image-spin { from {        transform: rotate(0deg)} to  {          transform: rotate(359deg); } }
+
+
+/**form css*/
+,ajax-form-error{
+    display:hidden
+}
