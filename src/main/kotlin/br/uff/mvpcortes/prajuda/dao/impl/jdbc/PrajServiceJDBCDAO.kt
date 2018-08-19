@@ -103,7 +103,7 @@ class PrajServiceJDBCDAO (val jdbcTemplate:JdbcTemplate): PrajServiceDAO {
 
 
     override fun save(prajService: PrajService): PrajService {
-        if (prajService.id == null ) {
+        if (prajService.id == null || prajService.id?.isBlank() == true) {
             prajService.id = simpleJdbcInsert.executeAndReturnKey(createParameterSource(prajService)).toString()
             return prajService
         } else {

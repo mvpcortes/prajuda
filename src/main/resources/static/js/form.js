@@ -48,7 +48,6 @@ var modalLoading = {
 Implement a form submitted by ajax and deal with errors.
 */
 $("form.ajax-form").submit(function(e){
-    console.log("XUXU XAXA XEXE")
 
     var frm = $(this);
 
@@ -63,7 +62,8 @@ $("form.ajax-form").submit(function(e){
     }
 
     var showError = function(errorMessages){
-        var oldErrorMessages = frm.find("[data-error-for-showed]").hide()
+        var oldErrorMessages = frm.find(".ajax-form-error-showed")
+            oldErrorMessages.hide()
             oldErrorMessages.addClass("ajax-form-error")
             oldErrorMessages.removeClass("ajax-form-error-showed")
             oldErrorMessages.text("")//hide and erase before errors
@@ -72,9 +72,6 @@ $("form.ajax-form").submit(function(e){
             if (errorMessages.hasOwnProperty(property)) {
                 var em = errorMessages[property]
                 var errorMessage = frm.find("[data-error-for='${field}']".templateTo(em))
-                console.log("[data-error-for='${field}']".templateTo(em))
-                console.log(frm.find("[data-error-for='${field}']".templateTo(em)).length + "!!!" + em.message)
-                console.log("ERRR: "+errorMessage.attr("id"))
                 errorMessage.show()
                 errorMessage.removeClass("ajax-form-error")
                 errorMessage.addClass("ajax-form-error-showed")
@@ -90,12 +87,10 @@ $("form.ajax-form").submit(function(e){
         url        :frm.attr("action"),
         data       :frm.serialize(),
         beforeSend :function(){
-            console.log("beforeSend::show")
             modalLoading.show(frm)
             }
         })
         .always(function(){
-            console.log("always::xxxxxxxxx")
             modalLoading.hide(frm)
          })
         .done(function(data){

@@ -12,6 +12,7 @@ class HarvesterService(private val applicationContext:ApplicationContext) {
 
     val harvesterTypes=ArrayList<HarvesterType>(10)
 
+    val mapHarvesterTypes = HashMap<String, HarvesterType>()
     @PostConstruct
     fun init(){
         applicationContext
@@ -21,7 +22,10 @@ class HarvesterService(private val applicationContext:ApplicationContext) {
                 .map{ it as FluxHarvesterProcessor }.filter{it != null}
                 .map{Pair(it, it::class.annotations.filter{ann->ann is DefineHarvester}.map{ ann->ann as DefineHarvester}.single())}
                 .map{HarvesterType(getName(it.second), getId(it), it.first)}
-                .forEach{harvesterTypes.add(it)}
+                .forEach{
+                    mapHarvesterTypes[it.id] = it
+                    harvesterTypes.add(it)
+                }
 
     }
 
@@ -31,6 +35,8 @@ class HarvesterService(private val applicationContext:ApplicationContext) {
             ann.name.takeIf { !it.isBlank() }
                     ?:ann.value.takeIf{!it.isBlank()}
                     ?:throw IllegalStateException("Cannot define um DefineHarvester with value/name empty")
+
+
 
 
 }

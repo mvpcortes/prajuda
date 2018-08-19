@@ -8,6 +8,7 @@ import br.uff.mvpcortes.prajuda.controller.helper.pagination.Pagination
 import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.service.HarvesterService
 import br.uff.mvpcortes.prajuda.service.PrajServiceService
+import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -16,6 +17,7 @@ import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import javax.validation.Valid
+import javax.validation.Validator
 import kotlin.math.min
 
 @Controller()
@@ -26,6 +28,22 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
 
     @ModelAttribute("harvesterTypes")
     fun harvesterTypes() = harvesterService.harvesterTypes
+
+    @GetMapping(value=["{id}.html"])
+    fun get(@PathVariable id:String, model:Model): String {
+        return TemplateHelper(model)
+                .withAttr("service", prajServiceService.findById(id) as Any)
+                .withAttr("mapHarvesterType", harvesterService.mapHarvesterTypes)
+                .withPage("fragments/service/service_show").apply()
+    }
+
+    @GetMapping(value=["{id}/edit.html"])
+    fun edit(@PathVariable id:String, model:Model): String {
+        return TemplateHelper(model)
+                .withAttr("service", prajServiceService.findById(id)!!)
+                .withAttr("mapHarvesterType", harvesterService.mapHarvesterTypes)
+                .withPage("fragments/service/service_new").apply()
+    }
 
     @GetMapping(value = ["index.html"])
     fun list(pageRequest: PageRequest = PageRequest(), model: Model): String {
@@ -39,7 +57,7 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
         model.addAttribute("pageRequest", pageRequest)
 
 
-        return TemplateHelper(model).withPage("fragments/service/list_service").apply()
+        return TemplateHelper(model).withPage("fragments/service/service_list").apply()
     }
 
     @GetMapping(value=["new.html"])
@@ -50,7 +68,7 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
         return TemplateHelper(model)
                 .withAttr("service", prajService?:PrajService.empty())
                 .withAttrNotNull(TemplateRedirect.STR_ERROR_ATTR, messageError)
-                .withPage("fragments/service/new_service")
+                .withPage("fragments/service/service_new")
                 .apply()
     }
 

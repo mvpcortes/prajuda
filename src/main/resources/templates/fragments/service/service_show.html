@@ -8,17 +8,16 @@
 </head>
 <body>
 
-<section th:fragment="layout_main_content">
-    <h1 class="title">Add Service</h1>
-    <form id="form_service" th:action="@{/service}" th:object="${service}"  method="post" class="ajax-form container">
-        <input type="hidden" id="service_id" th:field="*{id}" value="">
+<section th:fragment="layout_main_content" th:object="${service}">
+    <div th:object="${service}" class="ajax-form container">
+        <h1 class="title"> #<span th:text="*{id}">XXX</span> Service</h1>
         <div class="field is-horizontal">
             <div class="field-label is-normal">
                 <label for="name" class="label">Name</label>
             </div>
             <div class="field-body">
                 <div class="control">
-                    <input id="name" class="input" th:field="*{name}" type="text" placeholder="name of service">
+                    <span id="name" th:text="*{name}">Service's name</span>
                 </div>
             </div>
         </div>
@@ -26,7 +25,7 @@
             <div class="field-label is-normal"><label for="url" class="label">Url</label></div>
             <div class="field-body">
                 <div class="control">
-                    <input id="url" class="input" th:field="*{url}" th:action="@{service}" type="text" placeholder="Service's url">
+                    <span id="url" th:text="*{url}">Service's URL</span>
                 </div>
             </div>
         </div>
@@ -34,13 +33,7 @@
             <div class="field-label is-normal"><label for="harvesterType" class="label">Harvester Type</label></div>
             <div class="field-body">
                 <div class="control">
-                    <div class="select">
-                        <select id="harvesterType" th:field="*{harvesterTypeId}" name="harvesterType">
-                            <option th:each="ht: ${harvesterTypes}" value="${ht.id}" th:text="${ht.name}">Git (Classic)</option>
-                            <option th:if="false" value="2"         >Git (Gitlab)</option>
-                            <option th:if="false" value="3"         >Git (Github)</option>
-                        </select>
-                    </div>
+                    <span id="harvesterType" th:text="${mapHarvesterType.get(service.harvesterTypeId)?.name?:'n/a'}">Harvester Type</span>
                 </div>
             </div>
         </div>
@@ -48,27 +41,22 @@
             <div class="field-label is-normal"><label for="documentDir" class="label">Docs' dir</label></div>
             <div class="field-body">
                 <div class="control">
-                    <input id="documentDir" class="input" th:field="*{documentDir}" type="text" placeholder="ex. 'prajuda'">
+                    <span id="documentDir" th:text="*{documentDir}" >/Service/Document/Directory</span>
                 </div>
             </div>
         </div>
         <div class="field is-grouped is-grouped-centered">
             <div class="control">
-                <input type="submit" class="button is-primary" value="Save">
+                <a class="button is-primary" th:href="@{'/service/'+*{id}+'/edit.html'}">Edit</a>
             </div>
             <div class="control">
-                <input type="button" class="button is-light" value="Cancel">
+                <a class="button is-light">Return</a>
             </div>
         </div>
-    </form>
+    </div>
 </section>
-<!--<footer>-->
-<!--<p layout:fragment="layout-foot">This is some footer content-->
-<!--that you can change</p>-->
-<!--</footer>-->
 </body>
 
 <script type="text/javascript" src="../../../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
 <script type="text/javascript" src="../../../static/js/menu.js"   th:src="@{js/menu.js}"></script>
-<script th:fragment="layout_script_js" type="text/javascript" src="../../../static/js/form.js"   th:src="@{/js/form.js}"></script>
 </html>

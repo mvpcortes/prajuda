@@ -4,17 +4,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.context.support.ResourceBundleMessageSource
 
 //@EnableScheduling
 @SpringBootApplication
 @Import(br.uff.mvpcortes.prajuda.dao.impl.jdbc.PrajudaJdbcConfiguration::class)
-class PrajudaApplication
+class PrajudaApplication{
+
+}
 
 fun main(args: Array<String>) {
 
-//    @Bean
-//    LayoutDialect layoutDialect() {
-//        new LayoutDialect()
-//    }
     runApplication<PrajudaApplication>(*args)
 }

@@ -1,7 +1,9 @@
 package br.uff.mvpcortes.prajuda.model
 
+import br.uff.mvpcortes.prajuda.api.dto.WithId
+
 class PrajDocument (
-        var id: String? = null,
+        override var id: String? = null,
         var content: String = "",
         var tag: String = "",
         /**
@@ -16,4 +18,4 @@ class PrajDocument (
         /**
          * We save the serviceName to avoid make a foreign key that. It is redundant and we know it.
          */
-        var serviceName: String? = "")
+        var serviceName: String? = ""): WithId
