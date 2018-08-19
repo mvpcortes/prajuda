@@ -10,7 +10,7 @@
 
 <section th:fragment="layout_main_content">
     <h1 class="title">Add Service</h1>
-    <form id="form_service" th:action="@{/service}" th:attr="data-redirect=@{/service/${id}.html}" th:object="${service}"  method="post" class="ajax-form container">
+    <form id="form" th:action="@{/service}" th:attr="data-redirect=@{/service/${id}.html}" th:object="${service}"  method="post" class="ajax-form container">
         <input type="hidden" id="service_id" th:field="*{id}" value="">
         <div class="field is-horizontal">
             <div class="field-label is-normal">
@@ -30,9 +30,20 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <input id="url" class="input" th:field="*{url}" th:action="@{service}" type="text" placeholder="Service's url">
+                        <input id="url" class="input" th:field="*{url}"  type="text" placeholder="Service's url">
                     </div>
                     <p class="help ajax-form-error is-danger" data-error-for="url"></p>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="description" class="label">Description</label></div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <textarea id="description" minlength="20" maxlength="1000" class="textarea" th:field="*{description}" placeholder="This service is ..."/>
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="description"></p>
                 </div>
             </div>
         </div>
@@ -67,10 +78,10 @@
         </div>
         <div class="field is-grouped is-grouped-centered">
             <div class="control">
-                <input type="submit" class="button is-primary" value="Save">
+                <input id="submit_btn" type="submit" class="button is-primary" value="Save">
             </div>
             <div class="control">
-                <input type="button" class="button is-light" value="Cancel">
+                <input type="button" class="button is-light return" value="Cancel">
             </div>
         </div>
     </form>

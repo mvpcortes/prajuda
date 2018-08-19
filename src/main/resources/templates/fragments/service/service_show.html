@@ -30,6 +30,16 @@
             </div>
         </div>
         <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="description" class="label">Description</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <!--<span id="description" th:text="*{description}">Description of service</span>-->
+                    <textarea id="description" class="textarea" th:field="*{description}"
+                              readonly>This service is...</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
             <div class="field-label is-normal"><label for="harvesterType" class="label">Harvester Type</label></div>
             <div class="field-body">
                 <div class="control">
@@ -50,7 +60,7 @@
                 <a class="button is-primary" th:href="@{'/service/'+*{id}+'/edit.html'}">Edit</a>
             </div>
             <div class="control">
-                <a class="button is-light">Return</a>
+                <a class="button is-light return">Return</a>
             </div>
         </div>
     </div>

@@ -1,6 +1,8 @@
 package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.PrajService
+import reactor.core.publisher.Flux
+
 
 
 interface PrajServiceDAO {
@@ -10,4 +12,10 @@ interface PrajServiceDAO {
     fun findByIdNullable(id: String): PrajService?
 
     fun save(prajService: PrajService): PrajService
+
+    fun findPage(page: Int, pageSize: Int): Flux<PrajService>
+
+    fun count(): Long
+
+    fun findByIds(vararg ids: String): Flux<PrajService>
 }

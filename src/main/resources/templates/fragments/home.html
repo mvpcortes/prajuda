@@ -15,25 +15,22 @@
                 <h1 class="title">
                     Prajuda Catalog
                 </h1>
-                <h2 class="subtitle">
-                    catalog description
-                </h2>
             </div>
         </div>
     </section>
     <div class="container is-centered is-gap-2">
         <div class="columns is-multiline">
-            <div class="column is-narrow is-4">
+            <div th:each="service: ${services}" class="service_column column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
-                        <p>Service Xuxu</p>
+                        <p><span th:attr="id=${service.id}+'_service_id'" th:text="'#'+${service.id}+' '">#XXX-</span><a th:attr="id=${service.id}+'_service_name'" th:text="${service.name}" th:href="@{/service/{id}.html(id=${service.id})}" href="#">Service Xuxu</a></p>
                     </div>
-                    <div class="message-body">
+                    <div th:text="${service.description}" class="message-body">
                         This Service is a simple http server.
                     </div>
                 </article>
             </div>
-            <div class="column is-narrow is-4">
+            <div th:if="false" class="column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
                         <p>My Cute Service</p>
@@ -43,7 +40,7 @@
                     </div>
                 </article>
             </div>
-            <div class="column is-narrow is-4">
+            <div th:if="false" class="column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
                         <p>Heavy service</p>
@@ -53,7 +50,7 @@
                     </div>
                 </article>
             </div>
-            <div class="column is-narrow is-4">
+            <div th:if="false" class="column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
                         <p>Other service</p>
@@ -63,7 +60,7 @@
                     </div>
                 </article>
             </div>
-            <div class="column is-narrow is-4">
+            <div th:if="false" class="column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
                         <p>I have a dream service</p>
@@ -73,7 +70,7 @@
                     </div>
                 </article>
             </div>
-            <div class="column is-narrow is-4">
+            <div th:if="false" class="column is-narrow is-4">
                 <article class="message is-primary">
                     <div class="message-header">
                         <p>Service of services</p>
@@ -83,20 +80,16 @@
                     </div>
                 </article>
             </div>
-            <div class="column is-12">
+            <div th:if="false" class="column is-12">
                 <div class="columns is-pulled-right">
                     <div class="column">
-                        <a href="services.html" th:href="@{services.html}">More services</a>
+                        <a href="services.html" th:href="@{service/index.html}">More services</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!--<footer>-->
-<!--<p layout:fragment="layout-foot">This is some footer content-->
-<!--that you can change</p>-->
-<!--</footer>-->
 </body>
 
 <script type="text/javascript" src="../static/js/jquery.js" th:src="@{js/jquery.js}"></script>

@@ -2,22 +2,16 @@ package br.uff.mvpcortes.prajuda.view
 
 import br.uff.mvpcortes.prajuda.api.FakeApi
 import br.uff.mvpcortes.prajuda.loggerFor
-import io.github.bonigarcia.DriverCapabilities
 import io.github.bonigarcia.SeleniumExtension
-import org.apache.tools.ant.taskdefs.Javadoc
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openqa.selenium.*
-import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.By
+import org.openqa.selenium.Dimension
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.openqa.selenium.htmlunit.HtmlUnitDriver.DOWNLOAD_IMAGES_CAPABILITY
-import org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED
-import org.openqa.selenium.phantomjs.PhantomJSDriver
-import org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT
-import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.springframework.boot.test.context.SpringBootTest
@@ -37,19 +31,116 @@ class ViewTest{
 
     val logger = loggerFor(ViewTest::class)
 
+    val STR_REGEX_FAKE_URL = "^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"
+
+
+//    @MockBean
+//    var prajServiceDAO: PrajServiceDAO? = null
+
     fun get(webDriver: WebDriver, path:String):WebDriver{
 
         //if is htmlUnit, force JS and download images
         if(webDriver is HtmlUnitDriver){
             webDriver.isJavascriptEnabled = true
             webDriver.isDownloadImages = true
-        }
+         }
 
 
         //resize window to mobile form (mobile-first
         webDriver.manage().window().size = Dimension(360, 640)
         webDriver.get("http://localhost:$port/$path")
+
+        //implicit wait
+        webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
         return webDriver
+    }
+
+//    @Nested
+//    inner class `The main page`{
+//
+//
+//        val listServices = listOf(
+//                PrajService(id="001", name="name = 001"),
+//                PrajService(id="010", name="name = 010"),
+//                PrajService(id="050", name="name = 050"),
+//                PrajService(id="100", name="name = 100"),
+//                PrajService(id="150", name="name = 150"),
+//                PrajService(id="200", name="name = 200"),
+//                PrajService(id="250", name="name = 250"),
+//                PrajService(id="300", name="name = 300"),
+//                PrajService(id="350", name="name = 350")
+//        )
+//
+//
+//        @Test
+//        fun `when load index page then load services`(webDriver:HtmlUnitDriver){
+//            get(webDriver, "index.html")
+//
+//            listServices.forEach { service->
+//                val spanService = webDriver.findElement(By.id(service.id+"_service_id"))
+//                val linkService = webDriver.findElement(By.id(service.id+"_service_name"))
+//
+//                assertThat(spanService.tagName).isEqualTo("span")
+//                assertThat(spanService.text).isEqualTo("#${service.id} ")
+//
+//                assertThat(linkService.tagName).isEqualTo("a")
+//                assertThat(linkService.text).isEqualTo(service.name)
+//                assertThat(linkService.getAttribute("href")).isEqualTo("/service/${service.id}.html")
+//            }
+//
+//            //count elements
+//            val qtd = webDriver.findElements(By.cssSelector(".service_column")).size
+//            assertThat(qtd).isEqualTo(listServices.size)
+//
+//        }
+//    }
+
+    @Nested
+    inner class `The create or edit service pages`{
+
+        fun fillForm(webDriver: WebDriver, url:String = "https://my.app.io/test"){
+            webDriver.findElement<WebElement>(By.id("name")).let{it.clear(); it.sendKeys("my service test")}
+            webDriver.findElement<WebElement>(By.id("url")).let{it.clear(); it.sendKeys(url)}
+            webDriver.findElement<WebElement>(By.id("description")).let{it.clear(); it.sendKeys("service description")}
+            webDriver.findElement<WebElement>(By.id("documentDir")).let{it.clear(); it.sendKeys("prajuda")}
+        }
+
+        @Test
+        fun `when save new service valid then show service data`(webDriver:HtmlUnitDriver){
+            get(webDriver, "service/new.html")
+
+            fillForm(webDriver)
+
+            webDriver.findElement(By.id("submit_btn")).click()
+
+            val wait = WebDriverWait(webDriver, 2);
+            wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
+
+            assertThat(webDriver.findElement(By.id("name")).text).isEqualTo("my service test")
+            assertThat(webDriver.findElement(By.id("description")).text).isEqualTo("service description")
+            assertThat(webDriver.findElement(By.id("url")).text).isEqualTo("https://my.app.io/test")
+            assertThat(webDriver.findElement(By.id("documentDir")).text).isEqualTo("prajuda")
+            assertThat(webDriver.findElement(By.id("harvesterType")).text).isEqualTo("Git (Classic)")
+        }
+
+        @Test
+        fun `when save new service with invalid url then show error message`(webDriver:HtmlUnitDriver){
+            get(webDriver, "service/new.html")
+
+            fillForm(webDriver = webDriver, url = "wrong url")
+
+            webDriver.findElement(By.id("submit_btn")).click()
+
+            println(webDriver.pageSource)
+
+            val itemError = webDriver.findElement(By.xpath("//p[@data-error-for='url' and contains(@class, 'ajax-form-error-showed')]"))
+
+            assertThat(itemError.text).isEqualTo("Is not a valid URL")
+            assertThat(itemError.isDisplayed).isTrue()
+
+            val wait = WebDriverWait(webDriver, 2);
+            wait.until(ExpectedConditions.urlMatches(".*/service/new.html"))
+        }
     }
 
     @Nested
@@ -57,7 +148,6 @@ class ViewTest{
 
         @Test
         fun `when get fakedata then render fields`(webDriver:HtmlUnitDriver) {
-            webDriver.isJavascriptEnabled = true
             get(webDriver, "fake/243.html")
 
             assertThat(webDriver.findElement(By.id("fieldId")).text).isEqualTo("243")
@@ -100,7 +190,6 @@ class ViewTest{
 
             webDriver.findElement(By.id("frm_default_submit")).submit()
 
-            webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
             val item = webDriver.findElement(By.xpath("//span[@data-error-for='fieldNumber' and @class='ajax-form-error-showed']"))
             assertThat(item.getAttribute("id")).isEqualTo("xptoNumber")
             assertThat(item.tagName).isEqualTo("span")
@@ -111,8 +200,8 @@ class ViewTest{
     }
 
     @Test
-    fun test(){
-        assertThat("http://localhost:4455/fake/1111.html").containsPattern("^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$")
+    fun `verify regex for fake url`(){
+        assertThat("http://localhost:4455/fake/1111.html").containsPattern(STR_REGEX_FAKE_URL)
     }
 
     @Test

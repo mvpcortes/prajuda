@@ -78,8 +78,6 @@ $("form.ajax-form").submit(function(e){
                 errorMessage.text(em.message)
             }
         }
-
-        console.log(frm.html())
     }
 
     $.ajax({
@@ -109,16 +107,3 @@ $("form.ajax-form").submit(function(e){
         e.preventDefault()
         return false
     })
-
-//$(document).ready(function(){
-//    $("body").append(
-//        $("<div/>").addClass("modal").attr("id", "modal-ajax-form").append([
-//            $("<div/>").addClass("modal-background"),
-//            $("<div/>").addClass("modal-content").append(
-//                $("<div/>").addClass("box").append(
-//                    $("<img/>").attr("id", "modal-ajax-form-image").addClass("rotating_image").attr("src", '/images/loading.png')
-//                )
-//            )
-//        ])
-//    );
-//})

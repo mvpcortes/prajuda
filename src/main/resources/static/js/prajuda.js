@@ -1,3 +1,20 @@
+/**
+    main JS for prajuda
+*/
+
+
+ /**
+ Implement return behavior on return buttons
+ */
+ $("a.return , button.return , input[type='button'].return").click(function(e){
+    e.preventDefault()
+    history.back()
+ })
+
+
+/**
+Implement button behavior to show/hide menu
+*/
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
     $(".navbar-burger").click(function() {

@@ -8,25 +8,17 @@ import br.uff.mvpcortes.prajuda.controller.helper.pagination.Pagination
 import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.service.HarvesterService
 import br.uff.mvpcortes.prajuda.service.PrajServiceService
-import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.thymeleaf.spring5.context.webflux.ReactiveDataDriverContextVariable
 import reactor.core.publisher.Flux
-import reactor.core.publisher.toFlux
-import javax.validation.Valid
-import javax.validation.Validator
-import kotlin.math.min
 
 @Controller()
 @RequestMapping("service")
 class PrajServiceController(private val harvesterService: HarvesterService, private val prajServiceService: PrajServiceService) {
 
-    private val listServices:List<PrajService> = (1..500).map{PrajService(it.toString(), "Service $it")}.toList()
-
-    @ModelAttribute("harvesterTypes")
+      @ModelAttribute("harvesterTypes")
     fun harvesterTypes() = harvesterService.harvesterTypes
 
     @GetMapping(value=["{id}.html"])
@@ -47,8 +39,8 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
 
     @GetMapping(value = ["index.html"])
     fun list(pageRequest: PageRequest = PageRequest(), model: Model): String {
-        val services    = getServices(pageRequest.page, pageRequest.pageSize)
-        val qtdService = getQtdServices()
+        val services    = getServices(pageRequest.page-1, pageRequest.pageSize)
+        val qtdService = prajServiceService.count().toInt()
         val pagination = Pagination(qtdService/pageRequest.pageSize, pageRequest.page)
 
         model.addAttribute("services", ReactiveDataDriverContextVariable(services))
@@ -74,11 +66,7 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
 
 
 
-    private fun getQtdServices(): Int {
-        return listServices.size
-    }
-
     private fun getServices(page: Int, pageSize: Int): Flux<PrajService> {
-        return listServices.subList((page-1)*pageSize, min((page)*pageSize, listServices.size)).toFlux()
+        return prajServiceService.findServices(page, pageSize);//listServices.subList((page-1)*pageSize, min((page)*pageSize, listServices.size)).toFlux()
     }
 }

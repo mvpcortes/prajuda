@@ -61,6 +61,7 @@ class PrajServiceJDBCDAOTest{
             SoftAssertions().let {
                 it.assertThat(prajServiceDB.id).isEqualTo(prajService.id)
                 it.assertThat(prajServiceDB.name).isEqualTo(prajService.name)
+                it.assertThat(prajServiceDB.description).isEqualTo(prajService.description)
                 it.assertThat(prajServiceDB.documentDir).isEqualTo(prajService.documentDir)
                 it.assertThat(prajServiceDB.harvesterTypeId).isEqualTo(prajService.harvesterTypeId)
                 it.assertThat(prajServiceDB.url).isEqualTo(prajService.url)
@@ -80,6 +81,7 @@ class PrajServiceJDBCDAOTest{
         inner class `and updated`{
 
             lateinit var prajServiceUpdated:PrajService
+
             @BeforeEach
             fun init(){
                 prajServiceUpdated=prajServiceSaved.copy(name="New Name Service")
@@ -105,13 +107,14 @@ class PrajServiceJDBCDAOTest{
             }
 
             @Test
-            fun `then other fields  is not updated`(){
+            fun `then other fields is not updated`(){
                 prajServiceDAO.findByIdNullable(prajServiceUpdated.id!!)
                         .let{it!!}
                         .let{ps->
                             SoftAssertions().let { softly ->
                                 softly.assertThat(ps.id).isEqualTo(prajServiceSaved.id)
                                 softly.assertThat(ps.documentDir).isEqualTo(prajServiceSaved.documentDir)
+                                softly.assertThat(ps.description).isEqualTo(prajServiceSaved.description)
                                 softly.assertThat(ps.harvesterTypeId).isEqualTo(prajServiceSaved.harvesterTypeId)
                                 softly.assertThat(ps.url).isEqualTo(prajServiceSaved.url)
                                 softly.assertThat(ps.repositoryInfo.branch).isEqualTo(prajServiceSaved.repositoryInfo.branch)

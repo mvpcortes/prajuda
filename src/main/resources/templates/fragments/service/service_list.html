@@ -13,20 +13,20 @@
     <table class="table is-bordered is-fullwidth is-striped">
         <thead>
         <tr>
+            <th>id</th>
             <th>Name</th>
-            <th>Description</th>
-            <th>Size</th>
+            <th>Url</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="service: ${services}">
-            <td th:text="${service.name}">Service X</td>
-            <td th:text="${service.name}">Description of Service X</td>
-            <td th:text="${qtd_services}">10</td>
-        </tr>
+            <tr th:each="service: ${services}">
+                <td> <a th:href="@{/service/{id}.html(id=${service.id})}" href="#" th:text="${service.id}">#XXX</a></td>
+                <td> <a th:href="@{/service/{id}.html(id=${service.id})}" href="#" th:text="${service.name}">Service X</a></td>
+                <td> <a th:href="@{/service/{id}.html(id=${service.id})}" href="#" th:text="${service.url}">https://gitlab.com/mvpcortes/prajuda</a></td>
+            </tr>
         </tbody>
     </table>
-    <div th:insert=" fragments/pagination :: pagination(${pagination}, 'service/list_service.html', ${pageRequest?.pageSize?:10})"></div>
+    <div th:insert=" fragments/pagination :: pagination(${pagination}, 'service/index.html', ${pageRequest?.pageSize?:10})"></div>
 </section>
 <!--<footer>-->
 <!--<p layout:fragment="layout-foot">This is some footer content-->
