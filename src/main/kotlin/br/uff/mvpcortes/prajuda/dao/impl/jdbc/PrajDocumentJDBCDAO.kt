@@ -46,7 +46,7 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
                             service_name        = :serviceName
                         WHERE
                             id = :id
-                    """.trimIndent(), parameters);
+                    """.trimIndent(), parameters)
         }
         return doc
     }

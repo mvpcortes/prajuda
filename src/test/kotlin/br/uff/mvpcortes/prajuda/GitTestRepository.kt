@@ -94,7 +94,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
 
     private fun moveFile(fSource: String, fDest: String) {
         File(dir, fDest).parentFile.takeIf { !it.exists() }?.takeIf { it.mkdirs() }
-        Files.move(File(dir, fSource).toPath(), File(dir, fDest).toPath());
+        Files.move(File(dir, fSource).toPath(), File(dir, fDest).toPath())
     }
 
     private fun createFile(s: String, text: String) {

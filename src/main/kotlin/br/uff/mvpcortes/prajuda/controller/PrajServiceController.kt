@@ -67,6 +67,6 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
 
 
     private fun getServices(page: Int, pageSize: Int): Flux<PrajService> {
-        return prajServiceService.findServices(page, pageSize);//listServices.subList((page-1)*pageSize, min((page)*pageSize, listServices.size)).toFlux()
+        return prajServiceService.findServices(page, pageSize)//listServices.subList((page-1)*pageSize, min((page)*pageSize, listServices.size)).toFlux()
     }
 }

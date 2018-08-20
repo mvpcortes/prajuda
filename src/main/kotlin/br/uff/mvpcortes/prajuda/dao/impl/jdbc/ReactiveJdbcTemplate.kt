@@ -5,8 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import java.util.*
 
 class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdbcTemplate: JdbcTemplate){
 
@@ -24,7 +22,7 @@ class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdb
             try {
                 jdbcTemplate.query(query, args) {
                     try {
-                        subscriber!!.onNext(rowMapper.mapRow(it, Math.max(qtdInternal, Integer.MAX_VALUE.toLong()).toInt()))
+                        subscriber.onNext(rowMapper.mapRow(it, Math.max(qtdInternal, Integer.MAX_VALUE.toLong()).toInt()))
                         qtdInternal+=1L
                     } catch (e: Exception) {
                         throw IllegalStateException("Fail to map row", e)

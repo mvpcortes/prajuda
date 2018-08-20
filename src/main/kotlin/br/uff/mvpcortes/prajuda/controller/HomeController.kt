@@ -12,7 +12,7 @@ class HomeController (val recommendService:  RecommendationService){
 
 
     /**
-     * @see https://github.com/thymeleaf/thymeleafsandbox-biglist-reactive
+     * @see {https://github.com/thymeleaf/thymeleafsandbox-biglist-reactive}
      */
     @GetMapping(value = ["home.html", "", "index.html"])
     fun home(model: Model): String {

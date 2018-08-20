@@ -5,5 +5,4 @@ import org.springframework.core.annotation.AliasFor
 annotation class DefineHarvester(
         @get:AliasFor(annotation = DefineHarvester::class, attribute = "name")val value:String="",
         val name:String="",
-        val id:String="") {
-}
+        val id:String="")

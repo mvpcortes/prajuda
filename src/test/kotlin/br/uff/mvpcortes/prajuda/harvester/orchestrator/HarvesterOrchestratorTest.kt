@@ -159,7 +159,7 @@ class HarvesterOrchestratorTest{
         @Nested
         inner class `with two harvested-update and one harvested-delete`{
 
-            fun myCreateAnswerForHarvesterProcessor() = createAnswerForHarvesterProcessor(HarvestedOp.UPDATED, HarvestedOp.UPDATED, HarvestedOp.DELETED)
+            fun myCreateAnswerForHarvesterProcessor() = createAnswerForHarvesterProcessor(HarvestedOp.UPDATED, HarvestedOp.UPDATED, HarvestedOp.DELETED)!!
 
             @BeforeEach
             fun before(){
@@ -260,16 +260,16 @@ class HarvesterOrchestratorTest{
             createAnswerForHarvesterProcessorUpdate().harvestFlux(any())
         }
 
-        private val STR_N_SERVICE_ID = "test_%02d"
+        private val strNServiceId = "test_%02d"
 
-        fun getPrajService(serviceId:Int)= mapPrajServiceUsed[STR_N_SERVICE_ID.format(serviceId)]!!
+        fun getPrajService(serviceId:Int)= mapPrajServiceUsed[strNServiceId.format(serviceId)]!!
 
         @Nested
         inner class `with one harvested-update`{
 
             fun createPrajServices(serviceQtd:Int){
                 val list = (1..serviceQtd)
-                        .map{ STR_N_SERVICE_ID.format(it)}
+                        .map{ strNServiceId.format(it)}
                         .map {
                             addPrajService(it)
                             it

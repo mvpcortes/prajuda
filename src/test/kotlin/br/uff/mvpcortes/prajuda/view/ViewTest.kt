@@ -113,7 +113,7 @@ class ViewTest{
 
             webDriver.findElement(By.id("submit_btn")).click()
 
-            val wait = WebDriverWait(webDriver, 2);
+            val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
 
             assertThat(webDriver.findElement(By.id("name")).text).isEqualTo("my service test")
@@ -138,7 +138,7 @@ class ViewTest{
             assertThat(itemError.text).isEqualTo("Is not a valid URL")
             assertThat(itemError.isDisplayed).isTrue()
 
-            val wait = WebDriverWait(webDriver, 2);
+            val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/new.html"))
         }
     }
@@ -157,7 +157,7 @@ class ViewTest{
         }
 
         fun fillForm(webDriver: WebDriver, string:String="xuxu_xaxa", number:Long = 222, date:LocalDate = LocalDate.now()){
-            webDriver.findElement<WebElement>(By.id("frm_default_field_string")).let{it.clear(); it.sendKeys(string.toString())}
+            webDriver.findElement<WebElement>(By.id("frm_default_field_string")).let{it.clear(); it.sendKeys(string)}
             webDriver.findElement<WebElement>(By.id("frm_default_field_number")).let{it.clear(); it.sendKeys(number.toString())}
             webDriver.findElement<WebElement>(By.id("frm_default_field_date"))
                     .let{it.clear(); it.sendKeys(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))}
@@ -172,11 +172,11 @@ class ViewTest{
 
             webDriver.findElement(By.id("frm_default_submit")).submit()
 
-            val wait = WebDriverWait(webDriver, 2);
+            val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches("^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"))
 
             val id = webDriver.findElement(By.id("fieldId")).text.toLong()
-            val fake = FakeApi.FakeData.withId(id);
+            val fake = FakeApi.FakeData.withId(id)
             assertThat(webDriver.findElement(By.id("fieldString")).text).isEqualTo(fake.fieldString)
             assertThat(webDriver.findElement(By.id("fieldNumber")).text).isEqualTo(fake.fieldNumber.toString())
             assertThat(webDriver.findElement(By.id("fieldDate")).text).isEqualTo(fake.getStrDate())

@@ -1,6 +1,5 @@
 package br.uff.mvpcortes.prajuda.controller.helper.pagination
 
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties
 import kotlin.math.max
 import kotlin.math.min
 
@@ -26,18 +25,22 @@ class Pagination(val prev:Side, val next:Side, val pages:List<Page>){
 
         private fun createPages(qtd: Int, current: Int): List<Page> {
 
-            if(qtd == 0){
-                assert(current == 0) {"Empty pagination should have no current page (0). And not $current"}
-                return emptyList()
-            }else if(qtd==1){
-                assert(current == 1) {"Pagination with one page should have current page equal to 1. And not $current"}
-                return listOf(Page(1, true))
-            }else{
-                assert(current in 1..qtd){"Pagination with $qtd should have current page between [1, $qtd] and not $current"}
-                return if(qtd <= WINDOW_SIZE){
-                    (1..qtd).map{Page(it, it==current)}.toList()
-                }else{
-                    (iniWindow(qtd, current)..endWindow(qtd, current)).map{Page(it, it==current)}.toList()
+            when (qtd) {
+                0 -> {
+                    assert(current == 0) {"Empty pagination should have no current page (0). And not $current"}
+                    return emptyList()
+                }
+                1 -> {
+                    assert(current == 1) {"Pagination with one page should have current page equal to 1. And not $current"}
+                    return listOf(Page(1, true))
+                }
+                else -> {
+                    assert(current in 1..qtd){"Pagination with $qtd should have current page between [1, $qtd] and not $current"}
+                    return if(qtd <= WINDOW_SIZE){
+                        (1..qtd).map{Page(it, it==current)}.toList()
+                    }else{
+                        (iniWindow(qtd, current)..endWindow(qtd, current)).map{Page(it, it==current)}.toList()
+                    }
                 }
             }
         }

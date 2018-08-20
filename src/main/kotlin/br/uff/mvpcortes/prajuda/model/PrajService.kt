@@ -23,7 +23,7 @@ data class PrajService(
     fun removeDocumentDir(str:String)=str.removePrefix("$documentDir/")
 
     companion object {
-        const val REGEX_VALIDATION = "([\\w\\d\\.]+)(/[\\w\\d\\.]+)*(/)?";
+        const val REGEX_VALIDATION = "([\\w\\d\\.]+)(/[\\w\\d\\.]+)*(/)?"
         fun empty()=PrajService(null, "", "", "", "", RepositoryInfo())
     }
 }

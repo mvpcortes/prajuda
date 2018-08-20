@@ -17,15 +17,18 @@ class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
 
     private val logger = loggerFor(HarvesterOrchestrator::class)
 
+
+    companion object {
+        /**
+         * Number of harvesters should be do at same time
+         */
+        private val HARVESTER_WINDOW_COUNT = 10
+    }
+
     /**
      * Define the orchestrator scheduler. We use single thread now. But in the future we will use the parallel or elastic
      */
     private val scheduler = Schedulers.immediate()
-
-    /**
-     * Number of harvesters should be do at same time
-     */
-    private final val HARVESTER_WINDOW_COUNT = 10
 
 
     fun harvesterComplete(){
@@ -53,12 +56,12 @@ class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
     private fun idsToFluxComplete(ids: String)= prajServiceDAO
             .findByIdNullable(ids)
             ?.let{fluxHarvesterProcessor.harvestCompleteFlux(it)}
-            ?:Flux.empty()!!
+            ?:Flux.empty()
 
     private fun idsToFluxDiff(ids: String)= prajServiceDAO
             .findByIdNullable(ids)
             ?.let{fluxHarvesterProcessor.harvestFlux(it)}
-            ?:Flux.empty()!!
+            ?:Flux.empty()
 
     /**
      * Harvester documents from a collections of flux.

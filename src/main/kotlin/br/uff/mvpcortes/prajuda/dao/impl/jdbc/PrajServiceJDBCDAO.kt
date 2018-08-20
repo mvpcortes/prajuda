@@ -14,7 +14,10 @@ import java.sql.ResultSet
 import javax.annotation.PostConstruct
 
 @Repository
-class PrajServiceJDBCDAO (val jdbcTemplate:JdbcTemplate,
+class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
+                          private val simpleJdbcInsert:SimpleJdbcInsert = SimpleJdbcInsert(jdbcTemplate)
+                                  .withTableName(TABLE_NAME)
+                                  .usingGeneratedKeyColumns("id"),
                           val transactionTemplate: TransactionTemplate,
                           val reactiveJdbcTemplate: ReactiveJdbcTemplate= ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
 ): PrajServiceDAO {
@@ -72,11 +75,6 @@ class PrajServiceJDBCDAO (val jdbcTemplate:JdbcTemplate,
                 rs.getString(11)
                 )
     }
-
-    val simpleJdbcInsert = SimpleJdbcInsert(jdbcTemplate)
-            .withTableName(TABLE_NAME)
-            .usingGeneratedKeyColumns("id")
-
     
 
     private fun createParameterSource(prajService:PrajService) = MapSqlParameterSource(mapOf(

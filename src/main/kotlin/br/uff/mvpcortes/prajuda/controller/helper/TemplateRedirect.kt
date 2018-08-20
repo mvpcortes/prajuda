@@ -13,7 +13,7 @@ class TemplateRedirect(val redirect:String="") {
 
     companion object {
         val mapper = ObjectMapper()
-        const val STR_ERROR_ATTR="validation_error";
+        const val STR_ERROR_ATTR="validation_error"
     }
 
     fun withError(bindingResult: BindingResult): TemplateRedirect {
