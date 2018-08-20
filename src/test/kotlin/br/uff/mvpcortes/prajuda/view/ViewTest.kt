@@ -33,10 +33,6 @@ class ViewTest{
 
     val STR_REGEX_FAKE_URL = "^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"
 
-
-//    @MockBean
-//    var prajServiceDAO: PrajServiceDAO? = null
-
     fun get(webDriver: WebDriver, path:String):WebDriver{
 
         //if is htmlUnit, force JS and download images
@@ -55,58 +51,18 @@ class ViewTest{
         return webDriver
     }
 
-//    @Nested
-//    inner class `The main page`{
-//
-//
-//        val listServices = listOf(
-//                PrajService(id="001", name="name = 001"),
-//                PrajService(id="010", name="name = 010"),
-//                PrajService(id="050", name="name = 050"),
-//                PrajService(id="100", name="name = 100"),
-//                PrajService(id="150", name="name = 150"),
-//                PrajService(id="200", name="name = 200"),
-//                PrajService(id="250", name="name = 250"),
-//                PrajService(id="300", name="name = 300"),
-//                PrajService(id="350", name="name = 350")
-//        )
-//
-//
-//        @Test
-//        fun `when load index page then load services`(webDriver:HtmlUnitDriver){
-//            get(webDriver, "index.html")
-//
-//            listServices.forEach { service->
-//                val spanService = webDriver.findElement(By.id(service.id+"_service_id"))
-//                val linkService = webDriver.findElement(By.id(service.id+"_service_name"))
-//
-//                assertThat(spanService.tagName).isEqualTo("span")
-//                assertThat(spanService.text).isEqualTo("#${service.id} ")
-//
-//                assertThat(linkService.tagName).isEqualTo("a")
-//                assertThat(linkService.text).isEqualTo(service.name)
-//                assertThat(linkService.getAttribute("href")).isEqualTo("/service/${service.id}.html")
-//            }
-//
-//            //count elements
-//            val qtd = webDriver.findElements(By.cssSelector(".service_column")).size
-//            assertThat(qtd).isEqualTo(listServices.size)
-//
-//        }
-//    }
-
     @Nested
     inner class `The create or edit service pages`{
 
-        fun fillForm(webDriver: WebDriver, url:String = "https://my.app.io/test"){
-            webDriver.findElement<WebElement>(By.id("name")).let{it.clear(); it.sendKeys("my service test")}
+        fun fillForm(webDriver: WebDriver, name:String = "my service test" , url:String = "https://my.app.io/test"){
+            webDriver.findElement<WebElement>(By.id("name")).let{it.clear(); it.sendKeys(name)}
             webDriver.findElement<WebElement>(By.id("url")).let{it.clear(); it.sendKeys(url)}
             webDriver.findElement<WebElement>(By.id("description")).let{it.clear(); it.sendKeys("service description")}
             webDriver.findElement<WebElement>(By.id("documentDir")).let{it.clear(); it.sendKeys("prajuda")}
         }
 
         @Test
-        fun `when save new service valid then show service data`(webDriver:HtmlUnitDriver){
+        fun when_save_new_service_valid_then_show_service_data(webDriver:HtmlUnitDriver){
             get(webDriver, "service/new.html")
 
             fillForm(webDriver)
@@ -116,7 +72,11 @@ class ViewTest{
             val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
 
-            assertThat(webDriver.findElement(By.id("name")).text).isEqualTo("my service test")
+            assertServiceShow(webDriver)
+        }
+
+        private fun assertServiceShow(webDriver: HtmlUnitDriver, name:String="my service test") {
+            assertThat(webDriver.findElement(By.id("name")).text).isEqualTo(name)
             assertThat(webDriver.findElement(By.id("description")).text).isEqualTo("service description")
             assertThat(webDriver.findElement(By.id("url")).text).isEqualTo("https://my.app.io/test")
             assertThat(webDriver.findElement(By.id("documentDir")).text).isEqualTo("prajuda")
@@ -131,8 +91,6 @@ class ViewTest{
 
             webDriver.findElement(By.id("submit_btn")).click()
 
-            println(webDriver.pageSource)
-
             val itemError = webDriver.findElement(By.xpath("//p[@data-error-for='url' and contains(@class, 'ajax-form-error-showed')]"))
 
             assertThat(itemError.text).isEqualTo("Is not a valid URL")
@@ -140,6 +98,27 @@ class ViewTest{
 
             val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/new.html"))
+        }
+
+        @Test
+        fun `when edit a service with valid values then show service updated data`(webDriver: HtmlUnitDriver){
+            val wait = WebDriverWait(webDriver, 1)
+            when_save_new_service_valid_then_show_service_data(webDriver)
+
+            webDriver.findElementById("edit_btn").click()
+
+            wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)/edit\\.html"))
+
+
+            fillForm(webDriver, name="edited service")
+
+            webDriver.findElement(By.id("submit_btn")).click()
+
+            println(webDriver.pageSource)
+
+            wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
+
+            assertServiceShow(webDriver, name="edited service")
         }
     }
 
@@ -202,60 +181,5 @@ class ViewTest{
     @Test
     fun `verify regex for fake url`(){
         assertThat("http://localhost:4455/fake/1111.html").containsPattern(STR_REGEX_FAKE_URL)
-    }
-
-    @Test
-    fun `when open main page then load title`(webDriver:HtmlUnitDriver) {
-
-        get(webDriver, "/index.html")
-
-        webDriver.findElementById("prajuda_logo").let{
-            assertThat(it.isEnabled).isTrue()
-            assertThat(it.tagName).isEqualTo("img")
-            assertThat(it.getAttribute("alt")).isEqualTo("Prajuda logo")
-        }
-    }
-
-    @Test
-    fun `when click on open menu then show itens`(webDriver: HtmlUnitDriver){
-        get(webDriver, "/index.html")
-
-
-        val navMenu = webDriver.findElement(By.id("navMenuMore"))
-
-        assertThat(navMenu.isEnabled).isTrue()
-        assertThat(navMenu.isDisplayed).isFalse()
-
-
-
-        webDriver.findElementById("navbar_burger").let {
-            assertThat(it.isDisplayed).isTrue()
-            it.click()
-        }
-
-        assertThat(navMenu.isEnabled).isTrue()
-        assertThat(navMenu.isDisplayed).isTrue()
-
-    }
-
-    @Test
-    fun `when click on close menu then hide itens`(webDriver: HtmlUnitDriver){
-        get(webDriver, "/index.html")
-
-        webDriver.findElementById("navbar_burger").let {
-            assertThat(it.isDisplayed).isTrue()
-            it.click()
-        }
-
-        val navMenu = webDriver.findElement(By.id("navMenuMore"))
-        assertThat(navMenu.isDisplayed).isTrue()
-
-        webDriver.findElementById("navbar_burger").let {
-            assertThat(it.isDisplayed).isTrue()
-            it.click()
-        }
-
-        assertThat(navMenu.isDisplayed).isFalse()
-
     }
 }
