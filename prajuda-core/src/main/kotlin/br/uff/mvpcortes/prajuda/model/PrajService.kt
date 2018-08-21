@@ -1,6 +1,5 @@
 package br.uff.mvpcortes.prajuda.model
 
-import br.uff.mvpcortes.prajuda.api.dto.WithId
 import br.uff.mvpcortes.prajuda.model.validation.URL
 import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderImpl.Companion.STR_AJUDA_DIR
 import javax.validation.Valid

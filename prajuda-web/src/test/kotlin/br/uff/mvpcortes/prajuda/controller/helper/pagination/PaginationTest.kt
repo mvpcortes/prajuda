@@ -111,82 +111,82 @@ class PaginationTest {
     }
 
     @Nested
-    inner class `with zero pages`:AbstractPaginationTest(
+    inner class `with zero pages`: AbstractPaginationTest(
             Pagination(Side(null), Side(null)),
             Pagination(0, 0)
     )
 
 
     @Nested
-    inner class `with one page`:AbstractPaginationTest(
+    inner class `with one page`: AbstractPaginationTest(
             Pagination(Side(null), Side(null), createPages(1, 1, 1)),
                     Pagination(1, 1))
 
     @Nested
-    inner class `with two pages and first is current`:AbstractPaginationTest(
+    inner class `with two pages and first is current`: AbstractPaginationTest(
             Pagination(Side(null, false), Side(null, true),
                     createPages(1, 2, 1)),
             Pagination(2, 1)
     )
 
     @Nested
-    inner class `with two pages and second is current`:AbstractPaginationTest(
+    inner class `with two pages and second is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, false),
                     createPages(1,2,2)),
             Pagination(2, 2)
     )
 
     @Nested
-    inner class `with tree pages and second is current`:AbstractPaginationTest(
+    inner class `with tree pages and second is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, true),
                     createPages(1, 3, 2)),
             Pagination(3, 2)
     )
 
     @Nested
-    inner class `with four pages and first is current`:AbstractPaginationTest(
+    inner class `with four pages and first is current`: AbstractPaginationTest(
             Pagination(Side(null, false), Side(null, true),
                     createPages(1, 4, 1)),
             Pagination(4, 1)
     )
 
     @Nested
-    inner class `with four pages and last is current`:AbstractPaginationTest(
+    inner class `with four pages and last is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, false),
                     createPages(1, 4, 4)),
             Pagination(4, 4)
     )
 
     @Nested
-    inner class `with four pages and second is current`:AbstractPaginationTest(
+    inner class `with four pages and second is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, true),
                     createPages(1, 4, 2)),
             Pagination(4, 2)
     )
 
     @Nested
-    inner class `with fifth pages and third is current`:AbstractPaginationTest(
+    inner class `with fifth pages and third is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, true),
                     createPages(1, 5, 3)),
             Pagination(5, 3)
     )
 
     @Nested
-    inner class `with ninth pages and fifth is current`:AbstractPaginationTest(
+    inner class `with ninth pages and fifth is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, true),
                     createPages(1, 9, 5)),
             Pagination(9, 5)
     )
 
     @Nested
-    inner class `with ninth pages and first is current`:AbstractPaginationTest(
+    inner class `with ninth pages and first is current`: AbstractPaginationTest(
             Pagination(Side(null, false), Side(null, true),
                     createPages(1, 9, 1)),
             Pagination(9, 1)
     )
 
     @Nested
-    inner class `with ninth pages and last is current`:AbstractPaginationTest(
+    inner class `with ninth pages and last is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(null, false),
                     createPages(1, 9, 9)),
             Pagination(9, 9)
@@ -194,21 +194,21 @@ class PaginationTest {
 
 
     @Nested
-    inner class `with ten pages and first is current`:AbstractPaginationTest(
+    inner class `with ten pages and first is current`: AbstractPaginationTest(
             Pagination(Side(null, false), Side(Page(10, false), true),
                     createPages(1, 8, 1)),
             Pagination(10, 1)
     )
 
     @Nested
-    inner class `with ten pages and second_is current`:AbstractPaginationTest(
+    inner class `with ten pages and second_is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(Page(10, false), true),
                     createPages(1, 8, 2)),
             Pagination(10, 2)
     )
 
     @Nested
-    inner class `with ten pages and third_is current`:AbstractPaginationTest(
+    inner class `with ten pages and third_is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(Page(10, false), true),
                     createPages(1, 8, 3)),
             Pagination(10, 3)
@@ -216,126 +216,126 @@ class PaginationTest {
 
 
     @Nested
-    inner class `with ten pages and fourth_is current`:AbstractPaginationTest(
+    inner class `with ten pages and fourth_is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(Page(10, false), true),
                     createPages(1, 8, 4)),
             Pagination(10, 4)
     )
 
     @Nested
-    inner class `with ten pages and fifth is current`:AbstractPaginationTest(
+    inner class `with ten pages and fifth is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(Page(10, false), true),
                     createPages(1, 8, 5)),
             Pagination(10, 5)
     )
 
     @Nested
-    inner class `with ten pages and sixth is current`:AbstractPaginationTest(
+    inner class `with ten pages and sixth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(3, 10, 6)),
             Pagination(10, 6)
     )
 
     @Nested
-    inner class `with ten pages and seventh is current`:AbstractPaginationTest(
+    inner class `with ten pages and seventh is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(3, 10, 7)),
             Pagination(10, 7)
     )
 
     @Nested
-    inner class `with ten pages and eigth is current`:AbstractPaginationTest(
+    inner class `with ten pages and eigth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(3, 10, 8)),
             Pagination(10, 8)
     )
 
     @Nested
-    inner class `with ten pages and nineth is current`:AbstractPaginationTest(
+    inner class `with ten pages and nineth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(3, 10, 9)),
             Pagination(10, 9)
     )
 
     @Nested
-    inner class `with ten pages and last is current`:AbstractPaginationTest(
+    inner class `with ten pages and last is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, false),
                     createPages(3, 10, 10)),
             Pagination(10, 10)
     )
 
     @Nested
-    inner class `with twenty pages and first is current`:AbstractPaginationTest(
+    inner class `with twenty pages and first is current`: AbstractPaginationTest(
             Pagination(Side(null, false), Side(Page(20, false), true),
                     createPages(1, 8, 1)),
             Pagination(20, 1)
     )
 
     @Nested
-    inner class `with twenty pages and fifth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and fifth is current`: AbstractPaginationTest(
             Pagination(Side(null, true), Side(Page(20, false), true),
                     createPages(1, 8, 5)),
             Pagination(20, 5)
     )
 
     @Nested
-    inner class `with twenty pages and sixth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and sixth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(3, 9, 6)),
             Pagination(20, 6)
     )
 
     @Nested
-    inner class `with twenty pages and seventh is current`:AbstractPaginationTest(
+    inner class `with twenty pages and seventh is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(4, 10, 7)),
             Pagination(20, 7)
     )
 
     @Nested
-    inner class `with twenty pages and eighth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and eighth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(5, 11, 8)),
             Pagination(20, 8)
     )
 
     @Nested
-    inner class `with twenty pages and nineth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and nineth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(6, 12, 9)),
             Pagination(20, 9)
     )
 
     @Nested
-    inner class `with twenty pages and tenth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and tenth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(7, 13, 10)),
             Pagination(20, 10)
     )
 
     @Nested
-    inner class `with twenty pages and eleventh is current`:AbstractPaginationTest(
+    inner class `with twenty pages and eleventh is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(8, 14, 11)),
             Pagination(20, 11)
     )
 
     @Nested
-    inner class `with twenty pages and tweteenth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and tweteenth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(9, 15, 12)),
             Pagination(20, 12)
     )
 
     @Nested
-    inner class `with twenty pages and thirteenth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and thirteenth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(10, 16, 13)),
             Pagination(20, 13)
     )
 
     @Nested
-    inner class `with twenty pages and fourteenth is current`:AbstractPaginationTest(
+    inner class `with twenty pages and fourteenth is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(11, 17, 14)),
             Pagination(20, 14)
@@ -343,42 +343,42 @@ class PaginationTest {
 
 
     @Nested
-    inner class `with twenty pages and fifthteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and fifthteen is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(Page(20, false), true),
                     createPages(12, 18, 15)),
             Pagination(20, 15)
     )
 
     @Nested
-    inner class `with twenty pages and sixthteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and sixthteen is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(13, 20, 16)),
             Pagination(20, 16)
     )
 
     @Nested
-    inner class `with twenty pages and seventhteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and seventhteen is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(13, 20, 17)),
             Pagination(20, 17)
     )
 
     @Nested
-    inner class `with twenty pages and eigthteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and eigthteen is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(13, 20, 18)),
             Pagination(20, 18)
     )
 
     @Nested
-    inner class `with twenty pages and ninethteen is current`:AbstractPaginationTest(
+    inner class `with twenty pages and ninethteen is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, true),
                     createPages(13, 20, 19)),
             Pagination(20, 19)
     )
 
     @Nested
-    inner class `with twenty pages and twethty is current`:AbstractPaginationTest(
+    inner class `with twenty pages and twethty is current`: AbstractPaginationTest(
             Pagination(Side(Page(1, false), true), Side(null, false),
                     createPages(13, 20, 20)),
             Pagination(20, 20)

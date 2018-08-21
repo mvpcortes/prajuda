@@ -1,8 +1,8 @@
 //package br.uff.mvpcortes.prajuda.harvester.manager_old
 //
-//import org.assertj.core.api.Assertions.assertThat
-//import org.junit.jupiter.api.DisplayName
-//import org.junit.jupiter.api.Test
+//import org.assertj.core.br.uff.mvpcortes.prajuda.api.Assertions.assertThat
+//import org.junit.jupiter.br.uff.mvpcortes.prajuda.api.DisplayName
+//import org.junit.jupiter.br.uff.mvpcortes.prajuda.api.Test
 //import org.reactivestreams.Subscriber
 //import org.reactivestreams.Subscription
 //import reactor.core.publisher.Flux

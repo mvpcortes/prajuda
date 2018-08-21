@@ -31,8 +31,8 @@ class FakeApi{
                         @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) val fieldDate:LocalDate=LocalDate.now()){
         companion object {
             val fomatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")!!
-            fun withId(id:Long)= FakeData(id, "string $id", abs(id)+100, LocalDate.of(2018, 1, 1).plusDays(id))
-            fun empty()= FakeData(id=0, fieldString = "", fieldNumber = 0, fieldDate = LocalDate.now())
+            fun withId(id:Long)= FakeData(id, "string $id", abs(id) + 100, LocalDate.of(2018, 1, 1).plusDays(id))
+            fun empty()= FakeData(id = 0, fieldString = "", fieldNumber = 0, fieldDate = LocalDate.now())
         }
 
         fun getStrDate():String= fomatter.format(fieldDate)
@@ -41,12 +41,12 @@ class FakeApi{
     data class FakeResponse(val id:String)
 
     @PostMapping()
-    fun defaultPost(@Valid value:FakeData, bindingResult: BindingResult): Mono<ResponseEntity<Any>> {
+    fun defaultPost(@Valid value: FakeData, bindingResult: BindingResult): Mono<ResponseEntity<Any>> {
         logger.info("Try save fakedata")
         return bindingResult.toErrorMessages()
                 ?.let{ResponseEntity.badRequest().body(it) as ResponseEntity<Any>}
                 ?.let{Mono.fromSupplier{ it } }
-                ?: Mono.fromSupplier {  ResponseEntity.ok().body(FakeResponse((Random().nextInt(101)+1).toString())) as ResponseEntity<Any> }
+                ?: Mono.fromSupplier {  ResponseEntity.ok().body(FakeResponse((Random().nextInt(101) + 1).toString())) as ResponseEntity<Any> }
     }
 
 }

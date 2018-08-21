@@ -1,7 +1,5 @@
 package br.uff.mvpcortes.prajuda.model
 
-import br.uff.mvpcortes.prajuda.api.dto.WithId
-
 class PrajDocument (
         override var id: String? = null,
         var content: String = "",

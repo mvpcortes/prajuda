@@ -28,7 +28,7 @@ class TemplateRedirect(val redirect:String="") {
                 .queryParams(mapParams)
                 .build().toUriString()
 
-    fun addParam(name: String, obj: Any): TemplateRedirect{
+    fun addParam(name: String, obj: Any): TemplateRedirect {
         mapParams[name] = mapper.writeValueAsString(obj)
         return this
     }

@@ -99,7 +99,7 @@
        versions of dependency jars are used for compilation
        and packaging into the distribution.  Rather than placing
        a version in your dependencies, look here first to see if
-       its already strongly defined in dspace-parent and dspace-api.
+       its already strongly defined in dspace-parent and dspace-br.uff.mvpcortes.prajuda.api.
     -->
     <dependencyManagement>
         <dependencies>
@@ -161,6 +161,11 @@
                 <groupId>com.codeborne</groupId>
                 <artifactId>phantomjsdriver</artifactId>
                 <version>${phantomjsdriver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>br.uff.mvpcortes</groupId>
+                <artifactId>prajuda-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -230,6 +235,17 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-surefire-provider</artifactId>
+                            <version>1.2.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

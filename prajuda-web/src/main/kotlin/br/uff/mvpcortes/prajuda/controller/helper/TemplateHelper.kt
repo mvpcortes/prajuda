@@ -11,19 +11,19 @@ class TemplateHelper(private val model:Model, private val template:String="main_
         val mapper=ObjectMapper()
     }
 
-    fun withPage(page:String):TemplateHelper{
+    fun withPage(page:String): TemplateHelper {
         model.addAttribute("layout_page", page)
         return this
     }
 
-    fun withAttrNotNull(name:String, obj:Any?):TemplateHelper{
+    fun withAttrNotNull(name:String, obj:Any?): TemplateHelper {
         if(obj != null){
             model.addAttribute(name, obj)
         }
         return this
     }
 
-    fun withAttr(name:String, obj:Any):TemplateHelper{
+    fun withAttr(name:String, obj:Any): TemplateHelper {
         model.addAttribute(name, obj)
         return this
     }

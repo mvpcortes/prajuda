@@ -5,8 +5,6 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
 import reactor.core.publisher.Mono
-import reactor.core.publisher.toMono
-import java.util.function.Supplier
 
 data class ErrorMessage (val field:String, val message:String, var invalidValue:String?){
 
@@ -25,7 +23,11 @@ data class ErrorMessage (val field:String, val message:String, var invalidValue:
     companion object {
         fun toErrorMessages(bindingResult:BindingResult):Sequence<ErrorMessage> =
                 bindingResult.allErrors.asSequence()
-                    .map{if(it is FieldError){ErrorMessage(it)}else{ErrorMessage(it as ObjectError)}}
+                    .map{if(it is FieldError){
+                        ErrorMessage(it)
+                    }else{
+                        ErrorMessage(it as ObjectError)
+                    }}
 
         fun toErrorMessagesMap(bindingResult: BindingResult)=
                 toErrorMessages(bindingResult).associate { it.field to it }
