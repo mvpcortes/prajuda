@@ -11,7 +11,7 @@ import reactor.core.scheduler.Schedulers
 import java.util.function.Consumer
 
 @Service
-class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
+    class HarvesterOrchestrator(val fluxHarvesterProcessor: FluxHarvesterProcessor,
                             val harvestedConsumer:Consumer<Harvested>,
                             val prajServiceDAO:PrajServiceDAO) {
 
