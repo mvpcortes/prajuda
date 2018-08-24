@@ -1,0 +1,12 @@
+description = "Prajuda Worker Module"
+
+apply plugin: "org.springframework.boot"
+
+dependencies{
+	compile	project	(":prcore")
+	compile		"mysql:mysql-connector-java"
+	compile		"com.fasterxml.jackson.module:jackson-module-kotlin"
+	compile 	"org.springframework.boot:spring-boot-starter-webflux"
+	compile		"io.projectreactor:reactor-core"
+	testCompile "io.projectreactor:reactor-test"
+}

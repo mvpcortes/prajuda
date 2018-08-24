@@ -17,6 +17,20 @@ target
 *.iml
 *.ipr
 
+### gradle ###
+.gradle/**
+prajuda-core/.gradle/**
+prajuda-web/.gradle/**
+prajuda-worker/.gradle/**
+build
+prajuda-core/build/**
+prajuda-web/build/**
+prajuda-worker/build/**
+out/**
+prajuda-core/out/**
+prajuda-web/out/**
+prajuda-worker/out/**
+
 ### NetBeans ###
 /nbproject/private/
 /build/

@@ -1,0 +1,16 @@
+description = "Prajuda core module"
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies{
+	compile		"org.springframework.boot:spring-boot-starter-jdbc"
+	compile 	"javax.validation:validation-api"
+	compile 	"org.eclipse.jgit:org.eclipse.jgit"
+	compile 	"org.flywaydb:flyway-core"
+	compile		"io.projectreactor:reactor-core"
+	testCompile "io.projectreactor:reactor-test"
+
+}

@@ -1,0 +1,104 @@
+buildscript {
+
+    ext {
+        kotlinVersion 			= '1.2.51'
+        springBootVersion 		= '2.0.4.RELEASE'
+        jgitVersion 			= '5.0.2.201807311906-r'
+        mockitoKotlinVersion	= '1.6.0'
+        seleniumJupiterVersion	= '2.2.0'
+        phantomjsdriverVersion 	= '1.4.4'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+//        classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+    }
+}
+
+
+allprojects {
+
+    group = "br.uff.mvpcortes"
+    version = "0.1rc1"
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: "idea"
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "kotlin"
+
+    //https://spring.io/guides/gs/multi-module/
+    dependencyManagement {
+        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+    }
+
+}
+
+
+subprojects{
+
+    apply plugin: "kotlin-spring"
+
+    sourceCompatibility = 1.8
+
+    compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+
+    compileTestKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+
+    dependencies {
+        compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+        compile("org.jetbrains.kotlin:kotlin-reflect")
+        testCompile('org.springframework.boot:spring-boot-starter-test'){
+            exclude group: 'junit', module: 'junit'
+        }
+        testCompile ('io.projectreactor:reactor-test:3.1.8.RELEASE'){
+            exclude group: 'junit', module: 'junit'
+        }
+        testCompile	"org.junit.jupiter:junit-jupiter-params"
+        testCompile	"org.junit.jupiter:junit-jupiter-engine"
+        testCompile "com.nhaarman:mockito-kotlin:${mockitoKotlinVersion}"
+        testCompile	"com.h2database:h2"
+        compileOnly	"org.springframework.boot:spring-boot-configuration-processor"
+    }
+
+    dependencyManagement {
+        dependencies {
+            dependency "${group}:prajuda_core:${version}"
+            dependency "${group}:prajuda_web:${version}"
+            dependency "${group}:prajuda_worker:${version}"
+            dependency "org.eclipse.jgit:org.eclipse.jgit:${jgitVersion}"
+            dependency "io.github.bonigarcia:selenium-jupiter:${seleniumJupiterVersion}"
+            dependency "com.codeborne:phantomjsdriver:${phantomjsdriverVersion}"
+        }
+
+    }
+}
+
+task cleanAll {
+    subprojects.each {
+        it.afterEvaluate {
+            def cleanTask = it.tasks.findByName('clean')
+            if (cleanTask) {
+                dependsOn(cleanTask)
+            }
+        }
+    }
+}

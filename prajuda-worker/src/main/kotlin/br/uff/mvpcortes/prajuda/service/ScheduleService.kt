@@ -14,7 +14,7 @@ class ScheduleService(val harvesterSingleRunSection: HarvesterSingleRunSection){
      * falha
      */
 
-    @Scheduled(fixedDelay= 86400000L)
+//    @Scheduled(fixedDelay= 86400000L)
     fun runHavester(){
         harvesterSingleRunSection.harvesterDiff()
     }
