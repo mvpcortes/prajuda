@@ -40,6 +40,9 @@ allprojects {
         imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
     }
 
+    test {
+        useJUnitPlatform()
+    }
 }
 
 
@@ -72,6 +75,7 @@ subprojects{
         testCompile ('io.projectreactor:reactor-test:3.1.8.RELEASE'){
             exclude group: 'junit', module: 'junit'
         }
+        testCompile "org.junit.jupiter:junit-jupiter-api"
         testCompile	"org.junit.jupiter:junit-jupiter-params"
         testCompile	"org.junit.jupiter:junit-jupiter-engine"
         testCompile "com.nhaarman:mockito-kotlin:${mockitoKotlinVersion}"
