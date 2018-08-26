@@ -25,4 +25,16 @@ interface PrajDocumentDAO {
 
     fun deleteByServiceId(id: String)
 
+    /**
+     * Delete all documents. Used to test
+     */
+    fun deleteAll()
+
+    /**
+     * return qtd of documents in DB. Used to tests
+     */
+    fun count(): Long
+
+    fun findById(id: String): PrajDocument?
+
 }

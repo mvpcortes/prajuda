@@ -62,7 +62,10 @@ class HarvesterOrchestratorTest{
 
     private fun createFlux(it: InvocationOnMock, vararg operations: HarvestedOp): Flux<Harvested> {
         val arg = it.arguments[0] as PrajService
-        val operations2 = operations.mapIndexed { i, element-> HarvestedFixture.create(element, arg.name, i)}
+        val operations2 = operations.mapIndexed { i, element-> HarvestedFixture.create(
+                element,
+                arg.name,
+                i)}
         return Flux.just(*operations2.toTypedArray())
     }
 

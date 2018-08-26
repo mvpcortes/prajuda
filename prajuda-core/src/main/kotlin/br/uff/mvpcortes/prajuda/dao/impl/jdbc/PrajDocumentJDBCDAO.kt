@@ -24,6 +24,16 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
         const val COLUMN_PATH = "path"
         const val COLUMN_SERVICE_ID = "service_id"
         const val COLUMN_SERVICE_NAME = "service_name"
+        val SELECT_HEADER = """
+            SELECT
+            $COLUMN_ID,
+            $COLUMN_SERVICE_NAME,
+            $COLUMN_SERVICE_ID,
+            $COLUMN_PATH,
+            $COLUMN_CONTENT,
+            $COLUMN_TAG
+            FROM $TABLE_NAME
+        """.trimIndent()
     }
 
     private val logger = loggerFor(PrajDocumentJDBCDAO::class)
@@ -61,6 +71,10 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
         jdbcTemplate.update("DELETE FROM $TABLE_NAME WHERE $COLUMN_SERVICE_ID = ?", id)
     }
 
+    override fun count(): Long {
+        return jdbcTemplate.queryForObject("SELECT count(*) FROM $TABLE_NAME", Long::class.java)!!
+    }
+
     override fun updateTag(serviceId: String, tag: String):Int {
         return jdbcTemplate.update(
                 """
@@ -85,6 +99,11 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
             doc.id = id
             delete(doc)
         }
+    }
+
+
+    override fun deleteAll() {
+        jdbcTemplate.update("DELETE FROM $TABLE_NAME ")
     }
 
     private fun findIdByServiceAndPath(serviceId: String, path: String):String? =
@@ -134,14 +153,13 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
         return doc
     }
 
-    override fun findByService(id: String):List<PrajDocument> = jdbcTemplate.query("""SELECT
-        $COLUMN_ID,
-        $COLUMN_SERVICE_NAME,
-        $COLUMN_SERVICE_ID,
-        $COLUMN_PATH,
-        $COLUMN_CONTENT,
-        $COLUMN_TAG
-        FROM $TABLE_NAME
+    override fun findById(id: String) = jdbcTemplate.query("""
+        $SELECT_HEADER
+        WHERE $COLUMN_ID = ?
+    """.trimIndent(), arrayOf(id), PrajDocumentRowMapper).firstOrNull()
+
+    override fun findByService(id: String):List<PrajDocument> = jdbcTemplate.query("""
+        $SELECT_HEADER
         WHERE $COLUMN_SERVICE_ID = ?
     """.trimMargin(), arrayOf(id), PrajDocumentRowMapper)
 }
