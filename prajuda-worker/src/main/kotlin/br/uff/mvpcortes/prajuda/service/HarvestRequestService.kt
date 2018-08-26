@@ -10,6 +10,7 @@ import br.uff.mvpcortes.prajuda.model.HarvestRequest
 import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryService
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 import java.time.LocalDateTime
 import java.util.concurrent.ConcurrentHashMap
@@ -26,9 +27,10 @@ class HarvestRequestService (
     private val logger = loggerFor(HarvestRequestService::class)
 
     /**
-     * Define the orchestrator scheduler. We use single thread now. But in the future we will use the parallel or elastic
+     * Defines scheduler. We use single thread now. But in the future we will use the parallel or elastic
      */
-    private val scheduler = Schedulers.immediate()
+    private val scheduler = workerProperties.buildScheduler()
+
 
     fun harvesterWorker(){
         logger.info("Using prajuda directory: {}", workDirectoryService.workDirectory())

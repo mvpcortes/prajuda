@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes=[WorkerTestConfiguration::class])
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("A HarvestRequestService in integration")
 class HarvestRequestServiceIntegrationTest{
 
@@ -94,7 +94,6 @@ class HarvestRequestServiceIntegrationTest{
         assertThat(prajServiceSaved.repositoryInfo.lastModified).isAfterOrEqualTo(prajService.repositoryInfo.lastModified)
     }
 
-    @Disabled
     @Test
     fun `when try havester-diff a git repository then update documents on DB`() {
 
@@ -116,7 +115,7 @@ class HarvestRequestServiceIntegrationTest{
         val list = prajDocumentDAO.findByService(prajService.id!!).sortedBy { prajDocument -> prajDocument.path }
 
 
-        assertThat(list).hasSize(3)
+        assertThat(list).hasSize(2)
 
         list[0].let{
             assertThat(it.path).isEqualTo("main.md")
@@ -127,19 +126,17 @@ class HarvestRequestServiceIntegrationTest{
         }
 
         list[1].let{
-            assertThat(it.path).isEqualTo("main.md")
-            assertThat(it.tag).isEqualTo("2")
-            assertThat(it.serviceId).isEqualTo(prajService.id)
-            assertThat(it.serviceName).isEqualTo(prajService.name)
-            assertThat(it.id).isNotNull()
-        }
-
-        list[2].let{
             assertThat(it.path).isEqualTo("src/code.md")
             assertThat(it.tag).isEqualTo("2")
             assertThat(it.serviceId).isEqualTo(prajService.id)
             assertThat(it.serviceName).isEqualTo(prajService.name)
             assertThat(it.id).isNotNull()
         }
+
+        //verify service changes
+        val prajServiceChanged = prajServiceDAO.findByIdNullable(prajService.id!!)!!
+
+        assertThat(prajServiceChanged.repositoryInfo.lastTag).isEqualTo("2")
+        assertThat(prajServiceChanged.repositoryInfo.lastModified).isAfterOrEqualTo(prajService.repositoryInfo.lastModified)
     }
 }
