@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration
 class WorkerConfiguration {
 
     @Bean
-    fun workerDirectoryProvider() = WorkDirectoryProviderImpl()
+    fun workerDirectoryProvider(workerProperties: WorkerProperties) = WorkDirectoryProviderImpl(workerProperties)
 }

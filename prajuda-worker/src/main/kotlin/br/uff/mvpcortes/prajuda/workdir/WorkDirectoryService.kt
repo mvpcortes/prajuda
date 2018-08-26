@@ -11,6 +11,8 @@ import java.io.File
 @Service
 class WorkDirectoryService(private val workDirectoryProvider: WorkDirectoryProvider){
 
+    fun workDirectory(): File = workDirectoryProvider.workDirectory()
+
     fun getWorkDirectoryForHarvester(idHarvester:String) =
             File(workDirectoryProvider.workDirectory(), idHarvester)
                     .takeIf { (it.exists() && it.isDirectory) || it.mkdir()}

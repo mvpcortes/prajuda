@@ -1,14 +1,13 @@
 package br.uff.mvpcortes.prajuda.workdir
 
+import br.uff.mvpcortes.prajuda.config.WorkerProperties
 import br.uff.mvpcortes.prajuda.model.PrajService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import java.io.File
 
 class WorkDirectoryProviderImpl(
-        @Value("\${prajuda.work-dir:#{null}}")
-        private val strWorkDirProperties:String? = null,
+        private val workerProperties: WorkerProperties,
         private val rootDir:File=File("/"),
         private val homeDir:File=File(System.getProperty("user.home"))
 ): WorkDirectoryProvider {
@@ -38,7 +37,7 @@ class WorkDirectoryProviderImpl(
 
     //
     fun getWorkDirInProperties(): File? {
-        return  strWorkDirProperties
+        return  workerProperties.workerDir
                     ?.takeIf { !it.isBlank() }
                     ?.let { File(it) }
                     ?.takeIf { existsDirectoryOrCreate(it) }

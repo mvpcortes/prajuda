@@ -4,11 +4,12 @@ import br.uff.mvpcortes.prajuda.config.WorkerProperties
 import br.uff.mvpcortes.prajuda.dao.HarvestRequestDAO
 import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
 import br.uff.mvpcortes.prajuda.harvester.FluxHarvesterProcessor
+import br.uff.mvpcortes.prajuda.harvester.HarvestedFixture
 import br.uff.mvpcortes.prajuda.harvester.consumer.SaveHarvestedDB
 import br.uff.mvpcortes.prajuda.model.HarvestType
-import br.uff.mvpcortes.prajuda.harvester.HarvestedFixture
 import br.uff.mvpcortes.prajuda.model.fixture.HarvesterRequestFixture
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
+import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryService
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -34,12 +35,15 @@ class HarvestRequestServiceTest{
 
     val prajServiceDAO : PrajServiceDAO = mock{ }
 
+    val workDirectoryService : WorkDirectoryService = mock{}
+
     val harvestRequestService=HarvestRequestService(
             harvestRequestDAO=harvestRequestDAO,
             workerProperties = workerProperties,
             harvestedConsumer = harvestedConsumer,
             harvesterTypeService = harvesterTypeService,
-            prajServiceDAO =  prajServiceDAO)
+            prajServiceDAO =  prajServiceDAO,
+            workDirectoryService = workDirectoryService)
 
 
     @Test

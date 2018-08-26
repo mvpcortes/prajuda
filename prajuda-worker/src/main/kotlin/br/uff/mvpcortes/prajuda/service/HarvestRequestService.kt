@@ -7,6 +7,7 @@ import br.uff.mvpcortes.prajuda.harvester.Harvested
 import br.uff.mvpcortes.prajuda.harvester.consumer.SaveHarvestedDB
 import br.uff.mvpcortes.prajuda.loggerFor
 import br.uff.mvpcortes.prajuda.model.HarvestRequest
+import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryService
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Schedulers
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class HarvestRequestService (
         val harvestRequestDAO: HarvestRequestDAO,
+        val workDirectoryService: WorkDirectoryService,
         val workerProperties: WorkerProperties,
         val prajServiceDAO: PrajServiceDAO,
         val harvesterTypeService:HarvesterTypeService,
@@ -29,6 +31,7 @@ class HarvestRequestService (
     private val scheduler = Schedulers.immediate()
 
     fun harvesterWorker(){
+        logger.info("Using prajuda directory: {}", workDirectoryService.workDirectory())
         while(true) {
             internalHarvesterWorker()
             Thread.sleep(workerProperties.delayForHarvestRequest)
