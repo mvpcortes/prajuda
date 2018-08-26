@@ -23,7 +23,7 @@ internal class HarvestRequestTest{
         }
 
         @Nested
-        inner class `then can start request`(){
+        inner class `then can start request` {
             val started = harvesterRequest.toStarted()
 
             @Test

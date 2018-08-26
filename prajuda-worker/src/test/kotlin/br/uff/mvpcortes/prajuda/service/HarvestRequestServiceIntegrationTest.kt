@@ -52,7 +52,7 @@ class HarvestRequestServiceIntegrationTest{
     fun `when try havester-complete a git repository then create documents on DB`(){
 
         val harvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!)
-        harvestRequestService.harvestRequestDAO.save(harvestRequest!!)
+        harvestRequestService.harvestRequestDAO.save(harvestRequest)
 
         assertThat(prajService.repositoryInfo.lastTag).isNull()
 
@@ -100,7 +100,7 @@ class HarvestRequestServiceIntegrationTest{
     fun `when try havester-diff a git repository then update documents on DB`() {
 
         val harvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!)
-        harvestRequestService.harvestRequestDAO.save(harvestRequest!!)
+        harvestRequestService.harvestRequestDAO.save(harvestRequest)
 
         assertThat(prajService.repositoryInfo.lastTag).isNull()
 
@@ -109,7 +109,7 @@ class HarvestRequestServiceIntegrationTest{
 
         //create a new harvesterRequest
         val newHarvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!, harvestType = HarvestType.DIFF)
-        harvestRequestService.harvestRequestDAO.save(newHarvestRequest!!)
+        harvestRequestService.harvestRequestDAO.save(newHarvestRequest)
 
         gitTestRepository.changeMasterTo("2")
         harvestRequestService.internalHarvesterWorker()

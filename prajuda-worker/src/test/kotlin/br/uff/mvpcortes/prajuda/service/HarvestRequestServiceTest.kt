@@ -65,7 +65,7 @@ class HarvestRequestServiceTest{
     }
 
     @Nested
-    inner class  `with a request`(){
+    inner class  `with a request` {
         val harvestRequest = HarvesterRequestFixture.open()
 
         val prajService = PrajServiceFixture.withName("XUXU")
