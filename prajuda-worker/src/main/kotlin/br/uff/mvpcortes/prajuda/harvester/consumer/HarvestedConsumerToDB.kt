@@ -17,7 +17,7 @@ class HarvestedConsumerToDB (val prajDocumentDAO: PrajDocumentDAO) : SaveHarvest
     override fun accept(h: Harvested) {
         when (h.op) {
             HarvestedOp.DELETED -> {prajDocumentDAO.delete(h.doc)}
-            HarvestedOp.UPDATED -> {prajDocumentDAO.save(h.doc)}
+            HarvestedOp.UPDATED -> {prajDocumentDAO.saveTrackingServiceAndPath(h.doc)}
             HarvestedOp.NO_OP -> { logger.warn("Found a noop: {}", h.doc)}
         }
     }

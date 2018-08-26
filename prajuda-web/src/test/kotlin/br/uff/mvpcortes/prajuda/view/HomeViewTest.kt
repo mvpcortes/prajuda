@@ -72,8 +72,6 @@ class HomeViewTest{
         fun `when load index page then load services`(webDriver:HtmlUnitDriver){
             get(webDriver, "index.html")
 
-            println(webDriver.pageSource)
-
             listServices.forEach { service->
                 val spanService = webDriver.findElement(By.id(service.id+"_service_id"))
                 val linkService = webDriver.findElement(By.id(service.id+"_service_name"))

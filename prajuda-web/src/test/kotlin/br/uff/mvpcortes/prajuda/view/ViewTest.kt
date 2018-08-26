@@ -67,7 +67,6 @@ class ViewTest{
 
             fillForm(webDriver)
 
-            println(webDriver.pageSource)
 
             webDriver.findElement(By.id("submit_btn")).click()
 
@@ -115,8 +114,6 @@ class ViewTest{
             fillForm(webDriver, name="edited service")
 
             webDriver.findElement(By.id("submit_btn")).click()
-
-            println(webDriver.pageSource)
 
             wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
 

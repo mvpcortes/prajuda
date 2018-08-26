@@ -1,6 +1,8 @@
 package br.uff.mvpcortes.prajuda.dao.impl.jdbc
 
+import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
 import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
+import br.uff.mvpcortes.prajuda.model.PrajDocument
 import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
 import org.assertj.core.api.Assertions.assertThat
@@ -20,6 +22,10 @@ class PrajServiceJDBCDAOTest{
 
     @Autowired
     private lateinit var prajServiceDAO: PrajServiceDAO
+
+
+    @Autowired
+    private lateinit var prajDocumentJDBCDAO: PrajDocumentDAO
 
     @Test
     fun `we can get they from database`(){
@@ -142,7 +148,65 @@ class PrajServiceJDBCDAOTest{
             assertThat(prajServiceDeleted).isNull()
         }
 
+        @Nested
+        inner class `and update tag`{
 
+            @Test
+            fun `then change in database`(){
+                assertThat(prajServiceSaved.repositoryInfo.lastTag).isNull()
+
+                prajServiceDAO.updateTag(prajServiceSaved.id!!, "XUXU XAXA")
+
+                val prajServiceUpdated = prajServiceDAO.findByIdNullable(prajServiceSaved.id!!)!!
+
+                assertThat(prajServiceUpdated.repositoryInfo.lastTag).isEqualTo("XUXU XAXA")
+                assertThat(prajServiceUpdated.repositoryInfo.lastModified).isAfterOrEqualTo(prajServiceSaved.repositoryInfo.lastModified)
+            }
+
+            @Nested
+            inner class `and has 3 documents`{
+
+                val listDocuments:MutableList<PrajDocument> = mutableListOf()
+
+                fun createDocument(id:Int,
+                                   service:PrajService)= PrajDocument(
+                        content = "CONTENT_$id",
+                        tag = "TAG 3 DOC - $id",
+                        path = "TAG/$id",
+                        serviceId = prajService.id,
+                        serviceName= prajService.name
+                )
+
+                @BeforeEach
+                fun init(){
+                    listDocuments.add(createDocument(1, prajServiceSaved))
+                    listDocuments.add(createDocument(2, prajServiceSaved))
+                    listDocuments.add(createDocument(3, prajServiceSaved))
+                    listDocuments.forEach{prajDocumentJDBCDAO.save(it)}
+                }
+
+                @AfterEach
+                fun drop(){
+                    listDocuments.forEach{prajDocumentJDBCDAO.delete(it)}
+                }
+
+                @Test
+                fun ` and update tag then update tag of 3 documents`(){
+                    listDocuments.forEachIndexed { index, prajDocument ->
+                        assertThat(prajDocument.tag).isEqualTo("TAG 3 DOC - ${index + 1}")
+                    }
+                    prajDocumentJDBCDAO.updateTag(prajServiceSaved.id!!, "NEW TAG DOC")
+
+                    val listDocumentsSaved = prajDocumentJDBCDAO.findByService(prajServiceSaved.id!!)
+
+                    listDocumentsSaved.forEach {
+                        assertThat(it.tag).isEqualTo("NEW TAG DOC")
+                    }
+                }
+            }
+
+        }
     }
+
 
  }

@@ -5,6 +5,7 @@ import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
 import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
 import br.uff.mvpcortes.prajuda.harvester.git.GitTestRepository
 import br.uff.mvpcortes.prajuda.model.HarvestRequest
+import br.uff.mvpcortes.prajuda.model.HarvestType
 import br.uff.mvpcortes.prajuda.model.fixture.HarvesterRequestFixture
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
 import org.assertj.core.api.Assertions.assertThat
@@ -33,13 +34,10 @@ class HarvestRequestServiceIntegrationTest{
     @Autowired
     lateinit var harvestRequestService: HarvestRequestService
 
-    var harvestRequest:HarvestRequest?=null
 
     @BeforeEach
     fun init(){
         prajServiceDAO.save(prajService)
-        harvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!)
-        harvestRequestService.harvestRequestDAO.save(harvestRequest!!)
         gitTestRepository.createRepository()
     }
 
@@ -51,7 +49,10 @@ class HarvestRequestServiceIntegrationTest{
     }
 
     @Test
-    fun `when try havester complete a empty git repository then create documents on DB`(){
+    fun `when try havester-complete a git repository then create documents on DB`(){
+
+        val harvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!)
+        harvestRequestService.harvestRequestDAO.save(harvestRequest!!)
 
         assertThat(prajService.repositoryInfo.lastTag).isNull()
 
@@ -94,5 +95,52 @@ class HarvestRequestServiceIntegrationTest{
         assertThat(prajServiceSaved.repositoryInfo.lastModified).isAfterOrEqualTo(prajService.repositoryInfo.lastModified)
     }
 
+    @Disabled
+    @Test
+    fun `when try havester-diff a git repository then update documents on DB`() {
 
+        val harvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!)
+        harvestRequestService.harvestRequestDAO.save(harvestRequest!!)
+
+        assertThat(prajService.repositoryInfo.lastTag).isNull()
+
+        gitTestRepository.changeMasterTo("1")
+        harvestRequestService.internalHarvesterWorker()
+
+        //create a new harvesterRequest
+        val newHarvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!, harvestType = HarvestType.DIFF)
+        harvestRequestService.harvestRequestDAO.save(newHarvestRequest!!)
+
+        gitTestRepository.changeMasterTo("2")
+        harvestRequestService.internalHarvesterWorker()
+
+        val list = prajDocumentDAO.findByService(prajService.id!!).sortedBy { prajDocument -> prajDocument.path }
+
+
+        assertThat(list).hasSize(3)
+
+        list[0].let{
+            assertThat(it.path).isEqualTo("main.md")
+            assertThat(it.tag).isEqualTo("2")
+            assertThat(it.serviceId).isEqualTo(prajService.id)
+            assertThat(it.serviceName).isEqualTo(prajService.name)
+            assertThat(it.id).isNotNull()
+        }
+
+        list[1].let{
+            assertThat(it.path).isEqualTo("main.md")
+            assertThat(it.tag).isEqualTo("2")
+            assertThat(it.serviceId).isEqualTo(prajService.id)
+            assertThat(it.serviceName).isEqualTo(prajService.name)
+            assertThat(it.id).isNotNull()
+        }
+
+        list[2].let{
+            assertThat(it.path).isEqualTo("src/code.md")
+            assertThat(it.tag).isEqualTo("2")
+            assertThat(it.serviceId).isEqualTo(prajService.id)
+            assertThat(it.serviceName).isEqualTo(prajService.name)
+            assertThat(it.id).isNotNull()
+        }
+    }
 }

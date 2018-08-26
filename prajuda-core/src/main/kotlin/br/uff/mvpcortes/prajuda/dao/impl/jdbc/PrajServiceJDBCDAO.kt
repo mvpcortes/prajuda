@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import java.sql.ResultSet
@@ -20,6 +21,7 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                                   .withTableName(TABLE_NAME)
                                   .usingGeneratedKeyColumns("id"),
                           val transactionTemplate: TransactionTemplate,
+                          val prajDocumentJDBCDAO: PrajDocumentJDBCDAO,
                           val reactiveJdbcTemplate: ReactiveJdbcTemplate= ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
 ): PrajServiceDAO {
     companion object {
@@ -75,7 +77,7 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                 rs.getString(11)
                 )
     }
-    
+
 
     private fun createParameterSource(prajService:PrajService) = MapSqlParameterSource(mapOf(
                 COLUMN_NAME_NAME                to prajService.name,
@@ -107,15 +109,20 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
         )
     }
 
-    override fun updateTag(id: String, tag: String):Int =
-        jdbcTemplate.update(
+    @Transactional
+    override fun updateTag(id: String, tag: String):Int {
+        val localDateTime = LocalDateTime.now()
+        return jdbcTemplate.update(
             """UPDATE $TABLE_NAME SET
                         $COLUMN_NAME_REPO_INFO_LAST_TAG = ?,
                         $COLUMN_NAME_REPO_INFO_LAST_MOD = ?
                     WHERE
                         $COLUMN_NAME_ID = ?
                 """,
-                tag, LocalDateTime.now(), id)
+                tag, localDateTime, id)+
+            prajDocumentJDBCDAO.updateTag(id, tag)
+
+    }
 
 
 

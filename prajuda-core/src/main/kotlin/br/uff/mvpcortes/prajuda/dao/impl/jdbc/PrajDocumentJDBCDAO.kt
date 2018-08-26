@@ -1,10 +1,11 @@
 package br.uff.mvpcortes.prajuda.dao.impl.jdbc
 
 import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
+import br.uff.mvpcortes.prajuda.loggerFor
 import br.uff.mvpcortes.prajuda.model.PrajDocument
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
@@ -25,9 +26,7 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
         const val COLUMN_SERVICE_NAME = "service_name"
     }
 
-    override fun deleteByServiceId(id: String) {
-        jdbcTemplate.update("DELETE FROM $TABLE_NAME WHERE $COLUMN_SERVICE_ID = ?", id)
-    }
+    private val logger = loggerFor(PrajDocumentJDBCDAO::class)
 
     val simpleJdbcInsert=SimpleJdbcInsert(jdbcTemplate)
             .withTableName(TABLE_NAME)
@@ -58,9 +57,59 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
     @Transactional
     override fun delete(doc: PrajDocument):Int = jdbcTemplate.update("DELETE FROM praj_document WHERE id = ?", doc.id!!)
 
-    @Transactional
+    override fun deleteByServiceId(id: String) {
+        jdbcTemplate.update("DELETE FROM $TABLE_NAME WHERE $COLUMN_SERVICE_ID = ?", id)
+    }
+
     override fun updateTag(serviceId: String, tag: String):Int {
-        return jdbcTemplate.update("UPDATE praj_document SET tag = ? WHERE id = ?", tag, serviceId)
+        return jdbcTemplate.update(
+                """
+                    UPDATE $TABLE_NAME t
+                    SET t.$COLUMN_TAG = ?
+                    WHERE EXISTS (
+                        SELECT 1 FROM ${PrajServiceJDBCDAO.TABLE_NAME} s
+                        INNER JOIN $TABLE_NAME t2 ON t2.$COLUMN_SERVICE_ID = s.${PrajServiceJDBCDAO.COLUMN_NAME_ID}
+                        WHERE s.${PrajServiceJDBCDAO.COLUMN_NAME_ID} = ?
+                        AND t2.$COLUMN_ID = t.$COLUMN_ID
+                        )
+                """.trimIndent(), tag, serviceId)
+    }
+
+    @Transactional
+    override fun deleteTrackingServiceAndPath(doc: PrajDocument): Int {
+        return findIdByServiceAndPath(doc.serviceId!!, doc.path.trim())
+                .let { id ->
+                    return if (id == null) {
+                        logger.warn("Cannot found doc with service='{}' and path='{}'", doc.serviceId, doc.path)
+                        0
+                    } else {
+                        doc.id = id
+                        delete(doc)
+                    }
+                }
+    }
+
+    private fun findIdByServiceAndPath(serviceId: String, path: String): String? {
+        try {
+            return jdbcTemplate.queryForObject(
+                    """
+                        SELECT d.$COLUMN_ID FROM $TABLE_NAME d
+                        INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME} s ON s.${PrajServiceJDBCDAO.COLUMN_NAME_ID} = d.$COLUMN_SERVICE_ID
+                        WHERE s.${PrajServiceJDBCDAO.COLUMN_NAME_ID} = ? AND d.$COLUMN_PATH = ?
+                    """.trimMargin(),
+                    String::class.java, serviceId, path)
+        }catch (e: EmptyResultDataAccessException){
+            return null
+        }
+
+
+    }
+
+
+    @Transactional
+    override fun saveTrackingServiceAndPath(doc: PrajDocument): PrajDocument {
+        doc.id = findIdByServiceAndPath(doc.serviceId!!, doc.path.trim())
+        return save(doc)
     }
 
     @Transactional

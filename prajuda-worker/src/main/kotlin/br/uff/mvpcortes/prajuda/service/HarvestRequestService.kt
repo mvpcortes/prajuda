@@ -2,7 +2,6 @@ package br.uff.mvpcortes.prajuda.service
 
 import br.uff.mvpcortes.prajuda.config.WorkerProperties
 import br.uff.mvpcortes.prajuda.dao.HarvestRequestDAO
-import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
 import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
 import br.uff.mvpcortes.prajuda.harvester.Harvested
 import br.uff.mvpcortes.prajuda.harvester.consumer.SaveHarvestedDB
@@ -19,7 +18,7 @@ class HarvestRequestService (
         val harvestRequestDAO: HarvestRequestDAO,
         val workerProperties: WorkerProperties,
         val prajServiceDAO: PrajServiceDAO,
-        val harvesterService:HarvesterService,
+        val harvesterTypeService:HarvesterTypeService,
         val harvestedConsumer: SaveHarvestedDB){
 
     private val logger = loggerFor(HarvestRequestService::class)
@@ -63,7 +62,6 @@ class HarvestRequestService (
                     serviceTags.forEach{
                         prajServiceDAO.updateTag(it.key, it.value.maxTag)
                     }
-
                 }
                 .subscribe { pair ->
                     havestRequestIds.add(pair.first.id)
@@ -84,7 +82,7 @@ class HarvestRequestService (
         return this.fluxOpenHarvesters()
                 .map { Pair(it, prajServiceDAO.findByIdNullable(it.serviceSourceId)!!) }
                 .flatMap { requestAndService ->
-                    harvesterService.getHarvesterProcessor(requestAndService.second.harvesterTypeId)
+                    harvesterTypeService.getHarvesterProcessor(requestAndService.second.harvesterTypeId)
                             .harvestTyped(requestAndService.first.harvestType, requestAndService.second)
                             .map { Pair(requestAndService.first, it) }
                 }

@@ -30,7 +30,7 @@ class HarvestRequestServiceTest{
 
     val harvestedConsumer: SaveHarvestedDB = mock {  }
 
-    val harvesterService : HarvesterService = mock { }
+    val harvesterTypeService : HarvesterTypeService = mock { }
 
     val prajServiceDAO : PrajServiceDAO = mock{ }
 
@@ -38,7 +38,7 @@ class HarvestRequestServiceTest{
             harvestRequestDAO=harvestRequestDAO,
             workerProperties = workerProperties,
             harvestedConsumer = harvestedConsumer,
-            harvesterService = harvesterService,
+            harvesterTypeService = harvesterTypeService,
             prajServiceDAO =  prajServiceDAO)
 
 
@@ -89,7 +89,7 @@ class HarvestRequestServiceTest{
                     .findByIdNullable(anyString())
 
             doReturn(fluxHarvesterProcessor)
-                    .whenever(harvesterService)
+                    .whenever(harvesterTypeService)
                     .getHarvesterProcessor(anyString())
         }
 
@@ -100,10 +100,10 @@ class HarvestRequestServiceTest{
                     .expectComplete()
                     .verify()
 
-            inOrder(fluxHarvesterProcessor, harvestRequestDAO,  harvestedConsumer, harvesterService,  prajServiceDAO){
+            inOrder(fluxHarvesterProcessor, harvestRequestDAO,  harvestedConsumer, harvesterTypeService,  prajServiceDAO){
                 verify(harvestRequestDAO).getAndStartOldOpen(workerProperties.maxHarvestRequest())
                 verify(prajServiceDAO).findByIdNullable(harvestRequest.serviceSourceId)
-                verify(harvesterService).getHarvesterProcessor(prajService.harvesterTypeId)
+                verify(harvesterTypeService).getHarvesterProcessor(prajService.harvesterTypeId)
                 verify(fluxHarvesterProcessor).harvestTyped(harvestRequest.harvestType, prajService)
                 verifyNoMoreInteractions()
             }
@@ -116,10 +116,10 @@ class HarvestRequestServiceTest{
                     .expectComplete()
                     .verify()
 
-            inOrder(fluxHarvesterProcessor, harvestRequestDAO,  harvestedConsumer, harvesterService,  prajServiceDAO){
+            inOrder(fluxHarvesterProcessor, harvestRequestDAO,  harvestedConsumer, harvesterTypeService,  prajServiceDAO){
                 verify(harvestRequestDAO).getAndStartOldOpen(workerProperties.maxHarvestRequest())
                 verify(prajServiceDAO).findByIdNullable(harvestRequest.serviceSourceId)
-                verify(harvesterService).getHarvesterProcessor(prajService.harvesterTypeId)
+                verify(harvesterTypeService).getHarvesterProcessor(prajService.harvesterTypeId)
                 verify(fluxHarvesterProcessor).harvestTyped(harvestRequest.harvestType, prajService)
                 verifyNoMoreInteractions()
             }

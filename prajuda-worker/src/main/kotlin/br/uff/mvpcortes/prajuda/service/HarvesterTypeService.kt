@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
-class HarvesterService(private val applicationContext:ApplicationContext) {
+class HarvesterTypeService(private val applicationContext:ApplicationContext) {
 
     val harvesterTypes=ArrayList<HarvesterTypeWithProcessor>(10)
 
