@@ -22,7 +22,7 @@ import reactor.core.scheduler.Schedulers
         /**
          * Number of harvesters should be do at same time
          */
-        private val HARVESTER_WINDOW_COUNT = 10
+        private const val HARVESTER_WINDOW_COUNT = 10
     }
 
     /**

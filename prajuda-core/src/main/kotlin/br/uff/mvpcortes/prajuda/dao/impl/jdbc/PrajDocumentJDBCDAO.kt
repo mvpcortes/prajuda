@@ -14,7 +14,7 @@ import java.sql.ResultSet
 
 
 @Repository
-class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
+class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
 
     companion object {
         const val TABLE_NAME = "praj_document"
@@ -77,21 +77,19 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
 
     @Transactional
     override fun deleteTrackingServiceAndPath(doc: PrajDocument): Int {
-        return findIdByServiceAndPath(doc.serviceId!!, doc.path.trim())
-                .let { id ->
-                    return if (id == null) {
-                        logger.warn("Cannot found doc with service='{}' and path='{}'", doc.serviceId, doc.path)
-                        0
-                    } else {
-                        doc.id = id
-                        delete(doc)
-                    }
-                }
+        val id:String? = findIdByServiceAndPath(doc.serviceId!!, doc.path.trim())
+        return if(id == null){
+            logger.warn("Cannot found doc with service='{}' and path='{}'", doc.serviceId, doc.path)
+            0
+        }else{
+            doc.id = id
+            delete(doc)
+        }
     }
 
-    private fun findIdByServiceAndPath(serviceId: String, path: String): String? {
+    private fun findIdByServiceAndPath(serviceId: String, path: String):String? =
         try {
-            return jdbcTemplate.queryForObject(
+            jdbcTemplate.queryForObject(
                     """
                         SELECT d.$COLUMN_ID FROM $TABLE_NAME d
                         INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME} s ON s.${PrajServiceJDBCDAO.COLUMN_NAME_ID} = d.$COLUMN_SERVICE_ID
@@ -99,11 +97,8 @@ class PrajDocumentJDBCDAO(val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
                     """.trimMargin(),
                     String::class.java, serviceId, path)
         }catch (e: EmptyResultDataAccessException){
-            return null
+            null
         }
-
-
-    }
 
 
     @Transactional

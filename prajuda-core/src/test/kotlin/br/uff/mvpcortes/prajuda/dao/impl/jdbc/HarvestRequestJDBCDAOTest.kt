@@ -94,7 +94,7 @@ class HarvestRequestJDBCDAOTest{
     @Rollback
     @Transactional
     fun `when getAndStart ask for zero elements then return empty`(){
-        val request = harvestRequestJDBCDAO.save(HarvesterRequestFixture.open())
+        harvestRequestJDBCDAO.save(HarvesterRequestFixture.open())
 
         val list = harvestRequestJDBCDAO.getAndStartOldOpen(0)
 

@@ -1,13 +1,12 @@
 package br.uff.mvpcortes.prajuda.model.validation
 
 import org.springframework.util.ResourceUtils
-import java.lang.annotation.Documented
 import javax.validation.Constraint
-import kotlin.reflect.KClass
 import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
+import kotlin.reflect.KClass
 
-@Documented
+@MustBeDocumented
 @Constraint(validatedBy = [URLValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 annotation class URL(

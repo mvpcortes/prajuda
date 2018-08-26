@@ -10,14 +10,14 @@ open class SimpleFluxHarvesterProcessor(private val harvesterProcessor:Harvester
 
     override fun harvestFlux(service: PrajService): Flux<Harvested>{
         return Flux.create<Harvested> { sink->
-            harvesterProcessor.harvest(service, { sink.next(it)})
+            harvesterProcessor.harvest(service) { sink.next(it)}
             sink.complete()
         }
     }
 
     override fun harvestCompleteFlux(service: PrajService): Flux<Harvested>{
         return Flux.create<Harvested> { sink->
-            harvesterProcessor.harvestComplete(service, { sink.next(it)})
+            harvesterProcessor.harvestComplete(service) { sink.next(it)}
             sink.complete()
         }
     }

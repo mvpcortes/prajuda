@@ -21,7 +21,7 @@ data class ErrorMessage (val field:String, val message:String, var invalidValue:
     )
 
     companion object {
-        fun toErrorMessages(bindingResult:BindingResult):Sequence<ErrorMessage> =
+        private fun toErrorMessages(bindingResult:BindingResult):Sequence<ErrorMessage> =
                 bindingResult.allErrors.asSequence()
                     .map{if(it is FieldError){
                         ErrorMessage(it)

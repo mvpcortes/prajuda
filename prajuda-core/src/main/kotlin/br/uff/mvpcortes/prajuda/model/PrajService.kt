@@ -22,7 +22,7 @@ data class PrajService(
 
     companion object {
         const val STR_AJUDA_DIR = "prajuda"
-        const val REGEX_VALIDATION = "([\\w\\d\\.]+)(/[\\w\\d\\.]+)*(/)?"
+        const val REGEX_VALIDATION = "([\\w\\d]+)(/[\\w\\d]+)*(/)?"
         fun empty()=PrajService(null, "", "", "", "", RepositoryInfo())
     }
 }

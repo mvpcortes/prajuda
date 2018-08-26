@@ -54,8 +54,8 @@ class WorkDirectoryProviderImpl(
 
     fun getRootDir():File?= this.rootDir.takeIf { existsDirectory(it) }
 
-    protected fun existsDirectoryOrCreate(it: File) = existsDirectory(it) || it.mkdir()
+    private fun existsDirectoryOrCreate(it: File) = existsDirectory(it) || it.mkdir()
 
-    protected fun existsDirectory(it: File) = it.exists() && it.isDirectory
+    private fun existsDirectory(it: File) = it.exists() && it.isDirectory
 
 }

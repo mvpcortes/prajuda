@@ -19,8 +19,8 @@ class HarvesterTypeService(private val applicationContext:ApplicationContext) {
         applicationContext
                 .getBeansWithAnnotation(DefineHarvester::class.java)
                 .asSequence()
-                .map{   it.value }
-                .map{ it as FluxHarvesterProcessor }.filter{it != null}
+                .map{ it.value }
+                .map{ it as FluxHarvesterProcessor }
                 .map{Pair(it, it::class.annotations.filter{ann->ann is DefineHarvester}.map{ ann->ann as DefineHarvester}.single())}
                 .map{HarvesterTypeWithProcessor(getName(it.second), getId(it), it.first)}
                 .forEach{

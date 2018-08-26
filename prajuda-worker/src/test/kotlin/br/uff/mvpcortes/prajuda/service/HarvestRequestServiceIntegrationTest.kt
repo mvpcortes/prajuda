@@ -4,7 +4,6 @@ import br.uff.mvpcortes.prajuda.config.WorkerTestConfiguration
 import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
 import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
 import br.uff.mvpcortes.prajuda.harvester.git.GitTestRepository
-import br.uff.mvpcortes.prajuda.model.HarvestRequest
 import br.uff.mvpcortes.prajuda.model.HarvestType
 import br.uff.mvpcortes.prajuda.model.fixture.HarvesterRequestFixture
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture

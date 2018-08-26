@@ -17,7 +17,7 @@ class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdb
     }
 
     private fun <T> runTransaction(query: String, args: Array<Any>, subscriber: Subscriber<in T>, rowMapper: RowMapper<T>): Long {
-        return transactionTemplate.execute{ ts ->
+        return transactionTemplate.execute{ _ ->
             var qtdInternal = 0L
             try {
                 jdbcTemplate.query(query, args) {

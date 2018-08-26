@@ -57,7 +57,10 @@ class HarvestRequestServiceTest{
         doReturn(listOf(harvestRequest)).whenever(harvestRequestDAO).getAndStartOldOpen(anyInt())
 
         StepVerifier.create(harvestRequestService.fluxOpenHarvesters())
-                .assertNext{it.id == "XUXU"}
+                .assertNext{
+                    @Suppress("UnusedEquals")
+                    "XUXU" != it.id
+                }
                 .expectComplete()
                 .verify()
 

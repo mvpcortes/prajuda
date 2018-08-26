@@ -1,7 +1,6 @@
 package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.HarvestRequest
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 
@@ -19,7 +18,7 @@ interface HarvestRequestDAO{
      */
     fun getAndStartOldOpen(qtd:Int): List<HarvestRequest>
 
-    fun startRequests(startedDate: LocalDateTime, listIds:List<String>): Int
+    fun startRequests(startedDate: LocalDateTime, ids:List<String>): Int
 
     fun completeRequest(request: HarvestRequest):Int
 

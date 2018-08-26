@@ -29,9 +29,11 @@ class ViewTest{
     @LocalServerPort
     var port:Int = 0
 
-    val logger = loggerFor(ViewTest::class)
+    companion object {
+        private val logger = loggerFor(ViewTest::class)
+        const val STR_REGEX_FAKE_URL = "^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"
+    }
 
-    val STR_REGEX_FAKE_URL = "^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"
 
     fun get(webDriver: WebDriver, path:String):WebDriver{
 

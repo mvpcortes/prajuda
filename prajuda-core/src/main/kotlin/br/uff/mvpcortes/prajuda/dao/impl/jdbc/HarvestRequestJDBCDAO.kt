@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 import javax.annotation.PostConstruct
 
 @Repository
-class HarvestRequestJDBCDAO (val jdbcTemplate: JdbcTemplate): HarvestRequestDAO{
+class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestRequestDAO{
 
     val logger = loggerFor(HarvestRequestJDBCDAO::class)
 
@@ -43,7 +43,7 @@ class HarvestRequestJDBCDAO (val jdbcTemplate: JdbcTemplate): HarvestRequestDAO{
                     """
 
         fun toArray(startedDate: LocalDateTime, ids: Collection<String>): Array<Any> {
-            val newArray = Array<Any>(ids.size+1) {index->startedDate}
+            val newArray = Array<Any>(ids.size+1) {_->startedDate}
             ids.forEachIndexed { index, s ->  newArray[index+1] = s}
             return newArray
         }
@@ -57,7 +57,6 @@ class HarvestRequestJDBCDAO (val jdbcTemplate: JdbcTemplate): HarvestRequestDAO{
 
     object defaultRowMapper:RowMapper<HarvestRequest>{
         override fun mapRow(rs: ResultSet, rowNum: Int): HarvestRequest {
-                     val x = rs.getString(6)
             return HarvestRequest(id = rs.getString(1),
                     serviceSourceId = rs.getString(2),
                     createAt = rs.getTimestamp(3)!!.toLocalDateTime(),
@@ -130,7 +129,7 @@ class HarvestRequestJDBCDAO (val jdbcTemplate: JdbcTemplate): HarvestRequestDAO{
     override fun findById(id: String)
         = jdbcTemplate.queryForObjectNullable(
                 "$STR_SELECT_PROJECTION WHERE $COLUMN_ID = ?",
-                arrayOf(id) as Array<Any>, defaultRowMapper)
+            arrayOf<Any>(id), defaultRowMapper)
 
 
 

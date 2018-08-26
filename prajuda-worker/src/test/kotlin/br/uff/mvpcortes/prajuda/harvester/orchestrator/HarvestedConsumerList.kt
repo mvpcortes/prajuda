@@ -1,4 +1,4 @@
-package br.uff.mvpcortes.prajuda.harvester.orchestrator.orchestrator
+package br.uff.mvpcortes.prajuda.harvester.orchestrator
 
 import br.uff.mvpcortes.prajuda.harvester.Harvested
 import br.uff.mvpcortes.prajuda.harvester.HarvestedOp

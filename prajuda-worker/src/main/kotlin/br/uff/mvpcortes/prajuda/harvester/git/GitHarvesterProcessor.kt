@@ -107,19 +107,19 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
             when(entry.changeType){
             /** Add/modifying/copy a new file to the project  */
                 DiffEntry.ChangeType.ADD, DiffEntry.ChangeType.MODIFY,DiffEntry.ChangeType.COPY -> {
-                    checkPath(entry.newPath, service, { createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service) })
+                    checkPath(entry.newPath, service) { createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service) }
                 }
 
             /** Delete an existing file from the project  */
                 DiffEntry.ChangeType.DELETE->
-                    checkPath(entry.oldPath, service, { Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(dirPrajuda, service, entry)) })
-            /** Rename an existing file to a new location  */
+                    checkPath(entry.oldPath, service) { Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry)) }
+                /** Rename an existing file to a new location  */
             //make a delete and a update
                 DiffEntry.ChangeType.RENAME->
-                        checkPath(entry.oldPath, service, { Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(dirPrajuda, service, entry)) })
-                        .plus(
-                            checkPath(entry.newPath, service, {createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service)})
-                        )
+                        checkPath(entry.oldPath, service) { Harvested(HarvestedOp.DELETED, createDeletedPrajDocument(service, entry)) }
+                                .plus(
+                            checkPath(entry.newPath, service) {createUpdatedHarvested(revCommit, dirPrajuda, entry, tagName, service)}
+                                )
                 else -> emptyArray()
             }
 
@@ -139,17 +139,7 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
                         service))
     }
 
-    /**
-     * @see [https://stackoverflow.com/a/39984612/8313595]
-     * @see [https://www.codeaffine.com/2016/06/16/jgit-diff]
-     */
-    private fun toRevCommit(repository: Repository, id:AnyObjectId): RevCommit {
-        RevWalk(repository).use {
-            return it.lookupCommit(id)
-        }
-    }
-
-    private fun createDeletedPrajDocument(prajudaFile:File, service:PrajService, entry: DiffEntry)=
+    private fun createDeletedPrajDocument(service:PrajService, entry: DiffEntry)=
             PrajDocument(
                     content = "",
                     tag = "",
@@ -219,9 +209,6 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
 
 
     private fun createPrajDocument(dirPrajuda:File, nameFile:String, tagName:String, revCommit:RevCommit, service: PrajService): PrajDocument {
-        val tagDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(revCommit.commitTime.toLong()),
-                revCommit.authorIdent.timeZone.toZoneId())
-
         return PrajDocument(
                 content = File(dirPrajuda, nameFile).readText(),
                 tag = tagName,
