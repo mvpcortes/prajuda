@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
 import java.sql.ResultSet
+import java.time.LocalDateTime
 import javax.annotation.PostConstruct
 
 @Repository
@@ -21,7 +22,6 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                           val transactionTemplate: TransactionTemplate,
                           val reactiveJdbcTemplate: ReactiveJdbcTemplate= ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
 ): PrajServiceDAO {
-
     companion object {
         const val TABLE_NAME = "praj_service"
         const val COLUMN_NAME_ID = "id"
@@ -100,16 +100,23 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
     override fun findIds():List<String> = jdbcTemplate.queryForList("SELECT id FROM $TABLE_NAME", String::class.java)
 
     override fun findByIdNullable(id: String): PrajService? {
-        return jdbcTemplate.queryForObject(
-                STR_SELECT_PROJECTION+
-                """
-                    WHERE
-                        $COLUMN_NAME_ID = ?
-                """.trimIndent(),
-                PrajServiceRowMapper,
-                id.toLong()
+        return jdbcTemplate.queryForObjectNullable(
+                "$STR_SELECT_PROJECTION WHERE $COLUMN_NAME_ID = ?",
+                arrayOf<Any>(id),
+                PrajServiceRowMapper
         )
     }
+
+    override fun updateTag(id: String, tag: String):Int =
+        jdbcTemplate.update(
+            """UPDATE $TABLE_NAME SET
+                        $COLUMN_NAME_REPO_INFO_LAST_TAG = ?,
+                        $COLUMN_NAME_REPO_INFO_LAST_MOD = ?
+                    WHERE
+                        $COLUMN_NAME_ID = ?
+                """,
+                tag, LocalDateTime.now(), id)
+
 
 
     override fun save(prajService: PrajService): PrajService {
@@ -176,10 +183,15 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
         return reactiveJdbcTemplate.queryForFlux(
                 """
                 $STR_SELECT_PROJECTION
-                WHERE id in (${ids.asSequence().map{"?"}.joinToString()})
+                WHERE id IN (${ids.asSequence().map{"?"}.joinToString()})
                 """.trimIndent(),
                 ids as Array<Any>,
                 PrajServiceRowMapper
         )
     }
+
+    override fun delete(id: String): Int =
+            jdbcTemplate.update("DELETE FROM $TABLE_NAME WHERE $COLUMN_NAME_ID = ?",
+            id)
+
 }

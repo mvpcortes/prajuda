@@ -6,8 +6,8 @@ import br.uff.mvpcortes.prajuda.controller.helper.TemplateHelper
 import br.uff.mvpcortes.prajuda.controller.helper.TemplateRedirect
 import br.uff.mvpcortes.prajuda.controller.helper.pagination.Pagination
 import br.uff.mvpcortes.prajuda.model.PrajService
-import br.uff.mvpcortes.prajuda.service.HarvesterService
 import br.uff.mvpcortes.prajuda.service.PrajServiceService
+import br.uff.mvpcortes.prajuda.service.PrajudaWorkerService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -16,16 +16,16 @@ import reactor.core.publisher.Flux
 
 @Controller()
 @RequestMapping("service")
-class PrajServiceController(private val harvesterService: HarvesterService, private val prajServiceService: PrajServiceService) {
+class PrajServiceController(private val prajudaWorkerService: PrajudaWorkerService, private val prajServiceService: PrajServiceService) {
 
-      @ModelAttribute("harvesterTypes")
-    fun harvesterTypes() = harvesterService.harvesterTypes
+    @ModelAttribute("harvesterTypes")
+    fun harvesterTypes() = prajudaWorkerService.harvesterTypes()
 
     @GetMapping(value=["{id}.html"])
     fun get(@PathVariable id:String, model:Model): String {
         return TemplateHelper(model)
                 .withAttr("service", prajServiceService.findById(id) as Any)
-                .withAttr("mapHarvesterType", harvesterService.mapHarvesterTypes)
+                .withAttr("mapHarvesterType", prajudaWorkerService.mapHarvesterTypes())
                 .withPage("fragments/service/service_show").apply()
     }
 
@@ -33,7 +33,7 @@ class PrajServiceController(private val harvesterService: HarvesterService, priv
     fun edit(@PathVariable id:String, model:Model): String {
         return TemplateHelper(model)
                 .withAttr("service", prajServiceService.findById(id)!!)
-                .withAttr("mapHarvesterType", harvesterService.mapHarvesterTypes)
+                .withAttr("mapHarvesterType", prajudaWorkerService.mapHarvesterTypes())
                 .withPage("fragments/service/service_new").apply()
     }
 

@@ -39,6 +39,11 @@ class PrajServiceJDBCDAOTest{
             prajServiceSaved = prajServiceDAO.save(prajService)
         }
 
+        @AfterEach
+        private fun drop(){
+            prajServiceDAO.delete(prajServiceSaved.id!!)
+        }
+
         @Test
         fun `then generate a new ID`(){
 
@@ -128,6 +133,16 @@ class PrajServiceJDBCDAOTest{
                         }
             }
         }
+
+        @Test
+        fun `and deleted then should not exists on database`(){
+            drop()
+            val prajServiceDeleted = prajServiceDAO.findByIdNullable(prajServiceSaved.id!!)
+
+            assertThat(prajServiceDeleted).isNull()
+        }
+
+
     }
 
  }

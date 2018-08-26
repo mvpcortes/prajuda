@@ -18,4 +18,8 @@ interface PrajServiceDAO {
     fun count(): Long
 
     fun findByIds(vararg ids: String): Flux<PrajService>
+
+    fun delete(id: String): Int
+
+    fun updateTag(id: String, tag: String):Int
 }

@@ -1,7 +1,6 @@
 package br.uff.mvpcortes.prajuda.model
 
 import br.uff.mvpcortes.prajuda.model.validation.URL
-import br.uff.mvpcortes.prajuda.service.config.WorkDirectoryProviderImpl.Companion.STR_AJUDA_DIR
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -22,6 +21,7 @@ data class PrajService(
     fun removeDocumentDir(str:String)=str.removePrefix("$documentDir/")
 
     companion object {
+        const val STR_AJUDA_DIR = "prajuda"
         const val REGEX_VALIDATION = "([\\w\\d\\.]+)(/[\\w\\d\\.]+)*(/)?"
         fun empty()=PrajService(null, "", "", "", "", RepositoryInfo())
     }

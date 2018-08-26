@@ -1,7 +1,5 @@
 package br.uff.mvpcortes.prajuda.service
 
-import br.uff.mvpcortes.prajuda.harvester.orchestrator.HarvesterOrchestrator
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component

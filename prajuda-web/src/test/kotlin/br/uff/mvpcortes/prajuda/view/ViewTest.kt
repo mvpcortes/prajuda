@@ -67,6 +67,8 @@ class ViewTest{
 
             fillForm(webDriver)
 
+            println(webDriver.pageSource)
+
             webDriver.findElement(By.id("submit_btn")).click()
 
             val wait = WebDriverWait(webDriver, 2)

@@ -5,7 +5,7 @@ CREATE TABLE praj_document (
     path            VARCHAR(4000)   NOT NULL,
     service_id      BIGINT          NULL,
     service_name    VARCHAR(255)    NULL,
-    PRIMARY KEY (id),
+    CONSTRAINT pk_praj_document PRIMARY KEY (id),
     CONSTRAINT fk_document_service
         FOREIGN KEY (service_id)
         REFERENCES praj_service (id)
