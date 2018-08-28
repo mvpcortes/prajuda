@@ -55,13 +55,46 @@
                 </div>
             </div>
         </div>
-        <div class="field is-grouped is-grouped-centered">
-            <div class="control">
-                <a id="edit_btn" class="button is-primary" th:href="@{'/service/'+*{id}+'/edit.html'}">Edit</a>
+        <h2>Repository Info</h2>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.uri" class="label">URI</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <span id="repositoryInfo.uri" th:text="*{repositoryInfo.uri}" >https://gitlab.com/mvpcortes/prajuda.git</span>
+                </div>
             </div>
-            <div class="control">
-                <a class="button is-light return">Return</a>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.branch" class="label">Branch</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <span id="repositoryInfo.branch" th:text="*{repositoryInfo.branch}" >master</span>
+                </div>
             </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.username" class="label">Username</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <span id="repositoryInfo.username" th:text="*{repositoryInfo.username}" >mvpcortes</span>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.password" class="label">Password</label></div>
+            <div class="field-body">
+                <div class="control">
+                    <span id="repositoryInfo.password">(Edit service to see password)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="field is-grouped is-grouped-centered">
+        <div class="control">
+            <a id="edit_btn" class="button is-primary" th:href="@{'/service/'+*{id}+'/edit.html'}">Edit</a>
+        </div>
+        <div class="control">
+            <a class="button is-light return">Return</a>
         </div>
     </div>
 </section>

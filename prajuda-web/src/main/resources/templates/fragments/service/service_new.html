@@ -9,8 +9,8 @@
 <body>
 
 <section th:fragment="layout_main_content">
-    <h1 class="title">Add Service</h1>
     <form id="form" th:action="@{/service}" th:attr="data-redirect=@{/service/${id}.html}" th:object="${service}"  method="post" class="ajax-form container">
+        <h1 class="title">Add Service</h1>
         <input type="hidden" id="service_id" th:field="*{id}" value="">
         <div class="field is-horizontal">
             <div class="field-label is-normal">
@@ -73,6 +73,52 @@
                         <input id="documentDir" class="input" th:field="*{documentDir}" type="text" placeholder="ex. 'prajuda'">
                     </div>
                     <p class="help ajax-form-error is-danger" data-error-for="documentDir"></p>
+                </div>
+            </div>
+        </div>
+        <h2>Repository Info</h2>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.uri" class="label">URI</label></div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <input id="repositoryInfo.uri" class="input" th:field="*{repositoryInfo.uri}" type="text" placeholder="https://gitlab.com/example/example.git">
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="repositoryInfo.uri"></p>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.branch" class="label">Branch</label></div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <input id="repositoryInfo.branch" class="input" th:field="*{repositoryInfo.branch}" type="text" placeholder="master">
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="repositoryInfo.branch"></p>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.username" class="label">Username</label></div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <input id="repositoryInfo.username" class="input" th:field="*{repositoryInfo.username}" type="text" placeholder="Username">
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="repositoryInfo.username"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-normal"><label for="repositoryInfo.password" class="label">Password</label></div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <input id="repositoryInfo.password" class="input" th:field="*{repositoryInfo.password}" type="text" placeholder="password">
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="repositoryInfo.password"></p>
                 </div>
             </div>
         </div>
