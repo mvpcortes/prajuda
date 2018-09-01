@@ -1,6 +1,7 @@
 package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.HarvestRequest
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 
@@ -26,7 +27,7 @@ interface HarvestRequestDAO{
 
     fun save(request: HarvestRequest): HarvestRequest
 
-    fun completeRequests(completedDate: LocalDateTime, ids: Collection<String>): Int
+    fun completeRequests(ids: Collection<String>): Int
 
-
+    fun failRequest(id: String, tw: Throwable): Int
 }

@@ -5,8 +5,8 @@ import br.uff.mvpcortes.prajuda.harvester.exception.InvalidRepositoryFormatExcep
 import br.uff.mvpcortes.prajuda.harvester.exception.NonClonedRepositoryException
 import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
-import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryService
 import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryProviderTestImpl
+import br.uff.mvpcortes.prajuda.workdir.WorkDirectoryService
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -206,6 +206,17 @@ internal class GitDefineHarvesterProcessorTest {
 
                 harvestedList.assertFourthCommit()
             }
+
+            @Test
+            fun `on fourth commit and autentication then harvest files`() {
+                gitTestRepository.changeMasterTo("4")
+
+                val service2 = service.copy(repositoryInfo = service.repositoryInfo.copy(password = "xuxu"))
+
+                harvester.harvestComplete(service2, harvestedList.consumer())
+
+                harvestedList.assertFourthCommit()
+            }
         }
 
         @Nested
@@ -233,7 +244,7 @@ internal class GitDefineHarvesterProcessorTest {
                     harvester.harvest(service, harvestedList.consumer())
                 }
 
-                assertThat(exception.service.name).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(exception.service!!.name).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
                 assertThat(exception.dir.absolutePath).containsSubsequence(PrajServiceFixture.DEFAULT_NAME)
             }
 
@@ -320,6 +331,5 @@ internal class GitDefineHarvesterProcessorTest {
                 assertHarvestedDeleted(3, "main.md")
             }
         }
-
     }
 }

@@ -10,4 +10,7 @@ data class RepositoryInfo(
                             val lastModified: LocalDateTime = LocalDateTime.now(),
                             val lastTag:String?=null,
                             val username:String="",
-        @field:NotBlank     val password:String="")
+        @field:NotBlank     val password:String="") {
+
+    fun hasCredentials(): Boolean = password.isBlank()
+}

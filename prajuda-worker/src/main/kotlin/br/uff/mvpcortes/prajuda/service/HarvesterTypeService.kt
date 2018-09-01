@@ -40,7 +40,7 @@ class HarvesterTypeService(private val applicationContext:ApplicationContext) {
 
     fun getHarvesterProcessor(id:String)=mapHarvesterTypes[id]
             ?.processor
-            ?:throw IllegalArgumentException("HarvesterTypeWithProcessor " + id + "not found")
+            ?:throw IllegalArgumentException("HarvesterTypeWithProcessor ${id} not found")
 
 
 

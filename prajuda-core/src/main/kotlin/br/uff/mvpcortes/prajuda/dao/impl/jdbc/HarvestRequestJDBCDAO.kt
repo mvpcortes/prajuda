@@ -32,13 +32,15 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
         const val COLUMN_STARTED_AT = "started_at"
         const val COLUMN_COMPLETED_AT = "completed_at"
         const val COLUMN_HARVEST_TYPE = "harvest_type"
+        const val COLUMN_FAILED_EXCEPTION = "failed_exception"
         const val STR_SELECT_PROJECTION = """SELECT
                         $COLUMN_ID,
                         $COLUMN_SERVICE_SOURCE_ID,
                         $COLUMN_CREATED_AT,
                         $COLUMN_STARTED_AT,
                         $COLUMN_COMPLETED_AT,
-                        $COLUMN_HARVEST_TYPE
+                        $COLUMN_HARVEST_TYPE,
+                        $COLUMN_FAILED_EXCEPTION
                     FROM $TABLE_NAME
                     """
 
@@ -62,14 +64,14 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
                     createAt = rs.getTimestamp(3)!!.toLocalDateTime(),
                     startedAt = rs.getTimestamp(4)?.toLocalDateTime(),
                     completedAt = rs.getTimestamp(5)?.toLocalDateTime(),
-                    harvestType = HarvestType.valueOf(rs.getString(6)!!))
+                    harvestType = HarvestType.valueOf(rs.getString(6)!!),
+                    failed = rs.getString(7))
         }
 
     }
 
     @Transactional
-    override fun completeRequests(completedDate:LocalDateTime, ids: Collection<String>):Int {
-        logger.debug("{}, {}", completedDate, ids)
+    override fun completeRequests(ids: Collection<String>):Int {
         return if(ids.isEmpty()){
             0
         }else {
@@ -77,7 +79,7 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
                     """
                     UPDATE $TABLE_NAME SET $COLUMN_COMPLETED_AT = ? WHERE id IN (${ids.asSequence().map { '?' }.joinToString()})
                 """.trimIndent(),
-                    *toArray(completedDate, ids))
+                    *toArray(LocalDateTime.now(), ids))
         }
     }
 
@@ -87,6 +89,7 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
                     AND $COLUMN_STARTED_AT IS NULL
                     LIMIT ? OFFSET 0
                 """, arrayOf(qtd), defaultRowMapper)
+
 
     /**
      * We should create a new transaction every time because we cannot contaminate start operation
@@ -125,6 +128,14 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
             """.trimIndent(),
                 arrayOf(LocalDateTime.now(), request.id)
     )
+
+
+    @Transactional
+    override fun failRequest(id:String, tw:Throwable):Int =
+        jdbcTemplate.update(
+                "UPDATE $TABLE_NAME SET $COLUMN_COMPLETED_AT = ?, $COLUMN_FAILED_EXCEPTION = ? WHERE id = ?",
+                LocalDateTime.now(), HarvestRequest.toStringException(tw), id)
+
 
     override fun findById(id: String)
         = jdbcTemplate.queryForObjectNullable(

@@ -1,3 +1,5 @@
 package br.uff.mvpcortes.prajuda.harvester.exception
 
-class InvalidRepositoryFormatException (msg:String, e:Exception?=null):RuntimeException(msg ,e)
+import br.uff.mvpcortes.prajuda.model.PrajService
+
+class InvalidRepositoryFormatException (msg:String, e:Exception?=null, service:PrajService?=null):HarvesterException(msg ,e, service)

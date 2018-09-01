@@ -1,4 +1,6 @@
 package br.uff.mvpcortes.prajuda.model
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.time.LocalDateTime
 
 
@@ -27,8 +29,21 @@ data class HarvestRequest(
         /**
          * when harvester completed
          */
-        val completedAt:LocalDateTime?=null):WithId{
+        val completedAt:LocalDateTime?=null,
+        val failed:String? = null
+        ):WithId{
 
+    companion object {
+
+        fun toStringException(exception: Throwable): String {
+            val strWriter = StringWriter()
+            val writer = PrintWriter(strWriter)
+            writer.println("${exception::class}:${exception.message}")
+            exception.printStackTrace(writer)
+            return strWriter.toString().take(65_000)
+        }
+
+    }
 
         /**
          * Status havester
@@ -53,6 +68,14 @@ data class HarvestRequest(
         this.copy( completedAt = java.time.LocalDateTime.now())
     else
         throw IllegalStateException("Cannot complete a not started harvester request ($harvesterStatus)")
+
+    fun toFailed(exception:Throwable) = if(harvesterStatus == HarvesterStatus.PROCESSING)
+            this.copy(completedAt = java.time.LocalDateTime.now(), failed = toStringException(exception))
+        else
+            throw IllegalStateException("Cannot complete a not started harvester request ($harvesterStatus)")
+
+
+
 }
 
 

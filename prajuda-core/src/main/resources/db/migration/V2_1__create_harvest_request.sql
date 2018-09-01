@@ -5,5 +5,6 @@ CREATE TABLE harvest_request (
     started_at              DATETIME        NULL,
     completed_at            DATETIME        NULL,
     harvest_type            VARCHAR(255)    NOT NULL,
+    failed_exception        MEDIUMTEXT      NULL,
     CONSTRAINT pk_harvest_request PRIMARY KEY (id)
 );
