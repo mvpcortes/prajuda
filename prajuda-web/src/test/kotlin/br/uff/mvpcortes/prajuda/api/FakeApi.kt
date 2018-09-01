@@ -1,18 +1,19 @@
 package br.uff.mvpcortes.prajuda.api
 
-import br.uff.mvpcortes.prajuda.api.dto.toErrorMessages
+import br.uff.mvpcortes.prajuda.api.dto.toMonoResponseEntityErrorMessages
 import br.uff.mvpcortes.prajuda.loggerFor
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.support.WebExchangeBindException
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.validation.Valid
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotEmpty
 import kotlin.math.abs
@@ -40,13 +41,14 @@ class FakeApi{
 
     data class FakeResponse(val id:String)
 
-    @PostMapping()
-    fun defaultPost(@Valid value: FakeData, bindingResult: BindingResult): Mono<ResponseEntity<Any>> {
-        logger.info("Try save fakedata")
-        return bindingResult.toErrorMessages()
-                ?.let{ResponseEntity.badRequest().body(it) as ResponseEntity<Any>}
-                ?.let{Mono.fromSupplier{ it } }
-                ?: Mono.fromSupplier {  ResponseEntity.ok().body(FakeResponse((Random().nextInt(101) + 1).toString())) as ResponseEntity<Any> }
+    @PostMapping
+    fun defaultPost(@Validated @RequestBody monoValue:Mono<FakeData>):Mono<ResponseEntity<Any>>{
+        return monoValue
+                .map{ FakeResponse((Random().nextInt(101) + 1).toString()) }
+                .map{ ResponseEntity.ok(it) as ResponseEntity<Any> }
+                .onErrorResume({ ex-> ex is WebExchangeBindException }, {
+                    (it as WebExchangeBindException).bindingResult.toMonoResponseEntityErrorMessages()
+                })
     }
 
 }

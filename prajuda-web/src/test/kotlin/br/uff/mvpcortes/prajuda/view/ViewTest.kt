@@ -61,6 +61,10 @@ class ViewTest{
             webDriver.findElement<WebElement>(By.id("url")).let{it.clear(); it.sendKeys(url)}
             webDriver.findElement<WebElement>(By.id("description")).let{it.clear(); it.sendKeys("service description")}
             webDriver.findElement<WebElement>(By.id("documentDir")).let{it.clear(); it.sendKeys("prajuda")}
+            webDriver.findElement<WebElement>(By.id("repositoryInfo.uri")).let{it.clear(); it.sendKeys("https://my.app.io/repository.git")}
+            webDriver.findElement<WebElement>(By.id("repositoryInfo.branch")).let{it.clear(); it.sendKeys("master")}
+            webDriver.findElement<WebElement>(By.id("repositoryInfo.username")).let{it.clear(); it.sendKeys("user")}
+            webDriver.findElement<WebElement>(By.id("repositoryInfo.password")).let{it.clear(); it.sendKeys("1234")}
         }
 
         @Test
@@ -84,6 +88,11 @@ class ViewTest{
             assertThat(webDriver.findElement(By.id("url")).text).isEqualTo("https://my.app.io/test")
             assertThat(webDriver.findElement(By.id("documentDir")).text).isEqualTo("prajuda")
             assertThat(webDriver.findElement(By.id("harvesterType")).text).isEqualTo("Git (Classic)")
+
+            assertThat(webDriver.findElement(By.id("repositoryInfo.uri")).text).isEqualTo("https://my.app.io/repository.git")
+            assertThat(webDriver.findElement(By.id("repositoryInfo.branch")).text).isEqualTo("master")
+            assertThat(webDriver.findElement(By.id("repositoryInfo.username")).text).isEqualTo("user")
+            assertThat(webDriver.findElement(By.id("repositoryInfo.password")).text).isEqualTo("(Edit service to see password)")
         }
 
         @Test
@@ -167,6 +176,8 @@ class ViewTest{
             get(webDriver, "fake/new.html")
 
             fillForm(webDriver=webDriver, number = -1)
+
+            println(webDriver.pageSource)
 
             webDriver.findElement(By.id("frm_default_submit")).submit()
 

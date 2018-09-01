@@ -1,4 +1,13 @@
 /**
+* Install serialize-object format
+*
+*/
+$.extend(FormSerializer.patterns, {
+validate: /^[a-z][a-z0-9_]*(?:\.[a-z0-9_]*)*(?:\[\])?$/i
+});
+
+
+/**
 Define string supplant method to implement string template
 @see https://pt.stackoverflow.com/a/78752/94219
 */
@@ -80,10 +89,14 @@ $("form.ajax-form").submit(function(e){
         }
     }
 
+    console.log(JSON.stringify(frm.serializeObject()))
+
     $.ajax({
         type       :frm.attr("method"),
         url        :frm.attr("action"),
-        data       :frm.serialize(),
+        contentType:'application/json',
+        dataType   :'json',
+        data       :JSON.stringify(frm.serializeObject()),
         beforeSend :function(){
             modalLoading.show(frm)
             }
@@ -95,9 +108,6 @@ $("form.ajax-form").submit(function(e){
             window.location.href = getRedirect(frm, data)
         })
         .fail(function(xhr, strStatus, errorThrown){
-            console.log("xpto:" + errorThrown);
-            console.log("xpto:strStatus" + errorThrown);
-            console.log("xpto:xhr" + JSON.stringify(xhr.responseJSON));
             if(xhr.responseJSON && xhr.responseJSON !=null){
                 showError(xhr.responseJSON)
             }else{

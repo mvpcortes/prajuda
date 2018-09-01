@@ -138,7 +138,10 @@
 <!--</footer>-->
 </body>
 
-<script type="text/javascript" src="../../../static/js/jquery.js" th:src="@{js/jquery.js}"></script>
-<script type="text/javascript" src="../../../static/js/menu.js"   th:src="@{js/menu.js}"></script>
-<script th:fragment="layout_script_js" type="text/javascript" src="../../../static/js/form.js"   th:src="@{/js/form.js}"></script>
+<script th:if="false"                   type="text/javascript" src="../../../static/js/jquery.js"                   ></script>
+<script th:if="false"                   type="text/javascript" src="../../../static/js/menu.js"                     ></script>
+<div th:fragment="layout_script_js" th:remove="tag">
+    <script type="text/javascript" src="../../../static/js/lib/jquery.serialize-object.js"      th:src="@{/js/lib/jquery.serialize-object.js}"></script>
+    <script type="text/javascript" src="../../../static/js/form.js"                         th:src="@{/js/form.js}"></script>
+</div>
 </html>

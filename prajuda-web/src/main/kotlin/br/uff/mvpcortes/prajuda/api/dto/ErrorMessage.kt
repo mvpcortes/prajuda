@@ -42,8 +42,7 @@ fun BindingResult.toErrorMessages():Map<String, ErrorMessage>? =
             null
         }
 
+fun <T> BindingResult.toMonoResponseEntityErrorMessages():Mono<ResponseEntity<T>> =
+    ErrorMessage.toErrorMessagesMap(this)
+            .let{map->Mono.fromSupplier{ResponseEntity.badRequest().body(map) as ResponseEntity<T> }}
 
-fun <T> BindingResult.responseErrorOr(successSupplier: ()->ResponseEntity<T>): Mono<ResponseEntity<T>> =
-    toErrorMessages()
-            ?.let{map->Mono.fromSupplier { ResponseEntity.badRequest().body(map) as ResponseEntity<T> }}
-            ?:Mono.fromSupplier(successSupplier)
