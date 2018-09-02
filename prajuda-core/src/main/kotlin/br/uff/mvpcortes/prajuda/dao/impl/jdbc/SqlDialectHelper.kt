@@ -9,8 +9,10 @@ interface SqlDialectHelper {
 
     fun createIndexSnippet():String?
 
+    fun updateTagSnipped():String
+
     companion object {
-        fun createHelper(dataSource: DataSource): SqlDialectHelper? {
+        fun createHelper(dataSource: DataSource): SqlDialectHelper {
 
             val dbName = dataSource.connection.use { it.metaData.databaseProductName }.toUpperCase().trim()
 

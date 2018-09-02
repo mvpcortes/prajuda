@@ -68,7 +68,7 @@ class ViewTest{
         }
 
         @Test
-        fun when_save_new_service_valid_then_show_service_data(webDriver:HtmlUnitDriver){
+        fun `when save new service valid then show service data`(webDriver:HtmlUnitDriver){
             get(webDriver, "service/new.html")
 
             fillForm(webDriver)
@@ -76,6 +76,7 @@ class ViewTest{
 
             webDriver.findElement(By.id("submit_btn")).click()
 
+            println(webDriver.pageSource)
             val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
 
@@ -89,10 +90,12 @@ class ViewTest{
             assertThat(webDriver.findElement(By.id("documentDir")).text).isEqualTo("prajuda")
             assertThat(webDriver.findElement(By.id("harvesterType")).text).isEqualTo("Git (Classic)")
 
-            assertThat(webDriver.findElement(By.id("repositoryInfo.uri")).text).isEqualTo("https://my.app.io/repository.git")
-            assertThat(webDriver.findElement(By.id("repositoryInfo.branch")).text).isEqualTo("master")
-            assertThat(webDriver.findElement(By.id("repositoryInfo.username")).text).isEqualTo("user")
-            assertThat(webDriver.findElement(By.id("repositoryInfo.password")).text).isEqualTo("(Edit service to see password)")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_uri")).text).isEqualTo("https://my.app.io/repository.git")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_branch")).text).isEqualTo("master")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_username")).text).isEqualTo("user")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_password")).text).isEqualTo("")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_password")).getAttribute("value")).isEqualTo("1234")
+            assertThat(webDriver.findElement(By.id("repositoryInfo_password_button")).text).isEqualTo("Show")
         }
 
         @Test
@@ -115,7 +118,7 @@ class ViewTest{
         @Test
         fun `when edit a service with valid values then show service updated data`(webDriver: HtmlUnitDriver){
             val wait = WebDriverWait(webDriver, 1)
-            when_save_new_service_valid_then_show_service_data(webDriver)
+            `when save new service valid then show service data`(webDriver)
 
             webDriver.findElementById("edit_btn").click()
 

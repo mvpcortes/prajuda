@@ -3,7 +3,7 @@
 *
 */
 $.extend(FormSerializer.patterns, {
-validate: /^[a-z][a-z0-9_]*(?:\.[a-z0-9_]*)*(?:\[\])?$/i
+    validate: /^[a-z][a-z0-9_]*(?:\.[a-z0-9_]*)*(?:\[\])?$/i
 });
 
 
@@ -88,8 +88,6 @@ $("form.ajax-form").submit(function(e){
             }
         }
     }
-
-    console.log(JSON.stringify(frm.serializeObject()))
 
     $.ajax({
         type       :frm.attr("method"),

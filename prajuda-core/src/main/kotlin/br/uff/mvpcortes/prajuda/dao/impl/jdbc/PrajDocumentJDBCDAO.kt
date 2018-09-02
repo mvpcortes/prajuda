@@ -11,10 +11,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
+import javax.annotation.PostConstruct
 
 
 @Repository
-class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
+class PrajDocumentJDBCDAO(
+        val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
 
     companion object {
         const val TABLE_NAME = "praj_document"
@@ -37,6 +39,13 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
     }
 
     private val logger = loggerFor(PrajDocumentJDBCDAO::class)
+
+    private var sqlUpdateTag:String = ""
+
+    @PostConstruct
+    fun init(){
+        sqlUpdateTag = SqlDialectHelper.createHelper(jdbcTemplate.dataSource!!).updateTagSnipped()
+    }
 
     val simpleJdbcInsert=SimpleJdbcInsert(jdbcTemplate)
             .withTableName(TABLE_NAME)
@@ -75,19 +84,8 @@ class PrajDocumentJDBCDAO(final val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
         return jdbcTemplate.queryForObject("SELECT count(*) FROM $TABLE_NAME", Long::class.java)!!
     }
 
-    override fun updateTag(serviceId: String, tag: String):Int {
-        return jdbcTemplate.update(
-                """
-                    UPDATE $TABLE_NAME t
-                    SET t.$COLUMN_TAG = ?
-                    WHERE EXISTS (
-                        SELECT 1 FROM ${PrajServiceJDBCDAO.TABLE_NAME} s
-                        INNER JOIN $TABLE_NAME t2 ON t2.$COLUMN_SERVICE_ID = s.${PrajServiceJDBCDAO.COLUMN_NAME_ID}
-                        WHERE s.${PrajServiceJDBCDAO.COLUMN_NAME_ID} = ?
-                        AND t2.$COLUMN_ID = t.$COLUMN_ID
-                        )
-                """.trimIndent(), tag, serviceId)
-    }
+    @Transactional
+    override fun updateTag(serviceId: String, tag: String):Int = jdbcTemplate.update(sqlUpdateTag, tag, serviceId)
 
     @Transactional
     override fun deleteTrackingServiceAndPath(doc: PrajDocument): Int {

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -18,6 +19,8 @@ import java.time.LocalDateTime
 @SpringBootTest()
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("A HarvestRequestJDBCDAO")
+@Transactional
+@Rollback
 class HarvestRequestJDBCDAOTest{
 
     @Autowired
@@ -28,8 +31,6 @@ class HarvestRequestJDBCDAOTest{
     @Rollback
     fun `when not there is an opening harvestRequest then return empty`(){
         harvestRequestJDBCDAO.deleteAll()
-
-//        val request = harvestRequestJDBCDAO.save(HarvesterRequestFixture.open())
 
         val list = harvestRequestJDBCDAO.getOldOpen(1)
 
@@ -182,7 +183,7 @@ class HarvestRequestJDBCDAOTest{
 
         val request = harvestRequestJDBCDAO.save(HarvesterRequestFixture.started())
 
-        harvestRequestJDBCDAO.completeRequests(LocalDateTime.now(), listOf(request.id!!))
+        harvestRequestJDBCDAO.completeRequests(listOf(request.id!!))
 
         val requestUpdated = harvestRequestJDBCDAO.findById(request.id!!)!!
 
@@ -199,8 +200,32 @@ class HarvestRequestJDBCDAOTest{
 
         harvestRequestJDBCDAO.save(HarvesterRequestFixture.completed())
 
-        val list = harvestRequestJDBCDAO.completeRequests(LocalDateTime.now(), emptyList())
+        val list = harvestRequestJDBCDAO.completeRequests( emptyList())
 
         assertThat(list).isEqualTo(0)
     }
+
+    @Test
+    fun `when failRequest then change request state to failed and register exception`(){
+        harvestRequestJDBCDAO.deleteAll()
+        val request = harvestRequestJDBCDAO.save(HarvesterRequestFixture.started())
+
+        val qtd = harvestRequestJDBCDAO.failRequest(request.id!!, IllegalStateException("xuxu"))
+
+
+        assertThat(qtd).isEqualTo(1)
+
+        val requestSaved = harvestRequestJDBCDAO.findById(request.id!!)
+
+        assertThat(requestSaved).isNotNull
+        requestSaved!!
+        assertThat(requestSaved.completedAt).isNotNull()
+        assertThat(requestSaved.completedAt).isAfterOrEqualTo(requestSaved.startedAt)
+        assertThat(requestSaved.completedAt).isAfterOrEqualTo(request.startedAt)
+        assertThat(requestSaved.failed).containsSubsequence(
+                "xuxu",
+                "IllegalStateException"
+        )
+    }
+
 }

@@ -6,6 +6,8 @@ import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
 import br.uff.mvpcortes.prajuda.harvester.FluxHarvesterProcessor
 import br.uff.mvpcortes.prajuda.harvester.HarvestedFixture
 import br.uff.mvpcortes.prajuda.harvester.consumer.SaveHarvestedDB
+import br.uff.mvpcortes.prajuda.harvester.subscriber.FinishHarvestRequestSubscriber
+import br.uff.mvpcortes.prajuda.harvester.subscriber.UpdateDatabaseSubscriber
 import br.uff.mvpcortes.prajuda.model.HarvestType
 import br.uff.mvpcortes.prajuda.model.fixture.HarvesterRequestFixture
 import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.springframework.beans.factory.ObjectFactory
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 
@@ -37,13 +40,23 @@ class HarvestRequestServiceTest{
 
     val workDirectoryService : WorkDirectoryService = mock{}
 
+    val finishHarvestRequestSubscriber: FinishHarvestRequestSubscriber = mock{}
+
+    val updateDatabaseSubscriber: UpdateDatabaseSubscriber = mock{}
+
+    val finishHarvestRequestSubscriberFactory: ObjectFactory<FinishHarvestRequestSubscriber> = mock{
+        on { `object`}.thenReturn(finishHarvestRequestSubscriber)
+    }
+
+
     val harvestRequestService=HarvestRequestService(
             harvestRequestDAO=harvestRequestDAO,
             workerProperties = workerProperties,
-            harvestedConsumer = harvestedConsumer,
             harvesterTypeService = harvesterTypeService,
             prajServiceDAO =  prajServiceDAO,
-            workDirectoryService = workDirectoryService)
+            workDirectoryService = workDirectoryService,
+            updateDatabaseSubscriber = updateDatabaseSubscriber,
+            finishHarvestRequestSubscriberFactory =  finishHarvestRequestSubscriberFactory)
 
 
     @Test

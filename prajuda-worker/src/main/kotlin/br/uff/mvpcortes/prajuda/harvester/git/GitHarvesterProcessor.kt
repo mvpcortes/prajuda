@@ -232,7 +232,10 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
     private fun getSafePrajudaDir(dirService: File, service: PrajService): File {
         val dirPrajuda = File(dirService, service.documentDir)
         if (!dirPrajuda.exists() || !dirPrajuda.isDirectory) {
-            throw InvalidRepositoryFormatException("Repository '${service.repositoryInfo.uri}' does not have directory '${service.documentDir}'")
+            throw InvalidRepositoryFormatException(
+                   msg= "Repository '${service.repositoryInfo.uri}' does not have directory '${service.documentDir}'",
+                  service = service
+            )
         }
         logger.info("[${service.name}] find service prajuda dir on \"$dirPrajuda\"")
         return dirPrajuda
@@ -272,7 +275,9 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
 
     private fun safeFindLastTag(repository:Repository, service:PrajService) =
             findLastTag(repository, service.repositoryInfo.branch)
-                    ?: throw InvalidRepositoryFormatException("Repository '${service.repositoryInfo.uri}' does not have a valid tag in '${service.repositoryInfo.branch}' branch")
+                    ?: throw InvalidRepositoryFormatException(
+                            "Repository '${service.repositoryInfo.uri}' does not have a valid tag in '${service.repositoryInfo.branch}' branch",
+                            service)
 
     private fun findLastTag(repository:Repository, branchName:String):MyRefTag? {
 
