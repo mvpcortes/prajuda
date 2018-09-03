@@ -5,6 +5,7 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
 class PrajServiceService(val prajServiceDAO:PrajServiceDAO) {
@@ -22,5 +23,8 @@ class PrajServiceService(val prajServiceDAO:PrajServiceDAO) {
     }
 
     fun count(): Long= prajServiceDAO.count()
+
+    fun findByName(serviceName: String)=prajServiceDAO.findByName(serviceName.toLowerCase())
+
 
 }

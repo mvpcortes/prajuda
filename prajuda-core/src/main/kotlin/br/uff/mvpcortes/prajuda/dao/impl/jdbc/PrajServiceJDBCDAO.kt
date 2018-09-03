@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.sql.ResultSet
 import java.time.LocalDateTime
 import javax.annotation.PostConstruct
@@ -28,6 +29,7 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
         const val TABLE_NAME = "praj_service"
         const val COLUMN_NAME_ID = "id"
         const val COLUMN_NAME_NAME = "name"
+        const val COLUMN_NAME_NAME_PATH = "name_path"
         const val COLUMN_NAME_URL = "url"
         const val COLUMN_NAME_DESCRIPTION = "description"
         const val COLUMN_NAME_HARVESTER_TYPE = "harvester_type_id"
@@ -50,7 +52,8 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                         $COLUMN_NAME_REPO_INFO_LAST_TAG,
                         $COLUMN_NAME_REPO_INFO_USERNAME,
                         $COLUMN_NAME_REPO_INFO_PASSWORD,
-                        $COLUMN_NAME_DOCUMENT_DIR
+                        $COLUMN_NAME_DOCUMENT_DIR,
+                        $COLUMN_NAME_NAME_PATH
                     FROM $TABLE_NAME
                     """
     }
@@ -64,7 +67,8 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                     rs.getString(4),
                     rs.getString(5),
                     mapRowRepositoryInfo(rs),
-                    rs.getString(12)
+                    rs.getString(12),
+                    rs.getString(13)
             )
         }
 
@@ -90,7 +94,8 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                 COLUMN_NAME_REPO_INFO_PASSWORD  to prajService.repositoryInfo.password,
                 COLUMN_NAME_DOCUMENT_DIR        to prajService.documentDir,
                 COLUMN_NAME_REPO_INFO_LAST_MOD  to prajService.repositoryInfo.lastModified,
-                COLUMN_NAME_REPO_INFO_LAST_TAG  to prajService.repositoryInfo.lastTag
+                COLUMN_NAME_REPO_INFO_LAST_TAG  to prajService.repositoryInfo.lastTag,
+                COLUMN_NAME_NAME_PATH           to prajService.namePath
         ))
 
     @PostConstruct
@@ -108,6 +113,20 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                 PrajServiceRowMapper
         )
     }
+
+    override fun findByName(serviceName: String)=
+        Mono.create<PrajService> {
+            val service = jdbcTemplate.queryForObjectNullable(
+                    "$STR_SELECT_PROJECTION WHERE $COLUMN_NAME_NAME = ?",
+                    arrayOf<Any>(serviceName),
+                    PrajServiceRowMapper)
+
+            if(service!=null){
+                it.success(service!!)
+            }else{
+                it.success()
+            }
+        }
 
     @Transactional
     override fun updateTag(id: String, tag: String):Int {
@@ -144,7 +163,8 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                         $COLUMN_NAME_REPO_INFO_LAST_TAG = ?,
                         $COLUMN_NAME_REPO_INFO_USERNAME = ?,
                         $COLUMN_NAME_REPO_INFO_PASSWORD = ?,
-                        $COLUMN_NAME_DOCUMENT_DIR       = ?
+                        $COLUMN_NAME_DOCUMENT_DIR       = ?,
+                        $COLUMN_NAME_NAME_PATH          = ?
                     WHERE
                         $COLUMN_NAME_ID                 = ?
 
@@ -160,6 +180,7 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
                     prajService.repositoryInfo.username,
                     prajService.repositoryInfo.password,
                     prajService.documentDir,
+                    prajService.namePath,
                     prajService.id
             )
         }

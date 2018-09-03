@@ -8,6 +8,8 @@ dependencies{
 	compile		"org.springframework.boot:spring-boot-starter-thymeleaf"
 	compile		"com.fasterxml.jackson.module:jackson-module-kotlin"
 	compile		"mysql:mysql-connector-java"
+	compile		"com.vladsch.flexmark:flexmark"
+//    compile     "com.atlassian.commonmark:commonmark"
 	testCompile	"io.github.bonigarcia:selenium-jupiter"
 	testCompile	"org.seleniumhq.selenium:htmlunit-driver"
 	testCompile	"io.projectreactor:reactor-test"

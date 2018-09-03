@@ -26,6 +26,22 @@
             </div>
         </div>
         <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label for="namePath" class="label">Prajuda Path</label>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input disabled id="namePath" class="input is-disabled" th:field="*{namePath}" type="text" placeholder="path used by prajuda to acess service's documents">
+                    </div>
+                    <div class="control">
+                        <a alt="You can edit application path on prajuda or using path based on service name" id="namePath_change" class="button is-info">Edit</a>
+                    </div>
+                    <p class="help ajax-form-error is-danger" data-error-for="name"></p>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
             <div class="field-label is-normal"><label for="url" class="label">Url</label></div>
             <div class="field-body">
                 <div class="field">
@@ -138,10 +154,11 @@
 <!--</footer>-->
 </body>
 
-<script th:if="false"                   type="text/javascript" src="../../../static/js/jquery.js"                   ></script>
-<script th:if="false"                   type="text/javascript" src="../../../static/js/menu.js"                     ></script>
+<script th:if="false"                   type="text/javascript" src="../../../static/js/lib/jquery.js"                   ></script>
+<!--<script th:if="false"                   type="text/javascript" src="../../../static/js/menu.js"                     ></script>-->
 <div th:fragment="layout_script_js" th:remove="tag">
     <script type="text/javascript" src="../../../static/js/lib/jquery.serialize-object.js"      th:src="@{/js/lib/jquery.serialize-object.js}"></script>
-    <script type="text/javascript" src="../../../static/js/form.js"                         th:src="@{/js/form.js}"></script>
+    <script type="text/javascript" src="../../../static/js/form.js"                             th:src="@{/js/form.js}"></script>
+    <script type="text/javascript" src="../../../static/js/service/service_new.js"              th:src="@{/js/service/service_new.js}"></script>
 </div>
 </html>

@@ -1,0 +1,20 @@
+/**
+Define a region to put prajuda document and format html tags
+*/
+.prajuda-document{
+}
+
+.prajuda-document > h1{
+}
+
+.prajuda-document > h2{
+}
+
+.prajuda-document > h3{
+}
+
+.prajuda-document > h4{
+}
+
+.prajuda-document > blockquote{
+}

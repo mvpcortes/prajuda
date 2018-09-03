@@ -2,6 +2,7 @@ package br.uff.mvpcortes.prajuda.view
 
 import br.uff.mvpcortes.prajuda.api.FakeApi
 import br.uff.mvpcortes.prajuda.loggerFor
+import br.uff.mvpcortes.prajuda.model.PrajService
 import io.github.bonigarcia.SeleniumExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -85,6 +86,7 @@ class ViewTest{
 
         private fun assertServiceShow(webDriver: HtmlUnitDriver, name:String="my service test") {
             assertThat(webDriver.findElement(By.id("name")).text).isEqualTo(name)
+            assertThat(webDriver.findElement(By.id("namePath")).text).isEqualTo(PrajService.sanitizeName(name))
             assertThat(webDriver.findElement(By.id("description")).text).isEqualTo("service description")
             assertThat(webDriver.findElement(By.id("url")).text).isEqualTo("https://my.app.io/test")
             assertThat(webDriver.findElement(By.id("documentDir")).text).isEqualTo("prajuda")

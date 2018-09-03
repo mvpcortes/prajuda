@@ -2,7 +2,7 @@ package br.uff.mvpcortes.prajuda.dao
 
 import br.uff.mvpcortes.prajuda.model.PrajService
 import reactor.core.publisher.Flux
-
+import reactor.core.publisher.Mono
 
 
 interface PrajServiceDAO {
@@ -10,6 +10,8 @@ interface PrajServiceDAO {
     fun findIds(): List<String>
 
     fun findByIdNullable(id: String): PrajService?
+
+    fun findByName(toLowerCase: String) : Mono<PrajService>
 
     fun save(prajService: PrajService): PrajService
 
@@ -22,4 +24,5 @@ interface PrajServiceDAO {
     fun delete(id: String): Int
 
     fun updateTag(id: String, tag: String):Int
+
 }

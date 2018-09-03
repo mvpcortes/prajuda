@@ -9,7 +9,7 @@ interface HarvesterProcessor {
     fun harvestComplete(service: PrajService, blockDeal: (Harvested)->Unit)
 
     /**
-     * Verify if the path is one of the markdown types
+     * Verify if the namePath is one of the markdown types
      */
     fun acceptPath(path:String)= arrayOf(
                     Regex(".+.md"),

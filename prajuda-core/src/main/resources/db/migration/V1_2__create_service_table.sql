@@ -11,6 +11,7 @@ CREATE TABLE praj_service (
     repo_info_username      VARCHAR( 255)       NOT NULL,
     repo_info_password      VARCHAR( 255)       NOT NULL,
     document_dir            VARCHAR( 255)       NOT NULL,
+    name_path               VARCHAR( 255)       NOT NULL,
     CONSTRAINT pk_praj_service PRIMARY KEY (id)
 );
 

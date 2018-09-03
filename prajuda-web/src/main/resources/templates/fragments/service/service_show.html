@@ -22,6 +22,16 @@
             </div>
         </div>
         <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label for="namePath" class="label">Name</label>
+            </div>
+            <div class="field-body">
+                <div class="control">
+                    <span id="namePath" th:text="*{namePath}">service prajuda path</span>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
             <div class="field-label is-normal"><label for="url" class="label">Url</label></div>
             <div class="field-body">
                 <div class="control">
@@ -32,10 +42,11 @@
         <div class="field is-horizontal">
             <div class="field-label is-normal"><label for="description" class="label">Description</label></div>
             <div class="field-body">
-                <div class="control">
-                    <!--<span id="description" th:text="*{description}">Description of service</span>-->
-                    <textarea id="description" class="textarea" th:field="*{description}"
-                              readonly>This service is...</textarea>
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <textarea id="description" class="textarea" th:field="*{description}"
+                                  readonly>This service is...</textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,7 +95,7 @@
             <div class="field-label is-normal"><label for="repositoryInfo_password" class="label">Password</label></div>
             <div class="field-body">
                 <div class="field has-addons">
-                    <div class="control">
+                    <div class="control is-expanded">
                         <input disabled th:value="*{repositoryInfo.password}" class="input is-static" type="password" id="repositoryInfo_password" value="password xuxu xaxa">
                     </div>
                     <div class="control">

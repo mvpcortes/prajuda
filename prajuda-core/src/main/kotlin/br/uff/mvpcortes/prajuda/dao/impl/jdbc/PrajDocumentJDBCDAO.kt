@@ -10,13 +10,18 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.sql.ResultSet
 import javax.annotation.PostConstruct
 
 
 @Repository
 class PrajDocumentJDBCDAO(
-        val jdbcTemplate:JdbcTemplate):PrajDocumentDAO {
+        val jdbcTemplate:JdbcTemplate,
+        val transactionTemplate: TransactionTemplate,
+        val reactiveJdbcTemplate:ReactiveJdbcTemplate = ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
+):PrajDocumentDAO {
+
 
     companion object {
         const val TABLE_NAME = "praj_document"
@@ -63,6 +68,17 @@ class PrajDocumentJDBCDAO(
             )
         }
     }
+    private object PrajDocumentRowMapperWithoutContent: RowMapper<PrajDocument> {
+        override fun mapRow(rs: ResultSet, rowNum: Int): PrajDocument? {
+            return PrajDocument(
+                    id = rs.getString(1)!!,
+                    serviceName = rs.getString(2)!!,
+                    serviceId = rs.getString(3)!!,
+                    path = rs.getString(4)!!,
+                    tag = rs.getString(5)
+            )
+        }
+    }
 
     private fun createParameterSource(prajDocument: PrajDocument) = MapSqlParameterSource(mapOf(
             COLUMN_CONTENT      to prajDocument.content,
@@ -91,7 +107,7 @@ class PrajDocumentJDBCDAO(
     override fun deleteTrackingServiceAndPath(doc: PrajDocument): Int {
         val id:String? = findIdByServiceAndPath(doc.serviceId!!, doc.path.trim())
         return if(id == null){
-            logger.warn("Cannot found doc with service='{}' and path='{}'", doc.serviceId, doc.path)
+            logger.warn("Cannot found doc with service='{}' and namePath='{}'", doc.serviceId, doc.path)
             0
         }else{
             doc.id = id
@@ -160,4 +176,34 @@ class PrajDocumentJDBCDAO(
         $SELECT_HEADER
         WHERE $COLUMN_SERVICE_ID = ?
     """.trimMargin(), arrayOf(id), PrajDocumentRowMapper)
+
+    override fun findByServiceNamePathAndPath(serviceNamePath: String, path: String): PrajDocument?{
+        return jdbcTemplate.query("""
+            SELECT
+                $COLUMN_ID,
+                $COLUMN_SERVICE_NAME,
+                $COLUMN_SERVICE_ID,
+                $COLUMN_PATH,
+                $COLUMN_TAG
+            FROM $TABLE_NAME doc
+            INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME}.${PrajServiceJDBCDAO.COLUMN_NAME_ID} s ON s.id = doc.$COLUMN_SERVICE_ID
+
+            WHERE
+                    s.${PrajServiceJDBCDAO.COLUMN_NAME_NAME_PATH} = TRIM(?)
+                AND doc.$COLUMN_PATH = TRIM(?)
+            """.trimIndent(),
+                arrayOf(serviceNamePath, path), PrajDocumentRowMapperWithoutContent)
+                .firstOrNull()
+    }
+
+    /**
+     * Return flux with document content. Return a empty flux if document not found
+     */
+    override fun findDocById(documentId: String)=
+         reactiveJdbcTemplate
+                .queryStringDividedOnFlux(
+                        "SELECT $COLUMN_CONTENT FROM $TABLE_NAME WHERE $COLUMN_ID = ? ",
+                        "SELECT LENGTH( $COLUMN_CONTENT ) FROM $TABLE_NAME WHERE $COLUMN_ID = ? ",
+                10_000,
+                        arrayOf(documentId))
 }
