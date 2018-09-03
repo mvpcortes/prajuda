@@ -1,5 +1,5 @@
 rootProject.name = 'prajuda_parent'
-include "prcore", "prweb", ":prworker"
+include "prcore", "prweb", "prworker"
 
 project(":prcore").projectDir       = file("prajuda-core")
 project(":prweb").projectDir        = file("prajuda-web")

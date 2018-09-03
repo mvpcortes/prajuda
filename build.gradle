@@ -7,6 +7,8 @@ buildscript {
         mockitoKotlinVersion	= '1.6.0'
         seleniumJupiterVersion	= '2.2.0'
         phantomjsdriverVersion 	= '1.4.4'
+        flexmarkVersion         = '0.34.22'
+        commommarkJavaVersion   = '0.11.0'
     }
 
     repositories {
@@ -41,6 +43,7 @@ allprojects {
     }
 
     test {
+
         useJUnitPlatform()
     }
 }
@@ -91,6 +94,8 @@ subprojects{
             dependency "org.eclipse.jgit:org.eclipse.jgit:${jgitVersion}"
             dependency "io.github.bonigarcia:selenium-jupiter:${seleniumJupiterVersion}"
             dependency "com.codeborne:phantomjsdriver:${phantomjsdriverVersion}"
+            dependency "com.vladsch.flexmark:flexmark:${flexmarkVersion}"
+            dependency "com.atlassian.commonmark:commonmark:${commommarkJavaVersion}"
         }
 
     }
