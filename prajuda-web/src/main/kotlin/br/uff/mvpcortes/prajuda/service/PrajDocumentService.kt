@@ -25,4 +25,13 @@ class PrajDocumentService(
                 .toFlux()
                 .flatMap{it}
     }
+
+    fun findByServiceAndPathFlux(serviceName: String, docPath: String): Flux<PrajDocument> {
+        return Flux.generate { sink->
+            prajDocumentDAO.findByServiceNamePathAndPath(serviceName, docPath)
+                    ?.let{ sink.next(it) }
+
+            sink.complete()
+        }
+    }
 }

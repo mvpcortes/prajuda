@@ -15,7 +15,6 @@ class PrajudaWorkerApplication
 fun main(args: Array<String>) {
 
     runApplication<PrajudaWorkerApplication>(*args).use{
-        it.getBean(HarvestRequestDAO::class.java).save(HarvestRequest(serviceSourceId = "2"))
         it.getBean(HarvestRequestDAO::class.java).save(HarvestRequest(serviceSourceId = "1"))
         it.getBean(HarvestRequestService::class.java).harvesterWorker()
     }
