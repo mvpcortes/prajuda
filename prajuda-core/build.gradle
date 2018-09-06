@@ -12,5 +12,4 @@ dependencies{
 	compile 	"org.flywaydb:flyway-core"
 	compile		"io.projectreactor:reactor-core"
 	testCompile "io.projectreactor:reactor-test"
-
 }
