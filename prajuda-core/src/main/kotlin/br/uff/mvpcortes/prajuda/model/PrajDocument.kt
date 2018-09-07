@@ -1,5 +1,7 @@
 package br.uff.mvpcortes.prajuda.model
 
+import br.uff.mvpcortes.prajuda.model.validation.RelativePath
+
 class PrajDocument (
         override var id: String? = null,
         var content: String = "",
@@ -7,7 +9,7 @@ class PrajDocument (
         /**
          * path to file in repository
          */
-        var path: String = "",
+        @field:RelativePath var path: String = "",
 
         /**
          * A document can  have not service (orphan?)
@@ -16,4 +18,6 @@ class PrajDocument (
         /**
          * We save the serviceName to avoid make a foreign key that. It is redundant and we know it.
          */
-        var serviceName: String? = ""): WithId
+        var serviceName: String? = ""): WithId{
+
+}

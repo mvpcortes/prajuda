@@ -9,49 +9,26 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.openqa.selenium.By
-import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 
 @ExtendWith(value=[SpringExtension::class, SeleniumExtension::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ViewTest{
+class CRUDServiceViewTest:AbstractViewTest(){
 
-    @LocalServerPort
-    var port:Int = 0
+
 
     companion object {
-        private val logger = loggerFor(ViewTest::class)
+        private val logger = loggerFor(CRUDServiceViewTest::class)
         const val STR_REGEX_FAKE_URL = "^http\\:\\/\\/localhost\\:\\d+\\/fake\\/\\d+\\.html\$"
-    }
-
-
-    fun get(webDriver: WebDriver, path:String):WebDriver{
-
-        //if is htmlUnit, force JS and download images
-        if(webDriver is HtmlUnitDriver){
-            webDriver.isJavascriptEnabled = true
-            webDriver.isDownloadImages = true
-         }
-
-
-        //resize window to mobile form (mobile-first
-        webDriver.manage().window().size = Dimension(360, 640)
-        webDriver.get("http://localhost:$port/$path")
-
-        //implicit wait
-        webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
-        return webDriver
     }
 
     @Nested

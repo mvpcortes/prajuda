@@ -1,54 +1,39 @@
 package br.uff.mvpcortes.prajuda.view
 
+import br.uff.mvpcortes.prajuda.dao.PrajDocumentDAO
+import br.uff.mvpcortes.prajuda.dao.PrajServiceDAO
+import br.uff.mvpcortes.prajuda.model.PrajDocument
 import br.uff.mvpcortes.prajuda.model.PrajService
+import br.uff.mvpcortes.prajuda.model.fixture.PrajDocumentFixture
+import br.uff.mvpcortes.prajuda.model.fixture.PrajServiceFixture
 import br.uff.mvpcortes.prajuda.service.RecommendationService
 import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.whenever
 import io.github.bonigarcia.SeleniumExtension
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.openqa.selenium.By
-import org.openqa.selenium.Dimension
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import reactor.core.publisher.toFlux
-import java.util.concurrent.TimeUnit
 
 
 @ExtendWith(value=[SpringExtension::class, SeleniumExtension::class])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HomeViewTest{
-
-    @LocalServerPort
-    var port:Int = 0
-
-    fun get(webDriver: WebDriver, path:String):WebDriver{
-
-        //if is htmlUnit, force JS and download images
-        if(webDriver is HtmlUnitDriver){
-            webDriver.isJavascriptEnabled = true
-            webDriver.isDownloadImages = true
-         }
-
-
-        //resize window to mobile form (mobile-first
-        webDriver.manage().window().size = Dimension(360, 640)
-        webDriver.get("http://localhost:$port/$path")
-
-        //implicit wait
-        webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
-        return webDriver
-    }
-
+class HomeViewTest:AbstractViewTest(){
 
         @MockBean
         lateinit var recommendationService: RecommendationService
+
+        @Autowired
+        lateinit var serviceDAO: PrajServiceDAO
+
+        @Autowired
+        lateinit var documentDAO: PrajDocumentDAO
 
         @BeforeEach
         fun init(){
@@ -89,4 +74,36 @@ class HomeViewTest{
             assertThat(qtd).isEqualTo(listServices.size)
 
         }
+
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    inner class `The document pages`{
+
+        var prajService:PrajService = PrajServiceFixture.withName("service_to_document")
+
+        var prajDocument: PrajDocument = PrajDocument()
+
+        @BeforeAll
+        fun initAll(){
+            serviceDAO.save(prajService)
+            prajDocument =  PrajDocumentFixture.new(prajService=prajService)
+            documentDAO.save(prajDocument)
+        }
+
+        @AfterAll
+        fun destroyAll(){
+            documentDAO.delete(prajDocument!!)
+            serviceDAO.delete(prajService.id!!)
+        }
+
+        @Test
+        fun `when a document is found and showed then render HTML content`(webDriver:HtmlUnitDriver){
+            val strPath = "document/${prajService.namePath}/${prajDocument.path}"
+            get(webDriver, strPath)
+
+            val htmlDocument = webDriver.findElement(By.id("document_${prajDocument.id}"))
+
+            assertThat(htmlDocument.getAttribute("innerHTML")).containsSequence(PrajDocumentFixture.STR_VALID_MD_SIMPLE)
+        }
+    }
 }

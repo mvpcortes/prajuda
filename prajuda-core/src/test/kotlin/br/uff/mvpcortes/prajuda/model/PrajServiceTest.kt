@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class PrajServiceTest{
 
-    val regex = PrajService.REGEX_VALIDATION.toRegex()
+    val regex = PrajService.REGEX_PATH_NAME_VALIDATION.toRegex()
 
     val regexNamePath = PrajService.REGEX_PATH_NAME_VALIDATION.toRegex()
 
@@ -17,7 +17,7 @@ class PrajServiceTest{
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["a", "prajuda", "1", "prajuda_xuxu", "1prajuda", "123", "prajuda423423", "prajuda/x", "prajuda/1", "prajuda/prajuda1", "prajuda/prajuda/prajuda", "no/prajuda/no/prajuda", "prajuda/1/", "prajuda/", "prajuda/1/prajuda/"])
+    @ValueSource(strings = ["a", "prajuda", "1", "prajuda_xuxu", "1prajuda", "123", "prajuda423423", "prajuda"])
     fun `when valid relative path then should match`(path:String){
         assertThat(regex.matches(path)).isTrue()
     }

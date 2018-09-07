@@ -30,6 +30,7 @@ class PrajDocumentService(
 //    }
 
     inner class PrajDocumentHtml(val prajDocument: PrajDocument,  val html:String = markdownService.parseMarkdown(prajDocument.content)){
+        val id:String get()=prajDocument.id!!
         val tag:String get()=prajDocument.tag
         val path:String get()=prajDocument.path
         val serviceName:String get()=prajDocument.serviceName?:"n/a"

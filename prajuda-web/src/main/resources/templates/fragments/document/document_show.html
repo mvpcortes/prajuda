@@ -10,8 +10,8 @@
 <body>
 
 <div th:fragment="layout_main_content" th:remove="tag">
-    <section class="section content prajuda-document">
-        <div th:each="document: ${documents}" th:remove="tag">
+    <section class="section prajuda-document">
+        <div th:attr="id='document_'+${document.id}" th:each="document: ${documents}" class="content">
             <span th:utext="${document.html}" th:remove="tag"><strong>html content</strong></span>
             <div th:if="${false}">
 

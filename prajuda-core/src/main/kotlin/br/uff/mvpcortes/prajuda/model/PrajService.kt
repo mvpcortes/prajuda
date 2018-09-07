@@ -1,5 +1,6 @@
 package br.uff.mvpcortes.prajuda.model
 
+import br.uff.mvpcortes.prajuda.model.validation.RelativePath
 import br.uff.mvpcortes.prajuda.model.validation.URL
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -14,9 +15,7 @@ data class PrajService(
         @field:NotNull @field:NotBlank @Size(min=20, max=1000)  val description:String="Service Description",
         @field:NotNull @field:NotBlank              val harvesterTypeId:String="",
         @field:Valid val repositoryInfo: RepositoryInfo = RepositoryInfo(),
-        @field:Pattern(
-                regexp=REGEX_VALIDATION,
-                message = "{br.uff.mvpcortes.prajuda.model.PrajService.documentDir.message}") @field:NotNull @field:NotBlank
+        @field:RelativePath @field:NotNull
                 val documentDir:String = STR_AJUDA_DIR,
         @field:Pattern(
                 regexp=REGEX_PATH_NAME_VALIDATION,
@@ -29,12 +28,11 @@ data class PrajService(
 
     companion object {
         const val STR_AJUDA_DIR = "prajuda"
-        const val REGEX_VALIDATION = "([\\w\\d]+)(/[\\w\\d]+)*(/)?"
-        const val REGEX_PATH_NAME_VALIDATION = "([\\w_]+)"
+        const val REGEX_PATH_NAME_VALIDATION = "([\\w\\d_]+)"
         fun empty()=PrajService(null, "", "", "", "", RepositoryInfo())
 
         fun sanitizeName(name: String): String =
-            name.replace(Regex("[^\\w_]"), "_").trim()
+            name.replace(Regex("[^\\w\\d_]"), "_").trim()
     }
 }
 
