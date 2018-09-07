@@ -31,18 +31,18 @@ class HarvestedConsumerList:  ArrayList<Harvested>(10) {
     fun assertFourthCommit() {
         sort()
 
-        assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
-        assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
-        assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
+        assertHarvestedUpdated(0, "org/main", "xuxu xaxa", "4")
+        assertHarvestedUpdated(1, "src/code", GitTestRepository.STR_CODE_MD, "4")
+        assertHarvestedUpdated(2, "src/user", "class user test content", "4")
         Assertions.assertThat(this).hasSize(3)
     }
 
     fun assertDiffSecondToFouthCommit(){
         sort()
 
-        assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
-        assertHarvestedUpdated(1, "src/user.md", "class user test content", "4")
-        assertHarvestedDeleted(2, "main.md")
+        assertHarvestedUpdated(0, "org/main", "xuxu xaxa", "4")
+        assertHarvestedUpdated(1, "src/user", "class user test content", "4")
+        assertHarvestedDeleted(2, "main")
         Assertions.assertThat(this).hasSize(3)
     }
 

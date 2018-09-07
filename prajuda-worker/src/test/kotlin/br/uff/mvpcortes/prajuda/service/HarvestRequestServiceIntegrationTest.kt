@@ -62,7 +62,7 @@ class HarvestRequestServiceIntegrationTest{
         assertThat(list).hasSize(3)
 
         list[0].let{
-            assertThat(it.path).isEqualTo("org/main.md")
+            assertThat(it.path).isEqualTo("org/main")
             assertThat(it.content).isEqualTo("xuxu xaxa")
             assertThat(it.serviceName).isEqualTo(prajService.name)
             assertThat(it.serviceId).isEqualTo(prajService.id)
@@ -70,7 +70,7 @@ class HarvestRequestServiceIntegrationTest{
         }
 
         list[1].let{
-            assertThat(it.path).isEqualTo("src/code.md")
+            assertThat(it.path).isEqualTo("src/code")
             assertThat(it.content).containsSubsequence(
             "[Dicentem turres](http://nomine.com/prior): ille",
             "esports_namespace_trojan += scrollProtocol;",
@@ -81,7 +81,7 @@ class HarvestRequestServiceIntegrationTest{
         }
 
         list[2].let{
-            assertThat(it.path).isEqualTo("src/user.md")
+            assertThat(it.path).isEqualTo("src/user")
             assertThat(it.content).isEqualTo("class user test content")
             assertThat(it.serviceName).isEqualTo(prajService.name)
             assertThat(it.serviceId).isEqualTo(prajService.id)
@@ -118,7 +118,7 @@ class HarvestRequestServiceIntegrationTest{
         assertThat(list).hasSize(2)
 
         list[0].let{
-            assertThat(it.path).isEqualTo("main.md")
+            assertThat(it.path).isEqualTo("main")
             assertThat(it.tag).isEqualTo("2")
             assertThat(it.serviceId).isEqualTo(prajService.id)
             assertThat(it.serviceName).isEqualTo(prajService.name)
@@ -126,7 +126,7 @@ class HarvestRequestServiceIntegrationTest{
         }
 
         list[1].let{
-            assertThat(it.path).isEqualTo("src/code.md")
+            assertThat(it.path).isEqualTo("src/code")
             assertThat(it.tag).isEqualTo("2")
             assertThat(it.serviceId).isEqualTo(prajService.id)
             assertThat(it.serviceName).isEqualTo(prajService.name)

@@ -108,7 +108,7 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
             }
 
     override fun startRequests(startedDate: LocalDateTime,  ids:List<String>):Int {
-        logger.debug("{}, {}", startedDate, ids)
+        logger.info("{}, {}", startedDate, ids)
         return if(ids.isEmpty()){
             0
         }else {

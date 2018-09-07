@@ -34,11 +34,28 @@ class MarkdownService{
         }
     }
 
+    fun parseMarkdown(strMarkdown: String):String{
+        val options = MutableDataSet()
+        options.setFrom(ParserEmulationProfile.COMMONMARK_0_28)
+        options.set(HtmlRenderer.GENERATE_HEADER_ID, false)
+        options.set(Parser.EXTENSIONS, asList(
+
+        ))
+
+        val parser = Parser.builder(options).build()
+
+        val document = parser.parse(strMarkdown)
+        val stringBuilder = StringBuilder()
+
+        val renderer = HtmlRenderer.builder(options).build()
+        renderer.render(document, stringBuilder, 1_000)
+        return stringBuilder.toString()
+    }
 
     /**
      * Parsing markdown to html flux
      */
-    fun parseMarkdown(strMarkdown:String): Flux<String> {
+    fun parseMarkdownFlux(strMarkdown:String): Flux<String> {
         val options = MutableDataSet()
         options.setFrom(ParserEmulationProfile.COMMONMARK_0_28)
         options.set(HtmlRenderer.GENERATE_HEADER_ID, false)

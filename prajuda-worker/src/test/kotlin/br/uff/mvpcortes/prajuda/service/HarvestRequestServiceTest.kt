@@ -24,7 +24,7 @@ import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 
 @DisplayName("A HarvestRequestService")
-class HarvestRequestServiceTest{
+internal class HarvestRequestServiceTest{
 
     val workerProperties = WorkerProperties(delayForHarvestRequest = 1, threadCount = 1)
 
@@ -44,8 +44,12 @@ class HarvestRequestServiceTest{
 
     val updateDatabaseSubscriber: UpdateDatabaseSubscriber = mock{}
 
-    val finishHarvestRequestSubscriberFactory: ObjectFactory<FinishHarvestRequestSubscriber> = mock{
-        on { `object`}.thenReturn(finishHarvestRequestSubscriber)
+    val updateDatabaseSubscriberFactory: ObjectFactory<UpdateDatabaseSubscriber> = mock{
+        on { `object`}.thenReturn(updateDatabaseSubscriber)
+    }
+
+    val finishHarvestRequestSubscriberFactory: ObjectFactory<FinishHarvestRequestSubscriber> = mock {
+        on { `object` }.thenReturn(finishHarvestRequestSubscriber)
     }
 
 
@@ -55,8 +59,9 @@ class HarvestRequestServiceTest{
             harvesterTypeService = harvesterTypeService,
             prajServiceDAO =  prajServiceDAO,
             workDirectoryService = workDirectoryService,
-            updateDatabaseSubscriber = updateDatabaseSubscriber,
-            finishHarvestRequestSubscriberFactory =  finishHarvestRequestSubscriberFactory)
+            finishHarvestRequestSubscriberFactory = finishHarvestRequestSubscriberFactory,
+            updateDatabaseSubscriberFactory = updateDatabaseSubscriberFactory
+            )
 
 
     @Test

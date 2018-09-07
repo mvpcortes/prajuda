@@ -1,6 +1,7 @@
 package br.uff.mvpcortes.prajuda.harvester
 
 import br.uff.mvpcortes.prajuda.model.PrajService
+import java.io.File
 
 interface HarvesterProcessor {
 
@@ -17,5 +18,7 @@ interface HarvesterProcessor {
                     Regex(".+.txt")
             ).filter { it.matches(path) }
                     .any()
+
+    fun removeExtension(pathString:String) = pathString.substringBeforeLast(".")
 
 }

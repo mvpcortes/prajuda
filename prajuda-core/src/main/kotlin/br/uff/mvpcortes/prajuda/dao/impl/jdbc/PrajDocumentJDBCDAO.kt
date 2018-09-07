@@ -180,19 +180,20 @@ class PrajDocumentJDBCDAO(
     override fun findByServiceNamePathAndPath(serviceNamePath: String, path: String): PrajDocument?{
         return jdbcTemplate.query("""
             SELECT
-                $COLUMN_ID,
-                $COLUMN_SERVICE_NAME,
-                $COLUMN_SERVICE_ID,
-                $COLUMN_PATH,
-                $COLUMN_TAG
+            doc.$COLUMN_ID,
+            doc.$COLUMN_SERVICE_NAME,
+            doc.$COLUMN_SERVICE_ID,
+            doc.$COLUMN_PATH,
+            doc.$COLUMN_CONTENT,
+            doc.$COLUMN_TAG
             FROM $TABLE_NAME doc
-            INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME}.${PrajServiceJDBCDAO.COLUMN_NAME_ID} s ON s.id = doc.$COLUMN_SERVICE_ID
+            INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME} s ON s.${PrajServiceJDBCDAO.COLUMN_NAME_ID}  = doc.$COLUMN_SERVICE_ID
 
             WHERE
                     s.${PrajServiceJDBCDAO.COLUMN_NAME_NAME_PATH} = TRIM(?)
                 AND doc.$COLUMN_PATH = TRIM(?)
             """.trimIndent(),
-                arrayOf(serviceNamePath, path), PrajDocumentRowMapperWithoutContent)
+                arrayOf(serviceNamePath, path), PrajDocumentRowMapper)
                 .firstOrNull()
     }
 

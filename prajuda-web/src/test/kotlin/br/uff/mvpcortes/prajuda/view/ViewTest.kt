@@ -77,7 +77,6 @@ class ViewTest{
 
             webDriver.findElement(By.id("submit_btn")).click()
 
-            println(webDriver.pageSource)
             val wait = WebDriverWait(webDriver, 2)
             wait.until(ExpectedConditions.urlMatches(".*/service/(\\d+)\\.html"))
 
@@ -181,8 +180,6 @@ class ViewTest{
             get(webDriver, "fake/new.html")
 
             fillForm(webDriver=webDriver, number = -1)
-
-            println(webDriver.pageSource)
 
             webDriver.findElement(By.id("frm_default_submit")).submit()
 

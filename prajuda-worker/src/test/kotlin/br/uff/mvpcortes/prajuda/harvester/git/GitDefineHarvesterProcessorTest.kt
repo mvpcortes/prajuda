@@ -14,18 +14,11 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("When a GitHarvesterProcessor ")
+@DisplayName("When a GitHarvesterProcessor")
 internal class GitDefineHarvesterProcessorTest {
 
-//    /**
-//     * Exclude  jest dependency
-//     */
-//    @TestConfiguration
-//    @SpringBootApplication(exclude = [(ElasticsearchJestAutoConfiguration::class)])
-//    class MyConfiguration
-
     @Test
-    fun `the context is initied `(){
+    fun `the context is initied`(){
 
     }
 
@@ -44,7 +37,6 @@ internal class GitDefineHarvesterProcessorTest {
     fun dropAll(){
         workDirectoryProvider.onClosedEvent(mock())
     }
-
 
     @Nested
     inner class `references a git repository` {
@@ -69,7 +61,7 @@ internal class GitDefineHarvesterProcessorTest {
             gitTestRepository.close()
         }
 
-        private fun `in a tag X and remote repository commited tag Y`(x:Int, y:Int) {
+        private fun `in a tag X and remote repository commited tag Y`(x: Int, y: Int) {
             gitTestRepository.changeMasterTo(x.toString())
             harvester.harvestComplete(service, harvestedList.consumer())
 
@@ -105,7 +97,7 @@ internal class GitDefineHarvesterProcessorTest {
         inner class `run harvesterComplete` {
 
             @Test
-            fun `on a repository without document directory then fail`(){
+            fun `on a repository without document directory then fail`() {
                 gitTestRepository.deletePrajudaDirAndCommitTag("xuxu")
 
                 val exception = assertThrows<InvalidRepositoryFormatException>()
@@ -113,11 +105,11 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(exception.message).containsSubsequence(
                         "Repository",
-                         "does not have directory 'prajuda'")
+                        "does not have directory 'prajuda'")
             }
 
             @Test
-            fun `doesnt have tags then fail `() {
+            fun `doesnt have tags then fail`() {
                 gitTestRepository.deleteTags()
 
                 val exception = assertThrows<InvalidRepositoryFormatException>()
@@ -140,7 +132,7 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(havested.op).isEqualTo(HarvestedOp.UPDATED)
                 assertThat(havested.doc.id).isEqualTo(null)
-                assertThat(havested.doc.path).isEqualTo("main.md")
+                assertThat(havested.doc.path).isEqualTo("main")
                 assertThat(havested.doc.tag).isEqualTo("1")
                 assertThat(havested.doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
                 assertThat(havested.doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
@@ -163,7 +155,7 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList[0].op).isEqualTo(HarvestedOp.UPDATED)
                 assertThat(harvestedList[0].doc.id).isEqualTo(null)
-                assertThat(harvestedList[0].doc.path).isEqualTo("main.md")
+                assertThat(harvestedList[0].doc.path).isEqualTo("main")
                 assertThat(harvestedList[0].doc.tag).isEqualTo("2")
                 assertThat(harvestedList[0].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
                 assertThat(harvestedList[0].doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
@@ -171,7 +163,7 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList[1].op).isEqualTo(HarvestedOp.UPDATED)
                 assertThat(harvestedList[1].doc.id).isEqualTo(null)
-                assertThat(harvestedList[1].doc.path).isEqualTo("src/code.md")
+                assertThat(harvestedList[1].doc.path).isEqualTo("src/code")
                 assertThat(harvestedList[1].doc.tag).isEqualTo("2")
                 assertThat(harvestedList[1].doc.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
                 assertThat(harvestedList[1].doc.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
@@ -188,10 +180,10 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(4)
 
-                val harvested = harvestedList.filter { it.doc.path == "org/main.md" }.map{it.doc}.single()
+                val harvested = harvestedList.filter { it.doc.path == "org/main" }.map { it.doc }.single()
 
                 assertThat(harvested.id).isEqualTo(null)
-                assertThat(harvested.path).isEqualTo("org/main.md")//moved
+                assertThat(harvested.path).isEqualTo("org/main")//moved
                 assertThat(harvested.tag).isEqualTo("3")
                 assertThat(harvested.serviceId).isEqualTo("xxx.xxx.xxx.xxx")
                 assertThat(harvested.serviceName).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
@@ -239,15 +231,15 @@ internal class GitDefineHarvesterProcessorTest {
 
 
             @Test
-            fun `without cached(cloned) directory will run a complete harvester`() {
+            fun xuxu(){//`without cached(cloned) directory will run a complete harvester`(){
                 val exception = assertThrows<NonClonedRepositoryException> {
                     harvester.harvest(service, harvestedList.consumer())
                 }
 
-                assertThat(exception.service!!.name).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
+                assertThat(exception.service.name).isEqualTo(PrajServiceFixture.DEFAULT_NAME)
                 assertThat(exception.dir.absolutePath).containsSubsequence(PrajServiceFixture.DEFAULT_NAME)
             }
-
+//
             @ParameterizedTest(name = "run #{index} with tag [{0}]")
             @ValueSource(ints = [1, 2, 3, 4])
             fun in_same_tag_then_non_operation(argument: Int) {
@@ -271,7 +263,7 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(1)
 
-                assertHarvestedUpdated(0, "main.md", GitTestRepository.STR_MAIN_MD, "1")
+                assertHarvestedUpdated(0, "main", GitTestRepository.STR_MAIN_MD, "1")
             }
 
             @Test
@@ -282,8 +274,8 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(2)
 
-                assertHarvestedUpdated(0, "main.md", "xuxu xaxa", "2")
-                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "2")
+                assertHarvestedUpdated(0, "main", "xuxu xaxa", "2")
+                assertHarvestedUpdated(1, "src/code", GitTestRepository.STR_CODE_MD, "2")
             }
 
             @Test
@@ -294,10 +286,10 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(4)
 
-                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "3")
-                assertHarvestedUpdated(1, "src/pc.md", "class pc test content", "3")
-                assertHarvestedUpdated(2, "src/user.md", "class user test content", "3")
-                assertHarvestedDeleted(3, "main.md")
+                assertHarvestedUpdated(0, "org/main", "xuxu xaxa", "3")
+                assertHarvestedUpdated(1, "src/pc", "class pc test content", "3")
+                assertHarvestedUpdated(2, "src/user", "class user test content", "3")
+                assertHarvestedDeleted(3, "main")
             }
 
             @Test
@@ -308,7 +300,7 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(1)
 
-                assertHarvestedDeleted(0, "src/pc.md")
+                assertHarvestedDeleted(0, "src/pc")
             }
 
             @Test
@@ -325,10 +317,10 @@ internal class GitDefineHarvesterProcessorTest {
 
                 assertThat(harvestedList).hasSize(4)
 
-                assertHarvestedUpdated(0, "org/main.md", "xuxu xaxa", "4")
-                assertHarvestedUpdated(1, "src/code.md", GitTestRepository.STR_CODE_MD, "4")
-                assertHarvestedUpdated(2, "src/user.md", "class user test content", "4")
-                assertHarvestedDeleted(3, "main.md")
+                assertHarvestedUpdated(0, "org/main", "xuxu xaxa", "4")
+                assertHarvestedUpdated(1, "src/code", GitTestRepository.STR_CODE_MD, "4")
+                assertHarvestedUpdated(2, "src/user", "class user test content", "4")
+                assertHarvestedDeleted(3, "main")
             }
         }
     }

@@ -5,6 +5,8 @@ import br.uff.mvpcortes.prajuda.harvester.Harvested
 import br.uff.mvpcortes.prajuda.harvester.HarvestedOp
 import br.uff.mvpcortes.prajuda.loggerFor
 import br.uff.mvpcortes.prajuda.model.HarvestRequest
+import org.springframework.beans.factory.config.ConfigurableBeanFactory
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Service
 import reactor.core.publisher.BaseSubscriber
 
@@ -12,6 +14,7 @@ import reactor.core.publisher.BaseSubscriber
  * Subscriber that save havested operations {HarvestedOp}
  */
 @Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 class UpdateDatabaseSubscriber(val prajDocumentDAO: PrajDocumentDAO):
         BaseSubscriber<Pair<HarvestRequest, Harvested>>() {
 

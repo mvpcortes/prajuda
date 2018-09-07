@@ -11,5 +11,6 @@ dependencies{
 	compile 	"org.eclipse.jgit:org.eclipse.jgit"
 	compile 	"org.flywaydb:flyway-core"
 	compile		"io.projectreactor:reactor-core"
+	testCompile	"org.hibernate.validator:hibernate-validator"
 	testCompile "io.projectreactor:reactor-test"
 }

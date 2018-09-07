@@ -23,7 +23,7 @@ class HarvestRequestService (
         val prajServiceDAO: PrajServiceDAO,
         val harvesterTypeService:HarvesterTypeService,
         val finishHarvestRequestSubscriberFactory: ObjectFactory<FinishHarvestRequestSubscriber>,
-        val updateDatabaseSubscriber: UpdateDatabaseSubscriber){
+        val updateDatabaseSubscriberFactory: ObjectFactory<UpdateDatabaseSubscriber>){
 
     private val logger = loggerFor(HarvestRequestService::class)
 
@@ -56,7 +56,7 @@ class HarvestRequestService (
                 .subscribeOn(scheduler)
                 .publish()
 
-        connectableFlux.subscribe(this.updateDatabaseSubscriber)
+        connectableFlux.subscribe(this.updateDatabaseSubscriberFactory.`object`)
         connectableFlux.subscribe(this.finishHarvestRequestSubscriberFactory.`object`)
         connectableFlux.connect()
 

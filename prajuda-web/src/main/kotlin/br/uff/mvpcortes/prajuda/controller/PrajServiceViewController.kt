@@ -2,6 +2,7 @@ package br.uff.mvpcortes.prajuda.controller
 
 import br.uff.mvpcortes.prajuda.controller.helper.TemplateHelper
 import br.uff.mvpcortes.prajuda.exception.PageNotFoundException
+import br.uff.mvpcortes.prajuda.model.PrajDocument
 import br.uff.mvpcortes.prajuda.service.PrajDocumentService
 import br.uff.mvpcortes.prajuda.service.PrajServiceService
 import br.uff.mvpcortes.prajuda.service.PrajudaWorkerService
@@ -24,7 +25,7 @@ class PrajServiceViewController(val prajServiceService:PrajServiceService,
 
     companion object {
         const val REGEX_VALID_SERVICE_NAME = "[a-z_]+"
-        const val REGEX_VALID_PATH_NAME    = "[a-z\\_]*[a-z_]+.html"
+        const val REGEX_VALID_PATH_NAME    = "[a-z\\_]*[a-z_]+"
     }
 
     @GetMapping("{serviceName:$REGEX_VALID_SERVICE_NAME}.html")
@@ -36,7 +37,9 @@ class PrajServiceViewController(val prajServiceService:PrajServiceService,
                 .withPage("fragments/service/service_show").apply()
     }
 
-    @GetMapping("{serviceName:$REGEX_VALID_SERVICE_NAME}/{docPath:$REGEX_VALID_PATH_NAME}")
+
+
+    @GetMapping("{serviceName:$REGEX_VALID_SERVICE_NAME}/{docPath:$REGEX_VALID_PATH_NAME}.html")
     fun getDocument(@PathVariable serviceName: String, @PathVariable docPath:String, model:Model):String{
 
 //        val prajDocument = prajDocumentService.findByServiceNameAndPath(serviceName, docPath)
@@ -49,8 +52,12 @@ class PrajServiceViewController(val prajServiceService:PrajServiceService,
 //                .withPage("fragments/document/document_show").apply()
 
 
+
         return TemplateHelper(model)
-                .withAttr("documents", ReactiveDataDriverContextVariable(prajDocumentService.findByServiceAndPathFlux(serviceName, docPath)))
+                .withAttr("documents", ReactiveDataDriverContextVariable(
+                        prajDocumentService.findByServiceAndPathFlux(serviceName, docPath)
+                ))
+                .withPage("fragments/document/document_show")
                 .apply()
     }
 }

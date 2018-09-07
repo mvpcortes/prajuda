@@ -19,7 +19,6 @@ class URLValidator: ConstraintValidator<URL, String> {
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
         value!!
         context!!
-
         return (ResourceUtils.isUrl(value))
     }
 }

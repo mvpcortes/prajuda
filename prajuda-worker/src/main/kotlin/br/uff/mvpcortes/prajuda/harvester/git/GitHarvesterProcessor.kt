@@ -154,10 +154,11 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
             }
 
     private fun createUpdatedHarvested(revCommit:RevCommit, dirPrajuda: File, entry: DiffEntry, tagName: String,  service: PrajService): Harvested {
-        logger.info("[${service.name} diff update document $dirPrajuda")
+        val nameFile = service.removeDocumentDir(entry.newPath)
+        logger.info("[{} diff update document $dirPrajuda, {}", service.name, nameFile)
         return Harvested(HarvestedOp.UPDATED,
                 createPrajDocument(dirPrajuda,
-                        service.removeDocumentDir(entry.newPath),
+                        nameFile,
                         tagName,
                         revCommit,
                         service))
@@ -169,7 +170,7 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
         return PrajDocument(
                 content = "",
                 tag = "",
-                path = file.toString(),
+                path = removeExtension(file.toString()),
                 serviceId = service.id,
                 serviceName = null
         )
@@ -258,7 +259,7 @@ class GitHarvesterProcessor(val configService: WorkDirectoryService): HarvesterP
         return PrajDocument(
                 content = File(dirPrajuda, nameFile).readText(),
                 tag = tagName,
-                path = nameFile,
+                path = removeExtension(nameFile),
                 serviceId = service.id,
                 serviceName = service.name
         )
