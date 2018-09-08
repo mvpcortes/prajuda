@@ -105,5 +105,26 @@ class HomeViewTest:AbstractViewTest(){
 
             assertThat(htmlDocument.getAttribute("innerHTML")).containsSequence(PrajDocumentFixture.STR_VALID_MD_SIMPLE)
         }
+
+        @Test
+        fun `when a document is found with_html_extension_and showed then render HTML content`(webDriver:HtmlUnitDriver){
+            val strPath = "document/${prajService.namePath}/${prajDocument.path}.html"
+            get(webDriver, strPath)
+
+            val htmlDocument = webDriver.findElement(By.id("document_${prajDocument.id}"))
+
+            assertThat(htmlDocument.getAttribute("innerHTML")).containsSequence(PrajDocumentFixture.STR_VALID_MD_SIMPLE)
+        }
+
+        @Test
+        fun `when a document is not found then render 404 error`(webDriver:HtmlUnitDriver){
+            val strPath = "document/${prajService.namePath}/${prajDocument.path}xuxu"
+            get(webDriver, strPath)
+
+            assertThat(webDriver.findElement(By.id("status")).text).isEqualTo("404")
+
+            assertThat(webDriver.findElement(By.id("error")).text).isEqualTo("Not Found")
+
+        }
     }
 }

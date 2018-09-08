@@ -1,10 +1,7 @@
 package br.uff.mvpcortes.prajuda.exception
 
 import org.springframework.http.HttpStatus
-import org.springframework.validation.BeanPropertyBindingResult
-import org.springframework.validation.BindingResult
 import org.springframework.web.server.ResponseStatusException
-import sun.misc.Request
 
 
 open class RequestException(message:String, val code:Int, e:Throwable?) : ResponseStatusException(HttpStatus.valueOf(code),
