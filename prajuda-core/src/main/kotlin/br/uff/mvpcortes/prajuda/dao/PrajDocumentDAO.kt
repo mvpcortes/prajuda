@@ -40,9 +40,9 @@ interface PrajDocumentDAO {
 
     fun findById(id: String): PrajDocument?
 
-    /**
-     * This method should not get doc content. It will be make by cacheable markdown service
-     */
+
+    fun existsByServiceNamePathAndPath(serviceName: String, path: String): Boolean
+
     fun findByServiceNamePathAndPath(serviceName: String, path: String): PrajDocument?
 
     fun findDocById(documentId: String): Flux<String>

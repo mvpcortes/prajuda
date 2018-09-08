@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="../../static/images/logo/prajuda_icon.ico" th:href="@{/images/prajuda_icon.ico}">
+    <meta name="keywords" content="prajuda" th:content="#{keywords}">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../static/css/bulma.css" th:href="@{/css/bulma.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/css/prajuda.css" th:href="@{/css/prajuda.css}">
+
+    <title th:text="${status} + ' - ' + ${error}">404 - Not Found</title>
+</head>
+<body>
+<main>
+    <!--/* see {org.springframework.boot.autoconfigure.web.reactive.error.ErrorWebFluxAutoConfiguration} and {org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler} */-->
+    <section class="container">
+        <p  class=has-text-centered>
+            <a href="" th:href="@{/}">
+                <img alt="Prajuda logo" src="../../static/images/logo/prajuda_min.png" th:src="@{/images/logo/prajuda_min.png}">
+            </a>
+        </p>
+        <h2 class="title has-text-centered" th:text="${status}">404</h2>
+        <p  class="subtitle has-text-centered" th:text="${error}">Not Found</p>
+    </section>
+
+        <section class="container" th:if="${trace}">
+            <h2 class="subtitle">Stacktrace</h2>
+            <textarea class="textarea" th:text="${trace}">
+                stacktrace
+                stacktrace
+                stacktrace
+            </textarea>
+            <p>&nbsp;</p>
+        </section>
+    <section th:if="${trace}">
+            <h2 class="subtitle">Context Variables</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>key</th>
+                        <th>value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="key : ${#vars.getVariableNames()}">
+                        <td th:text="${key}">*key</td>
+                        <td th:text="${#vars.getVariable(key)}">*value</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

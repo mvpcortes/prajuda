@@ -177,6 +177,18 @@ class PrajDocumentJDBCDAO(
         WHERE $COLUMN_SERVICE_ID = ?
     """.trimMargin(), arrayOf(id), PrajDocumentRowMapper)
 
+    override fun existsByServiceNamePathAndPath(serviceName: String, path: String): Boolean {
+        return jdbcTemplate.queryForObject("""
+            SELECT COUNT(doc.$COLUMN_ID)
+            FROM $TABLE_NAME doc
+            INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME} s ON s.${PrajServiceJDBCDAO.COLUMN_NAME_ID}  = doc.$COLUMN_SERVICE_ID
+            WHERE
+                s.${PrajServiceJDBCDAO.COLUMN_NAME_NAME_PATH} = TRIM(?)
+                AND doc.$COLUMN_PATH = TRIM(?)
+        """.trimIndent(),
+                Long::class.java, serviceName, path) > 0
+    }
+
     override fun findByServiceNamePathAndPath(serviceNamePath: String, path: String): PrajDocument?{
         return jdbcTemplate.query("""
             SELECT
@@ -188,7 +200,6 @@ class PrajDocumentJDBCDAO(
             doc.$COLUMN_TAG
             FROM $TABLE_NAME doc
             INNER JOIN ${PrajServiceJDBCDAO.TABLE_NAME} s ON s.${PrajServiceJDBCDAO.COLUMN_NAME_ID}  = doc.$COLUMN_SERVICE_ID
-
             WHERE
                     s.${PrajServiceJDBCDAO.COLUMN_NAME_NAME_PATH} = TRIM(?)
                 AND doc.$COLUMN_PATH = TRIM(?)

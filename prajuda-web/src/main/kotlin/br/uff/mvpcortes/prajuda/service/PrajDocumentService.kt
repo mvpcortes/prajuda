@@ -37,6 +37,10 @@ class PrajDocumentService(
 
     }
 
+    fun existsByServiceAndPaht(serviceName:String, docPath:String):Boolean{
+        return prajDocumentDAO.existsByServiceNamePathAndPath(serviceName, docPath)
+    }
+
     fun findByServiceAndPathFlux(serviceName: String, docPath: String): Flux<PrajDocumentHtml> =
         Flux.generate<PrajDocument> { sink->
             prajDocumentDAO.findByServiceNamePathAndPath(serviceName, docPath)

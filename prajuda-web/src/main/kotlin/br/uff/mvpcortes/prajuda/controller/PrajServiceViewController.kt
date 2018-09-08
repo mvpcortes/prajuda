@@ -10,6 +10,7 @@ import br.uff.mvpcortes.prajuda.service.PrajServiceService
 import br.uff.mvpcortes.prajuda.service.PrajudaWorkerService
 import org.springframework.boot.context.properties.bind.BindResult
 import org.springframework.format.Formatter
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -26,6 +27,8 @@ import java.util.stream.Collectors
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.onErrorReturn
 
 
@@ -100,11 +103,35 @@ class PrajServiceViewController(val prajServiceService:PrajServiceService,
         }
     }
 
+//    @GetMapping("document_f")
+//    fun getForbidden(){
+//        throw ResponseStatusException(HttpStatus.FORBIDDEN)
+//    }
+//
+//    @GetMapping ("document_error")
+//    fun getError():String{
+//        throw IllegalStateException("xuxux")
+//    }
+
+
+    fun verifyDocumentPath(documentPath: DocumentPath) {
+        val bindingResult = BeanPropertyBindingResult(documentPath, "documentPath")
+        springValidator.validate(documentPath, bindingResult)
+
+        if (bindingResult.hasErrors()) {
+            throw BadRequestException("Invalid document path")
+        }
+    }
+
     @GetMapping("document/{*documentPath}")
     fun getDocument(@PathVariable documentPath: DocumentPath,
                     model:Model):String{
 
         verifyDocumentPath(documentPath)
+
+        if(!prajDocumentService.existsByServiceAndPaht(documentPath.serviceName, documentPath.path)){
+            throw PageNotFoundException("document not exists")
+        }
 
         return TemplateHelper(model)
                 .withAttr("documents", ReactiveDataDriverContextVariable(
@@ -124,15 +151,6 @@ class PrajServiceViewController(val prajServiceService:PrajServiceService,
 //                .withPage("fragments/document/document_show").apply()
 
 
-    }
-
-    fun verifyDocumentPath(documentPath: DocumentPath) {
-        val bindingResult = BeanPropertyBindingResult(documentPath, "documentPath")
-        springValidator.validate(documentPath, bindingResult)
-
-        if (bindingResult.hasErrors()) {
-            throw BadRequestException("Invalid document path")
-        }
     }
 
 }
