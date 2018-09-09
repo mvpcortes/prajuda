@@ -67,10 +67,8 @@ subprojects{
 
     test {
         useJUnitPlatform()
-
-//        systemProp.user.country="US"
-//        systemProp.user.language="en"
-        jvmArgs = ["user.country=CA", "user.language=fr"]
+        systemProperty("user.country", "US")
+        systemProperty("user.language", "en")
 
     }
 

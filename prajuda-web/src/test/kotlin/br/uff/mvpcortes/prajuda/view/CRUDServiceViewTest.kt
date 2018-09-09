@@ -164,7 +164,7 @@ class CRUDServiceViewTest:AbstractViewTest(){
             assertThat(item.getAttribute("id")).isEqualTo("xptoNumber")
             assertThat(item.tagName).isEqualTo("span")
             assertThat(item.getAttribute("class")).isEqualTo("ajax-form-error-showed")
-            assertThat(item.text).isEqualTo("deve ser maior ou igual a 0")
+            assertThat(item.text).isEqualTo("must be greater than or equal to 0")
             assertThat(item.isDisplayed).isTrue()
         }
     }
