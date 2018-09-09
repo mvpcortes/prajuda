@@ -8,10 +8,6 @@ import org.springframework.stereotype.Service
  * This class will generate recommendations looking at user context, service querying or/and manual scheduling service
  */
 @Service
-class RecommendationService {
-
-    @Autowired
-    lateinit var prajServiceDAO:PrajServiceDAO
-
+class RecommendationService (private val prajServiceDAO:PrajServiceDAO){
     fun recommendServices()= prajServiceDAO.findByIds("1", "10", "79", "80", "64", "88")
 }

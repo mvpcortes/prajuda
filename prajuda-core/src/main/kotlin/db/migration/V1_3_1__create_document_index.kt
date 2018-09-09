@@ -1,6 +1,6 @@
 package db.migration
 
-import br.uff.mvpcortes.prajuda.dao.impl.jdbc.SqlDialectHelper
+import br.uff.mvpcortes.prajuda.dao.impl.jdbc.SqlDialectHelperFactory
 import br.uff.mvpcortes.prajuda.loggerFor
 import org.flywaydb.core.api.migration.spring.SpringJdbcMigration
 import org.springframework.jdbc.core.JdbcTemplate
@@ -8,15 +8,18 @@ import org.springframework.jdbc.core.JdbcTemplate
 /**
  * Implement
  */
-class V1_3_1__create_document_index : SpringJdbcMigration {
+class V1_3_1__create_document_index (
+        private val sqlDialectHelperFactory:SqlDialectHelperFactory = SqlDialectHelperFactory()
+): SpringJdbcMigration {
 
     val logger = loggerFor(SpringJdbcMigration::class)
 
-    override fun migrate(jdbcTemplate: JdbcTemplate?) {
 
-        val sqlDialectHelper = SqlDialectHelper.createHelper(jdbcTemplate!!.dataSource!!)
+    override fun migrate(jdbcTemplate: JdbcTemplate) {
 
-        val sqlCreateIndex = sqlDialectHelper?.createIndexSnippet()
+        val sqlDialectHelper = sqlDialectHelperFactory.createHelper(jdbcTemplate.dataSource!!)
+
+        val sqlCreateIndex = sqlDialectHelper.createIndexSnippet()
 
         if(sqlCreateIndex!=null) {
             jdbcTemplate.execute(sqlCreateIndex)

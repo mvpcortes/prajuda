@@ -105,7 +105,7 @@ class HarvestRequestServiceIntegrationTest{
         gitTestRepository.changeMasterTo("1")
         harvestRequestService.internalHarvesterWorker()
 
-        //create a new harvesterRequest
+        //createHelper a new harvesterRequest
         val newHarvestRequest = HarvesterRequestFixture.open(serviceId = prajService.id!!, harvestType = HarvestType.DIFF)
         harvestRequestService.harvestRequestDAO.save(newHarvestRequest)
 

@@ -72,7 +72,7 @@ class MarkdownService{
 
         return monoDoc
                 .toFlux()
-                .map{ Pair(it, HtmlRenderer.builder(options).build()) } //create renderer
+                .map{ Pair(it, HtmlRenderer.builder(options).build()) } //createHelper renderer
                 .flatMap{ itDoc->
                     Flux.create<String>{
                         val appendable = AppendableForFlux(it)

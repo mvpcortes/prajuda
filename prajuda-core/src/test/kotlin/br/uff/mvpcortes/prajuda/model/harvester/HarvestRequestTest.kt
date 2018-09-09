@@ -52,7 +52,15 @@ internal class HarvestRequestTest{
             assertThatIllegalStateException().isThrownBy {
                 harvesterRequest.toCompleted()
             }
-                .withMessage("Cannot complete a not started harvester request (${harvesterRequest.harvesterStatus})")
+                .withMessage("Cannot to complete a not started harvester request (${harvesterRequest.harvesterStatus})")
+        }
+
+        @Test
+        fun `then cannot fail request`(){
+            assertThatIllegalStateException().isThrownBy {
+                harvesterRequest.toFailed(IllegalStateException("xuxu"))
+            }
+                    .withMessage("Cannot to fail a not started harvester request (${harvesterRequest.harvesterStatus})")
 
         }
     }
@@ -97,6 +105,42 @@ internal class HarvestRequestTest{
             fun `and startedAt is before or equal to completedAt`(){
                 assertThat(completed.startedAt).isBeforeOrEqualTo(completed.completedAt)
             }
+        }
+
+        @Nested
+        inner class `then can fail request`{
+            val completed = harvesterRequest.toFailed(IllegalStateException("xuxu"))
+
+            @Test
+            fun `and status is COMPLETED`(){
+                assertThat(completed.harvesterStatus).isEqualTo(HarvesterStatus.COMPLETE)
+            }
+
+            @Test
+            fun `and startedAt is not null`() {
+                assertThat(completed.startedAt).isNotNull()
+            }
+
+            @Test
+            fun `and createAt is before or equal to startedAt`(){
+                assertThat(completed.createAt).isBeforeOrEqualTo(completed.startedAt)
+            }
+
+            @Test
+            fun `and completedAt is not null`(){
+                assertThat(completed.completedAt).isNotNull()
+            }
+
+            @Test
+            fun `and startedAt is before or equal to completedAt`(){
+                assertThat(completed.startedAt).isBeforeOrEqualTo(completed.completedAt)
+            }
+
+            @Test
+            fun `and failed is not null`(){
+                assertThat(completed.failed).containsSubsequence("xuxu")
+            }
+
         }
     }
 

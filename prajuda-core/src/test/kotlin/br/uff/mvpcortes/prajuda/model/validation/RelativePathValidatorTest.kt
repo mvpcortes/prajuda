@@ -32,6 +32,13 @@ internal class RelativePathValidatorTest{
     @ParameterizedTest(name="when valid path run validator {index} with path name ''{0}'' should be valid")
     @ValueSource(strings= ["main", "main/main", "a", "a/b/c", "xuxu_a/bb_c/c_c_c",
         "1main", "m3ain/m5ain", "a",  "1", "43a/b/c", "xuxu_a66/bb_c/c_c_c", "a/b/c/"])
+    fun `then inline fun is valid`(path:String){
+        assertThat(RelativePathValidator.isValid(path)).isTrue()
+    }
+
+    @ParameterizedTest(name="when valid path run validator {index} with path name ''{0}'' should be valid")
+    @ValueSource(strings= ["main", "main/main", "a", "a/b/c", "xuxu_a/bb_c/c_c_c",
+        "1main", "m3ain/m5ain", "a",  "1", "43a/b/c", "xuxu_a66/bb_c/c_c_c", "a/b/c/"])
     fun `then validator is valid`(path:String) {
 
         assertThat(
@@ -45,9 +52,13 @@ internal class RelativePathValidatorTest{
     @ParameterizedTest(name="when invalid path run regex {index} with path name ''{0}'' should not matches")
     @ValueSource(strings= ["main iou oiu o89 ", "main/main*", "@a", "a/b/c.xpto", "876876xuxu_a/bb_c /c_c_c", "a/b/c/c.html"])
     fun `then regex not mathes`(path:String){
-
         assertThat(RelativePathValidator.REGEX_VALID_PATH.matches(path)).isFalse()
+    }
 
+    @ParameterizedTest(name="when invalid path run regex {index} with path name ''{0}'' should not matches")
+    @ValueSource(strings= ["main iou oiu o89 ", "main/main*", "@a", "a/b/c.xpto", "876876xuxu_a/bb_c /c_c_c", "a/b/c/c.html"])
+    fun `then inline function is not valid`(path:String){
+        assertThat(RelativePathValidator.isValid(path)).isFalse()
     }
 
     @ParameterizedTest(name="when valid path run validator {index} with path name ''{0}'' should not be valid")

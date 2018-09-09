@@ -9,9 +9,10 @@ object PrajDocumentFixture {
     const val STR_MD_SIMPLE = "# Title\n## Subtitle\nparagraph"
     const val STR_VALID_MD_SIMPLE = "<h1>Title</h1>\n<h2>Subtitle</h2>\n<p>paragraph</p>\n"
 
-    fun default(id:String?="1", tag:String="tag",
-                path:String="test/main.md", serviceId:String="1",
-                serviceName:String="my-service",
+    fun default(
+            id:String?="1", tag:String="tag",
+                path:String="test/main", serviceId:String="1",
+                serviceName:String="my_service",
                 content:String=STR_MD_SIMPLE) = PrajDocument(
             id=id,
             content=content,

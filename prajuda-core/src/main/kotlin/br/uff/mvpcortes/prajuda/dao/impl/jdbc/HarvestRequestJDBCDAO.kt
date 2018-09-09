@@ -92,7 +92,7 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
 
 
     /**
-     * We should create a new transaction every time because we cannot contaminate start operation
+     * We should createHelper a new transaction every time because we cannot contaminate start operation
      */
     @Transactional()
     override fun getAndStartOldOpen(qtd:Int): List<HarvestRequest> =

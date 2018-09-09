@@ -17,7 +17,7 @@ interface PrajDocumentDAO {
 
     /**
      * We need save a document based on the service id and namePath. This method before save search by document id
-     * to update or create it
+     * to update or createHelper it
      */
     fun saveTrackingServiceAndPath(doc:PrajDocument):PrajDocument
 

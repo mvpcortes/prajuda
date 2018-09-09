@@ -16,7 +16,7 @@ class WorkDirectoryService(private val workDirectoryProvider: WorkDirectoryProvi
     fun getWorkDirectoryForHarvester(idHarvester:String) =
             File(workDirectoryProvider.workDirectory(), idHarvester)
                     .takeIf { (it.exists() && it.isDirectory) || it.mkdir()}
-                    ?:throw IllegalStateException("Cannot create workdir for $idHarvester")
+                    ?:throw IllegalStateException("Cannot createHelper workdir for $idHarvester")
 
     fun deleteWorkDirectoryForHarvester(idHarvester: String)=
         File(workDirectoryProvider.workDirectory(), idHarvester).tryDeleteRecursively()

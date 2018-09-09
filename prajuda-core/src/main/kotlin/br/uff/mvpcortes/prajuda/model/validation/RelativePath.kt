@@ -24,9 +24,7 @@ class RelativePathValidator: ConstraintValidator<RelativePath, String> {
         inline fun isValid(str:String)=REGEX_VALID_PATH.matches(str)
     }
 
-    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
-        value!!
-        context!!
+    override fun isValid(value: String, context: ConstraintValidatorContext): Boolean {
         return isValid(value)
     }
 }

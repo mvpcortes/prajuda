@@ -19,7 +19,8 @@ import javax.annotation.PostConstruct
 class PrajDocumentJDBCDAO(
         val jdbcTemplate:JdbcTemplate,
         val transactionTemplate: TransactionTemplate,
-        val reactiveJdbcTemplate:ReactiveJdbcTemplate = ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
+        val reactiveJdbcTemplate:ReactiveJdbcTemplate = ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate),
+        val sqlDialectHelper:SqlDialectHelper
 ):PrajDocumentDAO {
 
 
@@ -49,7 +50,7 @@ class PrajDocumentJDBCDAO(
 
     @PostConstruct
     fun init(){
-        sqlUpdateTag = SqlDialectHelper.createHelper(jdbcTemplate.dataSource!!).updateTagSnipped()
+        sqlUpdateTag = sqlDialectHelper.updateTagSnipped()
     }
 
     val simpleJdbcInsert=SimpleJdbcInsert(jdbcTemplate)

@@ -116,7 +116,7 @@ class ConfigPrajServiceTest (
             val exception = assertThrows<IllegalStateException> {
                 configService.getWorkDirectoryForHarvester(idHarvester)
             }
-            assertThat(exception).hasMessage("Cannot create workdir for $idHarvester")
+            assertThat(exception).hasMessage("Cannot createHelper workdir for $idHarvester")
         }
     }
 }

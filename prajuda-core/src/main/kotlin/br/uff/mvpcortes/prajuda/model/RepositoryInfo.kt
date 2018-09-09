@@ -12,5 +12,5 @@ data class RepositoryInfo(
                             val username:String="",
         @field:NotBlank     val password:String="") {
 
-    fun hasCredentials(): Boolean = password.isBlank()
+    fun hasCredentials(): Boolean = !password.isBlank()
 }

@@ -1,5 +1,7 @@
 package br.uff.mvpcortes.prajuda.dao.impl.jdbc
 
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import javax.sql.DataSource
 
 /**
@@ -10,19 +12,20 @@ interface SqlDialectHelper {
     fun createIndexSnippet():String?
 
     fun updateTagSnipped():String
+}
 
-    companion object {
-        fun createHelper(dataSource: DataSource): SqlDialectHelper {
+@Configuration
+class SqlDialectHelperFactory{
 
-            val dbName = dataSource.connection.use { it.metaData.databaseProductName }.toUpperCase().trim()
+    @Bean("sqlDialectHelper")
+    fun createHelper(dataSource: DataSource):SqlDialectHelper{
+        val dbName = dataSource.connection.use { it.metaData.databaseProductName }.toUpperCase().trim()
 
-            return when (dbName) {
-                "HSQL DATABASE ENGINE"  -> HSqlDialectHelper()
-                "H2"    -> H2DialectHelper()
-                "MYSQL" -> MySqlDialectHelper()
-                else    -> throw IllegalStateException("Cannot create dialectHelper for $dbName")
-            }
+        return when (dbName) {
+            "HSQL DATABASE ENGINE"  -> HSqlDialectHelper()
+            "H2"    -> H2DialectHelper()
+            "MYSQL" -> MySqlDialectHelper()
+            else    -> throw IllegalStateException("Cannot createHelper dialectHelper for $dbName")
         }
     }
-
 }

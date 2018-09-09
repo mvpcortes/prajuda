@@ -17,10 +17,6 @@ import org.junit.jupiter.params.provider.ValueSource
 @DisplayName("When a GitHarvesterProcessor")
 internal class GitDefineHarvesterProcessorTest {
 
-    @Test
-    fun `the context is initied`(){
-
-    }
 
     val workDirectoryProvider= WorkDirectoryProviderTestImpl()
 
@@ -221,8 +217,9 @@ internal class GitDefineHarvesterProcessorTest {
 
                 gitTestRepository.deletePrajudaDirAndCommitTag("xuxu")
 
-                val exception = assertThrows<InvalidRepositoryFormatException>()
-                { harvester.harvest(service, harvestedList.consumer()) }
+                val exception =
+                        assertThrows<InvalidRepositoryFormatException>()
+                        { harvester.harvest(service, harvestedList.consumer()) }
 
                 assertThat(exception.message).containsSubsequence(
                         "Repository",

@@ -67,12 +67,12 @@ data class HarvestRequest(
     fun toCompleted()= if(harvesterStatus == HarvesterStatus.PROCESSING)
         this.copy( completedAt = java.time.LocalDateTime.now())
     else
-        throw IllegalStateException("Cannot complete a not started harvester request ($harvesterStatus)")
+        throw IllegalStateException("Cannot to complete a not started harvester request ($harvesterStatus)")
 
     fun toFailed(exception:Throwable) = if(harvesterStatus == HarvesterStatus.PROCESSING)
             this.copy(completedAt = java.time.LocalDateTime.now(), failed = toStringException(exception))
         else
-            throw IllegalStateException("Cannot complete a not started harvester request ($harvesterStatus)")
+            throw IllegalStateException("Cannot to fail a not started harvester request ($harvesterStatus)")
 
 
 

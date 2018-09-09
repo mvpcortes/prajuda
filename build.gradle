@@ -69,10 +69,10 @@ subprojects{
         useJUnitPlatform()
     }
 
-
     jacoco {
         toolVersion = "0.8.2"
     }
+
 
     jacocoTestReport {
         reports {

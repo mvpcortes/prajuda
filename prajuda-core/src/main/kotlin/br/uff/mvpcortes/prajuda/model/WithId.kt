@@ -7,7 +7,7 @@ interface WithId{
 
     val id:String?
 
-    class DelegateWithId(withId: WithId): WithId by withId
+    private class DelegateWithId(withId: WithId): WithId by withId
 
     fun onlyId(): WithId = DelegateWithId(this)
 }

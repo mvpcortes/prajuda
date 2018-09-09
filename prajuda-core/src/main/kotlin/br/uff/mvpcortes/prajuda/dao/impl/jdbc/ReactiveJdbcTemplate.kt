@@ -1,11 +1,11 @@
 package br.uff.mvpcortes.prajuda.dao.impl.jdbc
 
-import org.reactivestreams.Subscriber
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.transaction.support.TransactionTemplate
 import reactor.core.publisher.Flux
+import reactor.core.publisher.FluxSink
 
 class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdbcTemplate: JdbcTemplate){
 
@@ -13,8 +13,8 @@ class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdb
     private val DEFAULT_QTD_WINDOW_GET_STRING = 1024L //QTD characters to get string data from mysql
 
     fun <T> queryForFlux(query:String, args:Array<Any>, rowMapper: RowMapper<T>): Flux<T> {
-        return Flux.from<T> { subscriber->
-            this.runTransaction(query, args, subscriber, rowMapper)
+        return Flux.create<T> {
+            runTransaction(query, it, args, rowMapper)
         }
     }
 
@@ -27,7 +27,7 @@ class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdb
      * @param args query args
      */
     fun queryStringDividedOnFlux(query:String, querySize:String, args:Array<Any>)
-        =queryStringDividedOnFlux(query, querySize, DEFAULT_QTD_WINDOW_GET_STRING, args)
+            =queryStringDividedOnFlux(query, querySize, DEFAULT_QTD_WINDOW_GET_STRING, args)
 
     /**
      * Return a string value divided in a flux. Using default length string
@@ -88,21 +88,17 @@ class ReactiveJdbcTemplate(val transactionTemplate: TransactionTemplate, val jdb
         }
     }
 
-    private fun <T> runTransaction(query: String, args: Array<Any>, subscriber: Subscriber<in T>, rowMapper: RowMapper<T>): Long {
+    private fun <T> runTransaction(query: String, sink: FluxSink< in T>, args: Array<Any>, rowMapper: RowMapper<T>): Long {
         return transactionTemplate.execute{ _ ->
             var qtdInternal = 0L
             try {
                 jdbcTemplate.query(query, args) {
-                    try {
-                        subscriber.onNext(rowMapper.mapRow(it, Math.max(qtdInternal, Integer.MAX_VALUE.toLong()).toInt()))
-                        qtdInternal+=1L
-                    } catch (e: Exception) {
-                        throw IllegalStateException("Fail to map row", e)
-                    }
+                    sink.next(rowMapper.mapRow(it, Math.max(qtdInternal, Integer.MAX_VALUE.toLong()).toInt())!!)
+                    qtdInternal += 1L
                 }
-                subscriber.onComplete()
-            } catch (ee: Exception) {
-                subscriber.onError(ee)
+                sink.complete()
+            }catch(e:Exception){
+                sink.error(e)
             }
             qtdInternal
         }!!

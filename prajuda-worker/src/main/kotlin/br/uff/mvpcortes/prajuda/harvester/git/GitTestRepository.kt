@@ -9,7 +9,7 @@ import java.io.File
 import java.nio.file.Files
 
 /**
- * This class will create repositories to be used by tests
+ * This class will createHelper repositories to be used by tests
  */
 class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repository")):AutoCloseable{
 
@@ -65,7 +65,7 @@ class GitTestRepository(val dir:File = FileUtils.createTempDirectory("test_repos
             commitTag(gitRepo, "2")
 
             //### THIRD COMMIT ###//
-            //create a file and move other
+            //createHelper a file and move other
             createFile("prajuda/src/user.md", "class user test content")
             createFile("prajuda/src/pc.md", "class pc test content")
             moveFile("prajuda/main.md", "prajuda/org/main.md")
