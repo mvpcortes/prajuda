@@ -15,4 +15,19 @@ internal class PrajServiceTest{
 
         assertThat(removedPath).isEqualTo("a/b/c")
     }
+
+    @Test
+    fun `when create a prajservice fixture with repository then fill with repository`(){
+        val prajService = PrajServiceFixture.withRepository(uri="uriuriuri")
+
+        assertThat(prajService.repositoryInfo.uri).isEqualTo("uriuriuri")
+    }
+
+    @Test
+    fun `when create a prajservice fixture with repository and tag then fill with repository`(){
+        val prajService = PrajServiceFixture.withRepositoryAndTag(uri="uriuriuri", tag="tagtagtag")
+
+        assertThat(prajService.repositoryInfo.uri).isEqualTo("uriuriuri")
+        assertThat(prajService.repositoryInfo.lastTag).isEqualTo("tagtagtag")
+    }
 }

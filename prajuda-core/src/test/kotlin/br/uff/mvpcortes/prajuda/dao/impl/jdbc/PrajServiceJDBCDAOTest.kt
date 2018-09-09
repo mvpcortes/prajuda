@@ -297,7 +297,6 @@ class PrajServiceJDBCDAOTest{
 
         assertThat(prajServiceDAO.count()).isEqualTo(listPrajService.size.toLong())
 
-
     }
 
 }

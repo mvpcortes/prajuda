@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 
 @Service
-class PrajServiceService(val prajServiceDAO:PrajServiceDAO) {
+class PrajServiceService(private val prajServiceDAO:PrajServiceDAO) {
 
     @Transactional
     fun save(prajService: PrajService)=prajServiceDAO.save(prajService)
@@ -24,6 +24,5 @@ class PrajServiceService(val prajServiceDAO:PrajServiceDAO) {
     fun count(): Long= prajServiceDAO.count()
 
     fun findByName(serviceName: String)=prajServiceDAO.findByName(serviceName.toLowerCase())
-
 
 }
