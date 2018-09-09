@@ -5,7 +5,11 @@ package br.uff.mvpcortes.prajuda.model
  */
 interface WithId{
 
-    val id:String?
+    companion object {
+        val COLUMN_ID = "id"
+    }
+
+    var id:String?
 
     private class DelegateWithId(withId: WithId): WithId by withId
 

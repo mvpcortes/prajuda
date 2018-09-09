@@ -5,8 +5,6 @@ import br.uff.mvpcortes.prajuda.model.PrajService
 import br.uff.mvpcortes.prajuda.model.RepositoryInfo
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -18,12 +16,9 @@ import javax.annotation.PostConstruct
 
 @Repository
 class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
-                          private val simpleJdbcInsert:SimpleJdbcInsert = SimpleJdbcInsert(jdbcTemplate)
-                                  .withTableName(TABLE_NAME)
-                                  .usingGeneratedKeyColumns("id"),
-                          val transactionTemplate: TransactionTemplate,
-                          val prajDocumentJDBCDAO: PrajDocumentJDBCDAO,
-                          val reactiveJdbcTemplate: ReactiveJdbcTemplate= ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
+                          private val transactionTemplate: TransactionTemplate,
+                          private val prajDocumentJDBCDAO: PrajDocumentJDBCDAO,
+                          private val reactiveJdbcTemplate: ReactiveJdbcTemplate= ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate)
 ): PrajServiceDAO {
     companion object {
         const val TABLE_NAME = "praj_service"
@@ -83,24 +78,26 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
     }
 
 
-    private fun createParameterSource(prajService:PrajService) = MapSqlParameterSource(mapOf(
-                COLUMN_NAME_NAME                to prajService.name,
-                COLUMN_NAME_URL                 to prajService.url,
-                COLUMN_NAME_DESCRIPTION         to prajService.description,
-                COLUMN_NAME_HARVESTER_TYPE      to prajService.harvesterTypeId,
-                COLUMN_NAME_REPO_INFO_URI       to prajService.repositoryInfo.uri,
-                COLUMN_NAME_REPO_INFO_BRANCH    to prajService.repositoryInfo.branch,
-                COLUMN_NAME_REPO_INFO_USERNAME  to prajService.repositoryInfo.username,
-                COLUMN_NAME_REPO_INFO_PASSWORD  to prajService.repositoryInfo.password,
-                COLUMN_NAME_DOCUMENT_DIR        to prajService.documentDir,
-                COLUMN_NAME_REPO_INFO_LAST_MOD  to prajService.repositoryInfo.lastModified,
-                COLUMN_NAME_REPO_INFO_LAST_TAG  to prajService.repositoryInfo.lastTag,
-                COLUMN_NAME_NAME_PATH           to prajService.namePath
-        ))
+    val saveJDBCTemplate=SaveJDBCTemplate<PrajService>(jdbcTemplate,
+    TABLE_NAME,
+            COLUMN_NAME_ID      to PrajService::id,
+        COLUMN_NAME_NAME                to PrajService::name,
+        COLUMN_NAME_URL                 to PrajService::url,
+        COLUMN_NAME_DESCRIPTION         to PrajService::description,
+        COLUMN_NAME_HARVESTER_TYPE      to PrajService::harvesterTypeId,
+        COLUMN_NAME_REPO_INFO_URI       to {ps->ps.repositoryInfo.uri},
+        COLUMN_NAME_REPO_INFO_BRANCH    to {ps->ps.repositoryInfo.branch},
+        COLUMN_NAME_REPO_INFO_USERNAME  to {ps->ps.repositoryInfo.username},
+        COLUMN_NAME_REPO_INFO_PASSWORD  to {ps->ps.repositoryInfo.password},
+        COLUMN_NAME_REPO_INFO_LAST_MOD  to {ps->ps.repositoryInfo.lastModified},
+        COLUMN_NAME_REPO_INFO_LAST_TAG  to {ps->ps.repositoryInfo.lastTag},
+        COLUMN_NAME_DOCUMENT_DIR        to PrajService::documentDir,
+        COLUMN_NAME_NAME_PATH           to PrajService::namePath
+    )
 
     @PostConstruct
     fun init() {
-        simpleJdbcInsert.compile()
+        saveJDBCTemplate.compile()
     }
 
 
@@ -146,51 +143,13 @@ class PrajServiceJDBCDAO (private val jdbcTemplate:JdbcTemplate,
 
 
     override fun save(prajService: PrajService): PrajService {
-        if (prajService.id == null || prajService.id?.isBlank() == true) {
-            prajService.id = simpleJdbcInsert.executeAndReturnKey(createParameterSource(prajService)).toString()
-            return prajService
-        } else {
-            jdbcTemplate.update(
-                    """
-                    UPDATE $TABLE_NAME SET
-                        $COLUMN_NAME_NAME               = ?,
-                        $COLUMN_NAME_URL                = ?,
-                        $COLUMN_NAME_DESCRIPTION        = ?,
-                        $COLUMN_NAME_HARVESTER_TYPE     = ?,
-                        $COLUMN_NAME_REPO_INFO_URI      = ?,
-                        $COLUMN_NAME_REPO_INFO_BRANCH   = ?,
-                        $COLUMN_NAME_REPO_INFO_LAST_MOD = ?,
-                        $COLUMN_NAME_REPO_INFO_LAST_TAG = ?,
-                        $COLUMN_NAME_REPO_INFO_USERNAME = ?,
-                        $COLUMN_NAME_REPO_INFO_PASSWORD = ?,
-                        $COLUMN_NAME_DOCUMENT_DIR       = ?,
-                        $COLUMN_NAME_NAME_PATH          = ?
-                    WHERE
-                        $COLUMN_NAME_ID                 = ?
-
-                """.trimIndent(),
-                    prajService.name,
-                    prajService.url,
-                    prajService.description,
-                    prajService.harvesterTypeId,
-                    prajService.repositoryInfo.uri,
-                    prajService.repositoryInfo.branch,
-                    prajService.repositoryInfo.lastModified,
-                    prajService.repositoryInfo.lastTag,
-                    prajService.repositoryInfo.username,
-                    prajService.repositoryInfo.password,
-                    prajService.documentDir,
-                    prajService.namePath,
-                    prajService.id
-            )
-        }
-        return prajService
+        return saveJDBCTemplate.save(prajService)
     }
 
     override fun findPage(page: Int, pageSize: Int): Flux<PrajService>{
         return reactiveJdbcTemplate.queryForFlux(
-            STR_SELECT_PROJECTION +
                 """
+                    $STR_SELECT_PROJECTION
                     ORDER BY $COLUMN_NAME_ID ASC
                     LIMIT ? OFFSET ?
                 """.trimIndent(),

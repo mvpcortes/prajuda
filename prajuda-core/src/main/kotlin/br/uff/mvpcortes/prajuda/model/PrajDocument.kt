@@ -2,7 +2,7 @@ package br.uff.mvpcortes.prajuda.model
 
 import br.uff.mvpcortes.prajuda.model.validation.RelativePath
 
-class PrajDocument (
+data class PrajDocument (
         override var id: String? = null,
         var content: String = "",
         var tag: String = "",

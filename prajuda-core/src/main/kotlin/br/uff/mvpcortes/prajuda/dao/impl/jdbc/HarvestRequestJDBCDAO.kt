@@ -120,15 +120,6 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
         }
     }
 
-    @Transactional()
-    override fun completeRequest(request: HarvestRequest):Int
-            = jdbcTemplate.update(
-            """
-                UPDATE $TABLE_NAME SET $COLUMN_COMPLETED_AT = ? WHERE id = ?
-            """.trimIndent(),
-                arrayOf(LocalDateTime.now(), request.id)
-    )
-
 
     @Transactional
     override fun failRequest(id:String, tw:Throwable):Int =
@@ -151,7 +142,6 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
             jdbcTemplate.update(
                     """
                     UPDATE $TABLE_NAME SET
-                        $COLUMN_COMPLETED_AT = ?,
                         $COLUMN_SERVICE_SOURCE_ID = ?,
                         $COLUMN_CREATED_AT = ?,
                         $COLUMN_STARTED_AT = ?,
@@ -160,7 +150,6 @@ class HarvestRequestJDBCDAO (final val jdbcTemplate: JdbcTemplate): HarvestReque
                     WHERE
                         $COLUMN_ID = ?
                 """.trimIndent(),
-                    request.completedAt,
                     request.serviceSourceId,
                     request.createAt,
                     request.startedAt,

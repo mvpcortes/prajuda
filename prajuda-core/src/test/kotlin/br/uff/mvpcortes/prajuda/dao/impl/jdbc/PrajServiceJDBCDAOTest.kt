@@ -11,7 +11,10 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
+import reactor.test.StepVerifier
 
 
 @ExtendWith(SpringExtension::class)
@@ -30,6 +33,42 @@ class PrajServiceJDBCDAOTest{
     @Test
     fun `we can get they from database`(){
         prajServiceDAO.findIds()
+    }
+
+    fun assertNewId(prajService:PrajService, prajServiceSaved:PrajService) {
+        assertThat(prajServiceSaved).isNotNull
+        assertThat(prajServiceSaved.id).isEqualTo(prajServiceSaved.id)
+        assertThat(prajServiceSaved).isSameAs(prajService)
+
+        val prajServiceDB = prajServiceDAO.findByIdNullable(prajServiceSaved.id!!)!!
+
+
+        assertThat(prajServiceDB.id).isNotNull()
+        assertThat(prajServiceDB.id).isEqualTo(prajService.id)//not update id because
+    }
+
+    @Nested
+    inner class `when a new PrajService with empty id is saved` {
+
+        private val prajService: PrajService = PrajServiceFixture.withName("Test Service")
+
+        private lateinit var prajServiceSaved: PrajService
+
+        @BeforeEach
+        private fun init() {
+            prajService.id = ""
+            prajServiceSaved = prajServiceDAO.save(prajService)
+        }
+
+        @AfterEach
+        private fun drop() {
+            prajServiceDAO.delete(prajServiceSaved.id!!)
+        }
+
+        @Test
+        fun `then generate a new ID`() {
+            assertNewId(prajService, prajServiceSaved)
+        }
     }
 
 
@@ -51,17 +90,8 @@ class PrajServiceJDBCDAOTest{
         }
 
         @Test
-        fun `then generate a new ID`(){
-
-            assertThat(prajServiceSaved).isNotNull
-            assertThat(prajServiceSaved.id).isEqualTo(prajServiceSaved.id)
-            assertThat(prajServiceSaved).isSameAs(prajService)
-
-            val prajServiceDB = prajServiceDAO.findByIdNullable(prajServiceSaved.id!!)!!
-
-
-            assertThat(prajServiceDB.id).isNotNull()
-            assertThat(prajServiceDB.id).isEqualTo(prajService.id)//not update id because
+        fun `then generate a new ID`() {
+            assertNewId(prajService, prajServiceSaved)
         }
 
         @Test
@@ -208,5 +238,66 @@ class PrajServiceJDBCDAOTest{
         }
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    fun `when navigate by pagination and get first page then get first 10 services`() {
+        prajServiceDAO.findIds().forEach{prajServiceDAO.delete(it)}
+        val listPrajService =  (1..20).map { i ->
+            prajServiceDAO.save(PrajServiceFixture.withName("pagination_$i"))
+        }
 
- }
+        val flux = prajServiceDAO.findPage(0, 10).log()
+
+        StepVerifier.create(flux)
+                .expectNext(*(listPrajService.subList(0, 10).toTypedArray()))
+                .verifyComplete()
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `when navigate by pagination and get second page then get last 10 services`() {
+        prajServiceDAO.findIds().forEach{prajServiceDAO.delete(it)}
+        val listPrajService =  (1..20).map { i ->
+            prajServiceDAO.save(PrajServiceFixture.withName("pagination_$i"))
+        }
+
+        val flux = prajServiceDAO.findPage(1, 10).log()
+
+        StepVerifier.create(flux)
+                .expectNext(*(listPrajService.subList(10, 20).toTypedArray()))
+                .verifyComplete()
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `when find by ids and exists one of ids then return them`() {
+        prajServiceDAO.findIds().forEach{prajServiceDAO.delete(it)}
+        val listPrajService =  (1..20).map { i ->
+            prajServiceDAO.save(PrajServiceFixture.withName("pagination_$i"))
+        }
+
+        val flux = prajServiceDAO.findByIds("-1", "-2", "-3", listPrajService[0].id!! )
+
+        StepVerifier.create(flux)
+                .expectNext(listPrajService[0])
+                .verifyComplete()
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `when count elements then return exact count`() {
+        prajServiceDAO.findIds().forEach{prajServiceDAO.delete(it)}
+        val listPrajService =  (1..20).map { i ->
+            prajServiceDAO.save(PrajServiceFixture.withName("pagination_$i"))
+        }
+
+        assertThat(prajServiceDAO.count()).isEqualTo(listPrajService.size.toLong())
+
+
+    }
+
+}

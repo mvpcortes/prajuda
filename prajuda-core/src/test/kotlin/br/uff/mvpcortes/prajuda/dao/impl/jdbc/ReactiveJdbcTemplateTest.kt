@@ -69,7 +69,7 @@ class ReactiveJdbcTemplateTest{
     @Test
     @Transactional
     @Rollback
-    fun `when query string divided on flux then folow right way on flux`(){
+    fun `when query string divided on flux then follow right way on flux`(){
         jdbcTemplate.update("INSERT INTO entity_test VALUES (1, 'on my way with a lot of spaces')")
 
         val flux = reactiveJdbcTemplate.queryStringDividedOnFlux(

@@ -45,6 +45,6 @@ interface PrajDocumentDAO {
 
     fun findByServiceNamePathAndPath(serviceName: String, path: String): PrajDocument?
 
-    fun findDocById(documentId: String): Flux<String>
+//    fun findDocById(documentId: String): Flux<String>
 
 }

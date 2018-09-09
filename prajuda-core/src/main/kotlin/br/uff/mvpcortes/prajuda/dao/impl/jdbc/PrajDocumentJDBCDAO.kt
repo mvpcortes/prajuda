@@ -17,10 +17,9 @@ import javax.annotation.PostConstruct
 
 @Repository
 class PrajDocumentJDBCDAO(
-        val jdbcTemplate:JdbcTemplate,
-        val transactionTemplate: TransactionTemplate,
-        val reactiveJdbcTemplate:ReactiveJdbcTemplate = ReactiveJdbcTemplate(transactionTemplate, jdbcTemplate),
-        val sqlDialectHelper:SqlDialectHelper
+        private val jdbcTemplate:JdbcTemplate,
+        private val transactionTemplate: TransactionTemplate,
+        private val sqlDialectHelper:SqlDialectHelper
 ):PrajDocumentDAO {
 
 
@@ -209,14 +208,4 @@ class PrajDocumentJDBCDAO(
                 .firstOrNull()
     }
 
-    /**
-     * Return flux with document content. Return a empty flux if document not found
-     */
-    override fun findDocById(documentId: String)=
-         reactiveJdbcTemplate
-                .queryStringDividedOnFlux(
-                        "SELECT $COLUMN_CONTENT FROM $TABLE_NAME WHERE $COLUMN_ID = ? ",
-                        "SELECT LENGTH( $COLUMN_CONTENT ) FROM $TABLE_NAME WHERE $COLUMN_ID = ? ",
-                10_000,
-                        arrayOf(documentId))
 }

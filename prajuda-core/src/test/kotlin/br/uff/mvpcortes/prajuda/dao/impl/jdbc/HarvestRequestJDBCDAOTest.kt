@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -25,6 +24,27 @@ class HarvestRequestJDBCDAOTest{
 
     @Autowired
     lateinit var harvestRequestJDBCDAO: HarvestRequestJDBCDAO
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `when edit a saved harvestRequest then update values`(){
+        harvestRequestJDBCDAO.deleteAll()
+
+        val request = harvestRequestJDBCDAO.save(HarvesterRequestFixture.open())
+
+        val requestStarted = request.toStarted()
+
+        harvestRequestJDBCDAO.save(requestStarted)
+
+        val requestStored = harvestRequestJDBCDAO.findById(requestStarted.id!!)!!
+
+        assertThat(requestStored).isNotEqualTo(request)
+        assertThat(requestStored).isEqualTo(requestStarted)
+
+        assertThat(requestStored.startedAt).isAfterOrEqualTo(request.createAt)
+        assertThat(requestStored.startedAt).isAfterOrEqualTo(requestStored.createAt)
+    }
 
     @Test
     @Transactional

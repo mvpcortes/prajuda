@@ -21,8 +21,6 @@ interface HarvestRequestDAO{
 
     fun startRequests(startedDate: LocalDateTime, ids:List<String>): Int
 
-    fun completeRequest(request: HarvestRequest):Int
-
     fun deleteAll():Int
 
     fun save(request: HarvestRequest): HarvestRequest

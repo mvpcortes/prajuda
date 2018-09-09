@@ -7,7 +7,7 @@ import kotlin.reflect.full.memberProperties
 
 class WithIdTest {
 
-    class MyWithId(override val id: String?, val value:String) :WithId
+    class MyWithId(override var id: String?, val value:String) :WithId
 
 
     @Nested
