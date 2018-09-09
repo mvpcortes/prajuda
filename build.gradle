@@ -9,6 +9,7 @@ buildscript {
         phantomjsdriverVersion 	= '1.4.4'
         flexmarkVersion         = '0.34.22'
         commommarkJavaVersion   = '0.11.0'
+        coverageValues          = new ArrayList<Tuple2<String, Double>>()
     }
 
     repositories {
@@ -21,6 +22,34 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
     }
 }
+
+ext.getCoverage = { myBuildDir->
+    def srcFile = file("${myBuildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    def xmlParser = new XmlParser()
+    xmlParser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+    xmlParser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+    def xmlReport = xmlParser.parse(srcFile)
+
+    try {
+        def nodeInstruction = (Node) xmlReport.getDirectChildren()
+                .stream()
+                .filter({node->
+                    "counter".equals(node.name()) && "INSTRUCTION".equals(node.attribute("type"))
+                })
+                .findAny().orElseThrow{new IllegalStateException("Cannot find coverage")}
+
+
+        def missed = Double.parseDouble(nodeInstruction.attribute("missed"))
+        def covered = Double.parseDouble(nodeInstruction.attribute("covered"))
+        def total = covered + missed
+        def coverage = covered / total
+        return coverage
+    }catch(e){
+        logger.error("Cannot get jacoco coverage: " + e.message)
+    }
+}
+
 
 
 allprojects {
@@ -69,19 +98,26 @@ subprojects{
         useJUnitPlatform()
         systemProperty("user.country", "US")
         systemProperty("user.language", "en")
-
     }
 
     jacoco {
         toolVersion = "0.8.2"
     }
 
-
     jacocoTestReport {
+
         reports {
-            xml.enabled false
+            xml.enabled true
             csv.enabled false
             html.destination file("${buildDir}/jacoco_html")
+        }
+
+        doLast{
+            def coverage = project.getCoverage(buildDir)?.toDouble()?:0.0
+            coverageValues.add(new Tuple2(project.name, coverage))
+            logger.info(coverage.toString())
+            def strCoverage = String.format("%.2f", coverage*100.0)
+            logger.lifecycle("Jacoco coverage for ${project.name}: ${strCoverage}%")
         }
     }
 
@@ -115,6 +151,26 @@ subprojects{
         }
     }
 }
+
+task finalizeJacocoTestReport (dependsOn:  subprojects.jacocoTestReport) {
+    doLast{
+        def coverageAvg = coverageValues
+                .stream()
+                .mapToDouble { i-> i.second }
+                .average().orElse(0.0)
+
+        def strCoverage = String.format("%.2f", coverageAvg*100.0)
+
+        logger.lifecycle("Jacoco coverage: ${strCoverage}%")
+
+    }
+}
+
+task jacocoTestReport{
+    dependsOn finalizeJacocoTestReport
+}
+
+
 
 task cleanAll {
     subprojects.each {
