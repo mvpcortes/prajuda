@@ -67,6 +67,11 @@ subprojects{
 
     test {
         useJUnitPlatform()
+
+//        systemProp.user.country="US"
+//        systemProp.user.language="en"
+        jvmArgs = ["user.country=CA", "user.language=fr"]
+
     }
 
     jacoco {

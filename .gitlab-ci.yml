@@ -28,6 +28,9 @@ build:
 test:
   stage: test
   script: gradle check
+  variables:
+    user.language: pt
+    user.country: BR
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
